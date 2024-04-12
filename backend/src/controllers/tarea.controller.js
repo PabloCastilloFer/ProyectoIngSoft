@@ -35,4 +35,3 @@ export const deleteTarea = async (req, res) => {
     }
 }
 
-
