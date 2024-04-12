@@ -1,11 +1,17 @@
 import PDFDocument from "pdfkit";
 
-export function buildPDF(dataCallback, endCallback) {
-      const doc =  new PDFDocument();
+export class PDFModel {
+    static buildPDF(data) {
+        return new Promise((resolve, reject) => {
+            const doc = new PDFDocument();
 
-      doc.on("data", dataCallback)
-      doc.on("end", endCallback)
+            // Agrega lógica para construir el PDF basado en los datos proporcionados
+            doc.fontSize(25).text(data.title, 100, 100);
 
-      doc.fontSize(25).text("Hello World", 100, 100);
-      doc.end();
+            const buffers = [];
+            doc.on("data", (chunk) => buffers.push(chunk));
+            doc.on("end", () => resolve(Buffer.concat(buffers)));
+            doc.end();
+        });
+    }
 }
