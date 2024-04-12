@@ -1,25 +1,26 @@
 import Comentario from "../models/comentario.model.js";
 
 export const ComentarioController = {
-  async crearComentario(req, res) {
-    try {
-      const { rut, comentario } = req.body;
-      
-      // Crear un nuevo comentario
-      const nuevoComentario = new Comentario({
-        rut,
-        comentario,
-      });
-
-      // Guardar el comentario en la base de datos
-      await nuevoComentario.save();
-
-      res.status(201).json(nuevoComentario);
-    } catch (error) {
-      console.error("Error al dejar un comentario:", error);
-      res.status(500).json({ error: "Error interno del servidor" });
-    }
-  },
+    async crearComentario(req, res) {
+      try {
+        const { supervisor, rutEmpleado, comentario } = req.body; // Obtener supervisor y rutEmpleado del cuerpo de la solicitud
+        
+        // Crear un nuevo comentario
+        const nuevoComentario = new Comentario({
+          supervisor,
+          rutEmpleado,
+          comentario,
+        });
+  
+        // Guardar el comentario en la base de datos
+        await nuevoComentario.save();
+  
+        res.status(201).json(nuevoComentario);
+      } catch (error) {
+        console.error("Error al dejar un comentario:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+      }
+    },
 
   async listarComentarios(req, res) {
     try {

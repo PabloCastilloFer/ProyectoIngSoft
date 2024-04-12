@@ -35,7 +35,7 @@
     ],
     "valid-jsdoc": "off",
     "no-console": "off",
-    "quotes": ["error", "double"], // Comillas dobles
+    "quotes": [], // Comillas dobles
     "operator-linebreak": [
       "warn",
       "before",

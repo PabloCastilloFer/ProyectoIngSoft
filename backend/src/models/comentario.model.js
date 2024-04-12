@@ -2,7 +2,11 @@ import { Schema, model } from "mongoose";
 
 const comentarioSchema = new Schema(
   {
-    rut: {
+    supervisor: {
+        type: String,
+        required: true,
+    },
+    rutEmpleado: {
       type: String,
       required: true,
     },
