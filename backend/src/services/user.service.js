@@ -2,6 +2,7 @@
 // Importa el modelo de datos 'User'
 import User from "../models/user.model.js";
 import Role from "../models/role.model.js";
+import Facultade from "../models/facultade.model.js";
 import { handleError } from "../utils/errorHandler.js";
 
 /**
@@ -100,6 +101,11 @@ async function updateUser(id, user) {
 
     const myRole = rolesFound.map((role) => role._id);
 
+    const facultadesFound = await Facultade.find({ name: { $in: facultades } });
+    if (facultadesFound.length === 0) return [null, "La facultad no existe"];
+    
+    const myFacultade = facultadesFound.map((facultade) => facultade._id);
+
     const userUpdated = await User.findByIdAndUpdate(
       id,
       {
@@ -108,6 +114,7 @@ async function updateUser(id, user) {
         rut,
         password: await User.encryptPassword(newPassword || password),
         roles: myRole,
+        facultades: myFacultade,
       },
       { new: true },
     );

@@ -1,4 +1,5 @@
 "use strict";
+import Facultade from "../models/facultade.model.js";
 // Importa el modelo de datos 'Role'
 import Role from "../models/role.model.js";
 import User from "../models/user.model.js";
@@ -42,20 +43,27 @@ async function createUsers() {
     const supervisor = await Role.findOne({ name: "supervisor" });
     const empleado = await Role.findOne({ name: "empleado" });
 
+    const Universidad = await Facultade.findOne({ name: "Universidad" });
+    const CienciasEmpresariales = await Facultade.findOne({ name: "Faculta de Ciencias Empresariales" });
+    const Arquitectura = await Facultade.findOne({ name: "Faculta de Arquitecura" });
+
+
     await Promise.all([
-      new Empleado({
+      new User({
         username: "empleado",
         email: "empleado@email.com",
         rut: "15854696-5",
         password: await User.encryptPassword("empleado123"),
         roles: empleado._id,
+        facultades: Arquitectura._id,
       }).save(),
-      new Supervisor({
+      new User({
         username: "supervisor",
         email: "supervisor@email.com",
         rut: "20809012-6",
         password: await User.encryptPassword("super123"),
         roles: supervisor._id,
+        facultades: CienciasEmpresariales._id,
       }).save(),
       new User({
         username: "admin",
@@ -63,6 +71,7 @@ async function createUsers() {
         rut: "12345678-0",
         password: await User.encryptPassword("admin123"),
         roles: admin._id,
+        facultades: Universidad._id,
       }).save(),
     ]);
     console.log("* => Users creados exitosamente");
