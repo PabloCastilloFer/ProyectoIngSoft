@@ -1,6 +1,6 @@
 "use strict";
-import Facultade from "../models/facultade.model.js";
 // Importa el modelo de datos 'Role'
+import Facultade from "../models/facultade.model.js";
 import Role from "../models/role.model.js";
 import User from "../models/user.model.js";
 
@@ -29,6 +29,30 @@ async function createRoles() {
 }
 
 /**
+ * Crea los roles por defecto en la base de datos.
+ * @async
+ * @function createFacultades
+ * @returns {Promise<void>}
+ */
+async function createFacultades() {
+  try {
+    // Busca todos los roles en la base de datos
+    const count = await Facultade.estimatedDocumentCount();
+    // Si no hay roles en la base de datos los crea
+    if (count > 0) return;
+
+    await Promise.all([
+      new Facultade({ name: "Facultad de Ciencias Empresariales" }).save(),
+      new Facultade({ name: "Universidad" }).save(),
+      new Facultade({ name: "Facultad de Arquitectura" }).save(),
+    ]);
+    console.log("* => Facultades creados exitosamente");
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+/**
  * Crea los usuarios por defecto en la base de datos.
  * @async
  * @function createUsers
@@ -44,8 +68,8 @@ async function createUsers() {
     const empleado = await Role.findOne({ name: "empleado" });
 
     const Universidad = await Facultade.findOne({ name: "Universidad" });
-    const CienciasEmpresariales = await Facultade.findOne({ name: "Faculta de Ciencias Empresariales" });
-    const Arquitectura = await Facultade.findOne({ name: "Faculta de Arquitecura" });
+    const CienciasEmpresariales = await Facultade.findOne({ name: "Facultad de Ciencias Empresariales" });
+    const Arquitectura = await Facultade.findOne({ name: "Facultad de Arquitectura" });
 
 
     await Promise.all([
@@ -80,4 +104,4 @@ async function createUsers() {
   }
 }
 
-export { createRoles, createUsers };
+export { createRoles, createFacultades, createUsers };

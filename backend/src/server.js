@@ -14,7 +14,7 @@ import indexRoutes from "./routes/index.routes.js";
 import { setupDB } from "./config/configDB.js";
 // Importa el handler de errores
 import { handleFatalError, handleError } from "./utils/errorHandler.js";
-import { createRoles, createUsers } from "./config/initialSetup.js";
+import { createFacultades, createRoles, createUsers } from "./config/initialSetup.js";
 
 /**
  * Inicia el servidor web
@@ -57,6 +57,8 @@ async function setupAPI() {
     await setupServer();
     // Inicia la creación de los roles
     await createRoles();
+    // Inicia la creación de los facultades
+    await createFacultades();
     // Inicia la creación del usuario admin y user
     await createUsers();
   } catch (err) {
