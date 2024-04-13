@@ -12,9 +12,22 @@ const tareaSchema = new Schema({
         required: true,
     },
 
-    fechaCreacion: {
+    tipoTarea: {
         type: String,
         required: true,
+        enum: ['simple','extensa'],
+        set: (value) => value.toLowerCase(),
+        validate: {
+            validator: function (value) {
+                if (value === 'simple'){
+                    return value.length === 6;
+                } else if (value === 'extensa'){
+                    return value.length === 7;
+                }
+                return false;
+            },
+            message: 'La longitud del parametro tipoTarea no es válida.'
+        }
     },
 
 },
