@@ -22,7 +22,7 @@ try {
 } catch (error) {
     res.status(500).json({ message: error.message });
 }
-}
+};
 
 export const getTareas = async (req, res) => {
     try {
@@ -31,7 +31,17 @@ export const getTareas = async (req, res) => {
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
-}
+};
+
+export const getTarea = async (req, res) => {
+    const { nombreTarea } = req.params;
+    try {
+        const tareaEncontrada = await tarea.findOne({ nombreTarea });
+        res.status(200).json(tareaEncontrada);
+    } catch (error) {
+        res.status(404).json({ message: error.message })
+    }
+};
 
 export const deleteTarea = async (req, res) => {
     const { nombreTarea } = req.params;
@@ -41,7 +51,7 @@ export const deleteTarea = async (req, res) => {
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
-}
+};
 
 export const updateTarea = async (req, res) => {
     
