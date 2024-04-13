@@ -20,7 +20,7 @@ router.use("/users", authenticationMiddleware, userRoutes);
 // Define las rutas para la autenticación /api/auth
 router.use("/auth", authRoutes);
 // Defina la ruta para la tarea /api/tarea
-router.use("/tarea",authenticationMiddleware, tareaRoutes);
+router.use("/tarea", authenticationMiddleware, tareaRoutes);
 
 // Exporta el enrutador
 export default router;
