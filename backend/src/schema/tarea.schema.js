@@ -30,4 +30,5 @@ export const crearTareaSchema = Joi.object({
         "string.base": "El tipo de tarea debe ser de tipo string.",
         "any.only": "El tipo de tarea debe ser simple o extensa."
       }),
+      
 })

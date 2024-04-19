@@ -2,13 +2,14 @@ import tarea from '../models/tarea.model.js';
 import { crearTareaSchema } from '../schema/tarea.schema.js';
 
 export const crearTarea = async (req, res) => {
-    const { nombreTarea, descripcionTarea, tipoTarea } = req.body;
+    const { nombreTarea, descripcionTarea, tipoTarea} = req.body;
 
 try {
     const nuevaTarea = new tarea({
         nombreTarea,
         descripcionTarea,
-        tipoTarea
+        tipoTarea,
+        estado: 'nueva'
     });
 
     const {error} = crearTareaSchema.validate(req.body);
@@ -16,7 +17,6 @@ try {
         res.status(400).json({ error: error.message });
         return;
     }
-
     const tareaGuardada = await nuevaTarea.save();  
     res.status(201).json(tareaGuardada);
 } catch (error) {
@@ -68,7 +68,7 @@ export const updateTarea = async (req, res) => {
         tareaModificada.tipoTarea = req.body.tipoTarea;
 
         const tareaActualizada = await tareaModificada.save();
-        res.json(tareaActualizada);
+        res.status(201).json(tareaActualizada);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
