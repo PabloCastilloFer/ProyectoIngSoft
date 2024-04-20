@@ -36,11 +36,11 @@ export const ComentarioController = {
 
   async modificarComentario(req, res) {
     try {
-      const { id } = req.params;
+      const { rutEmpleado } = req.params;
       const { comentario } = req.body;
       
-      // Buscar el comentario por su ID y actualizarlo
-      const comentarioModificado = await Comentario.findByIdAndUpdate(id, { comentario }, { new: true });
+      // Buscar el comentario por rut y actualizarlo
+      const comentarioModificado = await Comentario.findByRutAndUpdate(rutEmpleado, { comentario }, { new: true });
 
       if (!comentarioModificado) {
         return res.status(404).json({ error: "Comentario no encontrado" });
@@ -55,10 +55,10 @@ export const ComentarioController = {
 
   async eliminarComentario(req, res) {
     try {
-      const { id } = req.params;
+      const { rutEmpleado } = req.params;
       
       // Buscar el comentario por su ID y eliminarlo
-      const comentarioEliminado = await Comentario.findByIdAndDelete(id);
+      const comentarioEliminado = await Comentario.findByRutAndDelete(rutEmpleado);
 
       if (!comentarioEliminado) {
         return res.status(404).json({ error: "Comentario no encontrado" });

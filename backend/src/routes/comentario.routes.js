@@ -8,6 +8,9 @@ const router = express.Router();
 router.post("/",isSupervisor, ComentarioController.crearComentario);
 
 // Ruta para obtener todos los comentarios
-router.get("/comentarios", ComentarioController.listarComentarios);
+router.get("/", ComentarioController.listarComentarios);
+
+router.delete("/:rutEmpleado", isSupervisor, ComentarioController.eliminarComentario);
+
 
 export default router;
