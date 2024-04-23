@@ -11,10 +11,10 @@ const tareaRealizadaSchema = new mongoose.Schema({
     type: String,
     enum: ["completa", "incompleta", "no realizada"], 
 
-
    //SubirPDF
 
    //Unir informacion de tareas para sacar restriccion horaria
+   
    
   },
 },
