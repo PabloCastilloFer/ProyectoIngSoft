@@ -52,6 +52,11 @@ const tareaSchema = new Schema({
         }
     },
 
+    archivo: {
+        type: String,
+        required: true,
+    },
+
 },
 {
     timestamps: {
