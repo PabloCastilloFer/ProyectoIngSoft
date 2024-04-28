@@ -1,18 +1,29 @@
 import tarea from '../models/tarea.model.js';
 import { HOST, PORT } from '../config/configEnv.js';
 import { crearTareaSchema } from '../schema/tarea.schema.js';
+import { v4 as uuidv4 } from 'uuid'; // Importar la función uuidv4
 
 export const createTarea = async (req, res) => {
     try {
         const archivo = req.file.filename;
         const URL = `http://${HOST}:${PORT}/api/tarea/src/upload/`;
+
+        // Generar una ID aleatoria utilizando uuidv4
+        const idTarea = uuidv4();
+
         const nuevaTarea = {
             nombreTarea: req.body.nombreTarea,
             descripcionTarea: req.body.descripcionTarea,
             tipoTarea: req.body.tipoTarea,
-            estado: req.body.estado,
+            estado: 'nueva',
+            idTarea: idTarea, // Usar la ID generada
             archivo: URL + archivo
         };
+        const { error } = crearTareaSchema.validate(nuevaTarea);
+        if (error) {
+            return res.status(400).json({ error: error.message });
+        }
+
         const newTarea = new tarea(nuevaTarea);
         const tareaGuardada = await newTarea.save();  
         res.status(201).json({
@@ -23,6 +34,7 @@ export const createTarea = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 export const getTareas = async (req, res) => {
     try {
