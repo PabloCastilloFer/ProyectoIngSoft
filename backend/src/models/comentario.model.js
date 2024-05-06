@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import Tarea from "./tarea.model"; 
 
 const comentarioSchema = new Schema(
   {
@@ -8,6 +9,11 @@ const comentarioSchema = new Schema(
     },
     rutEmpleado: {
       type: String,
+      required: true,
+    },
+    tarea:{
+      type: String,
+      ref: "Tarea",
       required: true,
     },
     comentario: {
