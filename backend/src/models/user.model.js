@@ -30,6 +30,12 @@ const userSchema = new mongoose.Schema(
         ref: "Role",
       },
     ],
+    facultades: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Facultade",
+      },
+    ],
   },
   {
     versionKey: false,

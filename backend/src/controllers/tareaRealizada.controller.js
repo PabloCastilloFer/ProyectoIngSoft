@@ -1,18 +1,17 @@
-"use strict";
+const TareaRealizada = require("../models/tareaRealizada.model.js");
 
-const TareaRealizada = require("../models/tareaRealizada.model.js"); 
-
+// Define las funciones del controlador
 exports.crearTareaRealizada = async (req, res) => {
   try {
-    const { Comentario, Estado } = req.body; d
+    const { Comentario, Estado } = req.body;
     const nuevaTarea = new TareaRealizada({
       Comentario,
       Estado,
     });
     const tareaGuardada = await nuevaTarea.save();
-    res.status(201).json(tareaGuardada); 
+    res.status(201).json(tareaGuardada);
   } catch (error) {
-    res.status(500).json({ error: error.message }); 
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -24,4 +23,3 @@ exports.obtenerTareasRealizadas = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-

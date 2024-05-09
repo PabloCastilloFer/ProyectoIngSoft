@@ -1,27 +1,19 @@
 "use strict";
-const mongoose = require("mongoose");
-const tareaRealizadaSchema = new mongoose.Schema({
- 
+import { Schema , model} from "mongoose";
+
+const tareaRealizadaSchema = new Schema({
+  
   Comentario: {
     type: String,
     required: true,
   },
-  
-  Estados :{
+  Estado: {
     type: String,
-    enum: ["completa", "incompleta", "no realizada"], 
-
-   //SubirPDF
-
-   //Unir informacion de tareas para sacar restriccion horaria
-   
-   
+    enum: ["completa", "incompleta", "no realizada"],
   },
-},
-
-{
+}, {
   versionKey: false,
 });
 
-const  tareaRealiza= mongoose.model("tareaRealizada", tareaRealizadaSchema);
-module.exports = tareaRealiza;
+
+export default model ("TareaRealizada", tareaRealizadaSchema);

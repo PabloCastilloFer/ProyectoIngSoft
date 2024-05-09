@@ -1,8 +1,8 @@
-import express from "express";
-const router = express.Router();
-import { tareaRealizaController } from "../controllers/tareaRealizada.controller.js";
+import { Router } from "express";
+const router = Router();
+import { crearTareaRealizada, obtenerTareasRealizadas } from "../controllers/tareaRealizada.controller.js";
 
+router.post("/", crearTareaRealizada);
+router.get("/", obtenerTareasRealizadas);
 
-router.post("/tareaRealizada", tareaRealizaController.crearTareaRealizada);
-router.get("/tareaRealizada", tareaRealizaController.obtenerTareasRealizadas);
 export default router;

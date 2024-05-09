@@ -2,6 +2,7 @@
 
 import Joi from "joi";
 import ROLES from "../constants/roles.constants.js";
+import FACULTADES from "../constants/facultades.constants.js";
 /**
  * Esquema de validación para el cuerpo de la solicitud de usuario.
  * @constant {Object}
@@ -41,6 +42,15 @@ const userBodySchema = Joi.object({
       "any.required": "El rol es obligatorio.",
       "string.base": "El rol debe ser de tipo string.",
       "any.only": "El rol proporcionado no es válido.",
+    }),
+  facultades: Joi.array()
+    .items(Joi.string().valid(...FACULTADES))
+    .required()
+    .messages({
+      "array.base": "La facultad debe ser de tipo array.",
+      "any.required": "La facultad es obligatoria.",
+      "string.base": "La facultad debe ser de tipo string.",
+      "any.only": "La facultad proporcionada no es válida.",
     }),
   newPassword: Joi.string().min(5).messages({
     "string.empty": "La contraseña no puede estar vacía.",
