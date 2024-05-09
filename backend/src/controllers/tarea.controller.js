@@ -1,27 +1,38 @@
 import tarea from '../models/tarea.model.js';
+import { HOST, PORT } from '../config/configEnv.js';
 import { crearTareaSchema } from '../schema/tarea.schema.js';
+import { v4 as uuidv4 } from 'uuid'; // Importar la función uuidv4
 
-export const crearTarea = async (req, res) => {
-    const { nombreTarea, descripcionTarea, tipoTarea} = req.body;
+export const createTarea = async (req, res) => {
+    try {
+        const archivo = req.file.filename;
+        const URL = `http://${HOST}:${PORT}/api/tarea/src/upload/`;
 
-try {
-    const nuevaTarea = new tarea({
-        nombreTarea,
-        descripcionTarea,
-        tipoTarea,
-        estado: 'nueva'
-    });
+        // Generar una ID aleatoria utilizando uuidv4
+        const idTarea = uuidv4();
 
-    const {error} = crearTareaSchema.validate(req.body);
-    if (error){
-        res.status(400).json({ error: error.message });
-        return;
+        const nuevaTarea = {
+            nombreTarea: req.body.nombreTarea,
+            descripcionTarea: req.body.descripcionTarea,
+            tipoTarea: req.body.tipoTarea,
+            estado: 'nueva',
+            idTarea: idTarea, // Usar la ID generada
+            archivo: URL + archivo
+        };
+        const { error } = crearTareaSchema.validate(nuevaTarea);
+        if (error) {
+            return res.status(400).json({ error: error.message });
+        }
+
+        const newTarea = new tarea(nuevaTarea);
+        const tareaGuardada = await newTarea.save();  
+        res.status(201).json({
+            message: "Tarea creada exitosamente!",
+            tarea: tareaGuardada
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-    const tareaGuardada = await nuevaTarea.save();  
-    res.status(201).json(tareaGuardada);
-} catch (error) {
-    res.status(500).json({ message: error.message });
-}
 };
 
 export const getTareas = async (req, res) => {
