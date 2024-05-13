@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import Tarea from "./tarea.model"; 
+import "./tarea.model.js";
 
 const comentarioSchema = new Schema(
   {

@@ -1,20 +1,28 @@
 import Comentario from "../models/comentario.model.js";
+import Tarea from "../models/tarea.model.js"; // Importa el modelo de Tarea
 
 export const ComentarioController = {
     async crearComentario(req, res) {
       try {
-        const { supervisor, rutEmpleado, comentario } = req.body; // Obtener supervisor y rutEmpleado del cuerpo de la solicitud
+        const { supervisor, rutEmpleado, tarea, comentario } = req.body; // Obtener datos de la solicitud incluyendo la tarea
         
         // Crear un nuevo comentario
         const nuevoComentario = new Comentario({
           supervisor,
           rutEmpleado,
+          tarea, // Asignar el identificador único de la tarea
           comentario,
         });
   
         // Guardar el comentario en la base de datos
         await nuevoComentario.save();
-  
+        
+        // Buscar la tarea asociada al comentario
+        const tareaAsociada = await Tarea.findById(tarea).select('nombreTarea descripcionTarea estado');
+        
+        // Agregar la tarea asociada al comentario
+        nuevoComentario.tarea = tareaAsociada;
+
         res.status(201).json(nuevoComentario);
       } catch (error) {
         console.error("Error al dejar un comentario:", error);
@@ -40,7 +48,7 @@ export const ComentarioController = {
       const { comentario } = req.body;
       
       // Buscar el comentario por rut y actualizarlo
-      const comentarioModificado = await Comentario.findByRutAndUpdate(rutEmpleado, { comentario }, { new: true });
+      const comentarioModificado = await Comentario.findOneAndUpdate({ rutEmpleado }, { comentario }, { new: true });
 
       if (!comentarioModificado) {
         return res.status(404).json({ error: "Comentario no encontrado" });
@@ -57,8 +65,8 @@ export const ComentarioController = {
     try {
       const { rutEmpleado } = req.params;
       
-      // Buscar el comentario por su ID y eliminarlo
-      const comentarioEliminado = await Comentario.findByRutAndDelete(rutEmpleado);
+      // Buscar el comentario por su rut y eliminarlo
+      const comentarioEliminado = await Comentario.findOneAndDelete({ rutEmpleado });
 
       if (!comentarioEliminado) {
         return res.status(404).json({ error: "Comentario no encontrado" });
@@ -71,4 +79,3 @@ export const ComentarioController = {
     }
   },
 };
-
