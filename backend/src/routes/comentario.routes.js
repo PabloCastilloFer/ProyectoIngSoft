@@ -11,6 +11,8 @@ router.post("/",isSupervisor, ComentarioController.crearComentario);
 router.get("/", ComentarioController.listarComentarios);
 
 router.delete("/:rutEmpleado", isSupervisor, ComentarioController.eliminarComentario);
+// Ruta para modificar un comentario por rutEmpleado
+router.put("/:rutEmpleado", isSupervisor, ComentarioController.modificarComentario);
 
 
 export default router;
