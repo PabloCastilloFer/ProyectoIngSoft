@@ -1,8 +1,9 @@
-import express from "express";
-import { PDFController } from "./PDFController.js";
+import express from 'express';
+import { createTable } from '../controllers/generarPDF.controller.js';
+import { isSupervisor } from '../middlewares/authorization.middleware.js';
 
 const router = express.Router();
 
-router.get("/generate-pdf", PDFController.generatePDF);
+router.get('/generarReporte', isSupervisor, createTable);
 
 export default router;
