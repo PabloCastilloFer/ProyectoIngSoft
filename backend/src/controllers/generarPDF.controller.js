@@ -2,7 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import PDFDocument from 'pdfkit-table';
-import Report from '../models/generarPDF.model.js';
+import Comentario from '../models/comentario.model.js';
+import Tarea from '../models/tarea.model.js'; // Asegúrate de importar el modelo Tarea
 import { v4 as uuidv4 } from 'uuid';
 
 // Obtener __dirname equivalente para ES6
@@ -10,49 +11,51 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export async function createTable(req, res) {
-    try {
-        // Se crea la instancia del pdf
-        const doc = new PDFDocument({ margin: 30, size: 'A4' });
+  try {
+    const doc = new PDFDocument({ margin: 30, size: 'A4' });
+    const comentarios = await Comentario.find().populate('tarea', 'nombreTarea descripcionTarea estado');
 
-        // Obtiene los datos del reporte
-        const reports = await Report.find();
+    const randomFileName = uuidv4();
+    const filePath = path.join(__dirname, '../Pdf', `${randomFileName}.pdf`);
 
-        // Generar un nombre de archivo aleatorio
-        const randomFileName = uuidv4();
-        const filePath = path.join(__dirname, '..', 'Pdf', `${randomFileName}.pdf`);
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
 
-        // pipe the document to a writable stream
-        doc.pipe(fs.createWriteStream(filePath));
+    const writeStream = fs.createWriteStream(filePath);
+    doc.pipe(writeStream);
 
-        // Se define el contenido de la tabla
-        const table = {
-            title: { label: 'Reporte', color: 'blue' },
-            headers: ['Email', 'Mensaje'], // Cambié los nombres de las columnas
-            rows: reports.map(report => [report.email, report.message]), // Asume que report tiene campos email y message
-        };
+    const table = {
+      title: { label: 'Reporte de Comentarios', color: 'blue' },
+      headers: ['Supervisor', 'Rut Empleado', 'Tarea', 'Descripción Tarea', 'Estado', 'Comentario'],
+      rows: comentarios.map(comentario => [
+        comentario.supervisor,
+        comentario.rutEmpleado,
+        comentario.tarea?.nombreTarea ?? 'N/A',
+        comentario.tarea?.descripcionTarea ?? 'N/A',
+        comentario.tarea?.estado ?? 'N/A',
+        comentario.comentario
+      ]),
+    };
 
-        // Añadir la tabla al documento
-        await doc.table(table, {
-            width: 500,
-        });
+    await doc.table(table, { width: 500 });
+    doc.end();
 
-        // Finaliza el documento
-        doc.end();
+    writeStream.on('finish', () => {
+      res.download(filePath, 'reporte.pdf', (err) => {
+        if (err) {
+          console.error('Error al descargar el archivo:', err);
+          res.status(500).send('Error interno del servidor');
+        } else {
+          fs.unlinkSync(filePath);
+        }
+      });
+    });
 
-        // Espera a que el archivo se escriba completamente antes de enviarlo
-        doc.on('end', () => {
-            res.download(filePath, 'reporte.pdf', (err) => {
-                if (err) {
-                    console.error('Error al descargar el archivo:', err);
-                    res.status(500).send('Error interno del servidor');
-                } else {
-                    // Elimina el archivo después de enviarlo
-                    fs.unlinkSync(filePath);
-                }
-            });
-        });
-    } catch (error) {
-        console.error('Error al generar el reporte:', error);
-        res.status(500).send('Error interno del servidor');
-    }
+    writeStream.on('error', (err) => {
+      console.error('Error al escribir el archivo:', err);
+      res.status(500).send('Error interno del servidor');
+    });
+  } catch (error) {
+    console.error('Error al generar el reporte:', error);
+    res.status(500).send('Error interno del servidor');
+  }
 }
