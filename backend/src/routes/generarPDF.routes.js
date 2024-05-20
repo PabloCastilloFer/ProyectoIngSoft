@@ -1,9 +1,9 @@
-import express from 'express';
-import { createTable } from '../controllers/generarPDF.controller.js';
-import { isSupervisor } from '../middlewares/authorization.middleware.js';
+import express from "express";
+import { PDFController } from "../controllers/generarPDF.controller.js";
 
 const router = express.Router();
 
-router.get('/generarReporte', isSupervisor, createTable);
+// Ruta para generar el PDF de un empleado por su ID
+router.get("/pdf/empleado", PDFController.generarPDF);
 
 export default router;

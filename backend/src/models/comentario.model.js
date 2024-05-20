@@ -10,6 +10,7 @@ const comentarioSchema = new Schema(
     rutEmpleado: {
       type: String,
       required: true,
+      unique: true,
     },
     tarea:{
       type: String,

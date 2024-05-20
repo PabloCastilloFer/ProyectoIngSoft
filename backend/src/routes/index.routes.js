@@ -19,6 +19,8 @@ import comentarioRoutes from "./comentario.routes.js";
 import ticketRoutes from "./ticket.routes.js"
 
 import generarPDFRoutes from  "./generarPDF.routes.js"
+
+import empleadoRoutes from "./empleado.routes.js"
 /** Instancia del enrutador */
 const router = Router();
 
@@ -33,7 +35,9 @@ router.use("/ticket", authenticationMiddleware, ticketRoutes);
 
 router.use("/comentario",authenticationMiddleware, comentarioRoutes);
 
-router.use("/pdf",authenticationMiddleware,generarPDFRoutes)
+router.use("/pdf",authenticationMiddleware,generarPDFRoutes);
+
+router.use("/empleado",authenticationMiddleware,empleadoRoutes);
 
 // Exporta el enrutador
 export default router;

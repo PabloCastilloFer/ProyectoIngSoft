@@ -1,61 +1,51 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import PDFDocument from 'pdfkit-table';
-import Comentario from '../models/comentario.model.js';
-import Tarea from '../models/tarea.model.js'; // Asegúrate de importar el modelo Tarea
-import { v4 as uuidv4 } from 'uuid';
+import PDFDocument from "pdfkit";
+import fs from "fs";
+import Empleado from "../models/empleado.model.js"; // Importa el modelo de Empleado
 
-// Obtener __dirname equivalente para ES6
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+export const PDFController = {
+  async generarPDF(req, res) {
+    try {
+      // Obtener los datos del empleado desde la base de datos
+      const empleado = await Empleado.findById(req.params.id)
+        .populate("tarea", "nombreTarea descripcionTarea estado")
+        .populate("datos", "supervisor rutEmpleado comentario");
 
-export async function createTable(req, res) {
-  try {
-    const doc = new PDFDocument({ margin: 30, size: 'A4' });
-    const comentarios = await Comentario.find().populate('tarea', 'nombreTarea descripcionTarea estado');
+      if (!empleado) {
+        return res.status(404).json({ error: "Empleado no encontrado" });
+      }
 
-    const randomFileName = uuidv4();
-    const filePath = path.join(__dirname, '../Pdf', `${randomFileName}.pdf`);
+      // Crear un nuevo documento PDF
+      const doc = new PDFDocument();
+      // Establecer el nombre del archivo de salida
+      const fileName = `empleado_${empleado._id}.pdf`;
+      // Crear un flujo de escritura para guardar el PDF en el sistema de archivos
+      const writeStream = fs.createWriteStream(fileName);
+      // Pipelining the PDF directly to the write stream
+      doc.pipe(writeStream);
 
-    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+      // Añadir el contenido al PDF
+      doc.fontSize(14).text("Datos del Empleado", { align: "center" }).moveDown();
 
-    const writeStream = fs.createWriteStream(filePath);
-    doc.pipe(writeStream);
+      // Crear una tabla para mostrar los datos del empleado
+      const table = {
+        headers: ["Tarea", "Comentario"],
+        rows: [[empleado.tarea.nombreTarea, empleado.datos.comentario]],
+      };
 
-    const table = {
-      title: { label: 'Reporte de Comentarios', color: 'blue' },
-      headers: ['Supervisor', 'Rut Empleado', 'Tarea', 'Descripción Tarea', 'Estado', 'Comentario'],
-      rows: comentarios.map(comentario => [
-        comentario.supervisor,
-        comentario.rutEmpleado,
-        comentario.tarea?.nombreTarea ?? 'N/A',
-        comentario.tarea?.descripcionTarea ?? 'N/A',
-        comentario.tarea?.estado ?? 'N/A',
-        comentario.comentario
-      ]),
-    };
-
-    await doc.table(table, { width: 500 });
-    doc.end();
-
-    writeStream.on('finish', () => {
-      res.download(filePath, 'reporte.pdf', (err) => {
-        if (err) {
-          console.error('Error al descargar el archivo:', err);
-          res.status(500).send('Error interno del servidor');
-        } else {
-          fs.unlinkSync(filePath);
-        }
+      doc.table(table, {
+        prepareHeader: () => doc.font("Helvetica-Bold"),
+        prepareRow: (row, i) => doc.font("Helvetica").fontSize(10),
       });
-    });
 
-    writeStream.on('error', (err) => {
-      console.error('Error al escribir el archivo:', err);
-      res.status(500).send('Error interno del servidor');
-    });
-  } catch (error) {
-    console.error('Error al generar el reporte:', error);
-    res.status(500).send('Error interno del servidor');
-  }
-}
+      // Finalizar el documento PDF
+      doc.end();
+
+      console.log(`PDF generado correctamente: ${fileName}`);
+
+      res.status(200).json({ message: "PDF generado correctamente", fileName });
+    } catch (error) {
+      console.error("Error al generar el PDF:", error);
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+  },
+};
