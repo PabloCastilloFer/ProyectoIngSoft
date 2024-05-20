@@ -13,7 +13,7 @@ const comentarioSchema = new Schema(
     },
     tarea:{
       type: String,
-      ref: "Tarea",
+      ref: "tarea",
       required: true,
     },
     comentario: {
