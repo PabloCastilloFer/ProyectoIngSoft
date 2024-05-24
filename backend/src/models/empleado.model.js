@@ -1,26 +1,15 @@
+// empleado.model.js
+"use strict";
 import { Schema, model } from "mongoose";
-import Tarea from "./tarea.model.js";
-import Comentario from "./comentario.model.js";
 
-const empleadoSchema = new Schema(
-  {
-    rutEmpleado: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    tarea: {
-      type: Schema.Types.ObjectId,
-      ref: "tarea",
-      required: true,
-    },
-    datos: {
-      type: Schema.Types.ObjectId,
-      ref: "comentario",
-      required: true,
-    },
-  },
-  { collection: "empleado", versionKey: false, timestamps: true }
-);
+const empleadoSchema = new Schema({
+  nombre: { type: String, required: true },
+  rut: { type: String, required: true },
+  facultad: { type: Schema.Types.ObjectId, ref: 'Facultade', required: true },
+  tareas: [{ type: Schema.Types.ObjectId, ref: 'Tarea', required: true }],
+  usuario: { type: Schema.Types.ObjectId, ref: 'User', required: true }  // Referencia a User
+});
 
-export default model("Empleado", empleadoSchema);
+const Empleado = model("Empleado", empleadoSchema);
+
+export default Empleado;

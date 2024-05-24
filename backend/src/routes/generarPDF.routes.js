@@ -1,9 +1,9 @@
-import express from "express";
-import { PDFController } from "../controllers/generarPDF.controller.js";
-
+const express = require('express');
 const router = express.Router();
+const generarPDFController = require('../controllers/generarPDF.controller');
 
-// Ruta para generar el PDF de un empleado por su ID
-router.get("/pdf/empleado", PDFController.generarPDF);
+// Definir rutas para la generación de PDF
+router.post('/', generarPDFController.generarPDF);
+router.get('/info', generarPDFController.obtenerInformacionParaPDF);
 
-export default router;
+module.exports = router;
