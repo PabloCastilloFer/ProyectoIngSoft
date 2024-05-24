@@ -1,25 +1,26 @@
 import { Schema, model } from "mongoose";
-import "./tarea.model.js";
-import "./comentario.model.js"
+import Tarea from "./tarea.model.js";
+import Comentario from "./comentario.model.js";
 
 const empleadoSchema = new Schema(
   {
-    rutEmpleado:{
+    rutEmpleado: {
       type: String,
       required: true,
       unique: true,
     },
-    tarea:{
-      type: String,
+    tarea: {
+      type: Schema.Types.ObjectId,
       ref: "tarea",
       required: true,
     },
     datos: {
-      type: String,
+      type: Schema.Types.ObjectId,
       ref: "comentario",
       required: true,
     },
   },
-  { collection: "empleado", versionKey: false, timestamps: true },
+  { collection: "empleado", versionKey: false, timestamps: true }
 );
+
 export default model("Empleado", empleadoSchema);
