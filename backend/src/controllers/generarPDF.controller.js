@@ -1,6 +1,4 @@
-// app.js
 "use strict";
-import mongoose from 'mongoose';
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import Empleado from '../models/empleado.model.js';
@@ -8,15 +6,6 @@ import '../models/facultade.model.js';
 import '../models/tarea.model.js';
 import Ticket from '../models/ticket.model.js';
 import '../models/user.model.js';
-
-mongoose.connect('mongodb://localhost:27017/tu_basedatos', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => {
-  console.log('Conectado a MongoDB');
-}).catch(err => {
-  console.error('Error al conectar a MongoDB', err);
-});
 
 const calcularHorasTrabajadas = async (empleadoId) => {
   const tickets = await Ticket.find({ asignadoA: empleadoId }).populate('tareaId');
@@ -38,7 +27,7 @@ const calcularHorasTrabajadas = async (empleadoId) => {
   return totalHoras;
 };
 
-const generarReporte = async () => {
+const generarPDF = async () => {
   try {
     const empleados = await Empleado.find().populate('facultad').populate('tareas').populate('usuario');
 
@@ -97,4 +86,6 @@ const generarReporte = async () => {
   }
 };
 
-generarReporte();
+generarPDF();
+
+export { generarPDF };

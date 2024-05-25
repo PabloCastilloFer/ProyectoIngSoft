@@ -18,7 +18,7 @@ import comentarioRoutes from "./comentario.routes.js";
 
 import ticketRoutes from "./ticket.routes.js";
 
-import { generarPDFRoutes } from "./generarPDF.routes.js";
+import generarPDFRoutes from "./generarPDF.routes.js";
 
 import empleadoRoutes from "./empleado.routes.js"
 /** Instancia del enrutador */
