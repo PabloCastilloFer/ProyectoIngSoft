@@ -3,13 +3,34 @@ import TareaRealizada from '../models/TareaRealizada';
 // Crear una nueva tarea realizada
 async function crearTareaRealizada(req, res) {
     try {
-        const { tarea, respuesta, archivoAdjunto, comentario } = req.body;
+        const { tarea, respuesta, archivoAdjunto, comentario, estado } = req.body;
+
+        // Obtener la tarea asociada
+        const tareaAsociada = await Tarea.findById(tarea);
+        if (!tareaAsociada) {
+            return res.status(404).json({ message: 'Tarea asociada no encontrada' });
+        }
+
+        // Validación del tiempo
+        const now = new Date();
+        if (now > tareaAsociada.plazo) {
+            return res.status(400).json({ message: 'Fuera de plazo asignado' });
+        }
+
+        // Validación del estado
+        const estadosValidos = ['completada', 'incompleta', 'no realizada'];
+        if (!estadosValidos.includes(estado)) {
+            return res.status(400).json({ message: 'Estado no válido. Debe ser completada, incompleta o no realizada' });
+        }
+
         const nuevaTareaRealizada = new TareaRealizada({
             tarea,
             respuesta,
             archivoAdjunto,
-            comentario
+            comentario,
+            estado
         });
+
         const tareaRealizada = await nuevaTareaRealizada.save();
         res.status(201).json(tareaRealizada);
     } catch (error) {
