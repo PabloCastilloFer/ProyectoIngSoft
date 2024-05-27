@@ -30,4 +30,21 @@ export const crearTareaSchema = Joi.object({
         "string.base": "El tipo de tarea debe ser de tipo string.",
         "any.only": "El tipo de tarea debe ser simple o extensa."
       }),
+      estado: Joi.string().label('estado').required().valid('nueva','asignada','entregada','revisada','en revision').messages({
+        "string.empty": "El estado no puede estar vacío.",
+        "any.required": "El estado es obligatorio.",
+        "string.base": "El estado debe ser de tipo string.",
+        "any.only": "El estado debe ser nueva, asignada, entregada, revisada o en revision."
+      }),
+      idTarea: Joi.string().label('idTarea').required().messages({
+        "string.empty": "El id de la tarea no puede estar vacío.",
+        "any.required": "El id de la tarea es obligatorio.",
+        "string.base": "El id de la tarea debe ser de tipo string."
+      }),
+      archivo: Joi.string().label('archivo').required().messages({
+        "string.empty": "El archivo no puede estar vacío.",
+        "any.required": "El archivo es obligatorio.",
+        "string.base": "El archivo debe ser de tipo string."
+      })
+      
 })
