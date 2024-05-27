@@ -1,86 +1,44 @@
-import Empleado from "../models/empleado.model.js";
-import Tarea from "../models/tarea.model.js";
-import Comentario from "../models/comentario.model.js";
+// empleado.controller.js
+import User from '../models/user.model.js';
+import { respondSuccess, respondError } from "../utils/resHandler.js";
+import { userIdSchema } from "../schema/user.schema.js";
+import { handleError } from "../utils/errorHandler.js";
 
-export const EmpleadoController = {
-  async crearEmpleado(req, res) {
-    try {
-      const { tarea, datos } = req.body; // Obtener datos de la solicitud
+/**
+ * Obtiene todos los empleados
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export const getEmpleados = async (req, res) => {
+  try {
+    const empleados = await User.find().populate('facultades roles');
+    empleados.length === 0
+      ? respondSuccess(req, res, 204)
+      : respondSuccess(req, res, 200, empleados);
+  } catch (error) {
+    handleError(error, "empleado.controller -> getEmpleados");
+    respondError(req, res, 500, error.message);
+  }
+};
 
-      // Crear un nuevo empleado
-      const nuevoEmpleado = new Empleado({
-        tarea,
-        datos,
-      });
+/**
+ * Obtiene un empleado por su id
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export const getEmpleadoById = async (req, res) => {
+  try {
+    const { params } = req;
+    const { error: paramsError } = userIdSchema.validate(params);
+    if (paramsError) return respondError(req, res, 400, paramsError.message);
 
-      // Guardar el empleado en la base de datos
-      await nuevoEmpleado.save();
-
-      // Buscar la tarea y el comentario asociados al empleado
-      const tareaAsociada = await Tarea.findById(tarea).select('nombreTarea descripcionTarea estado');
-      const comentarioAsociado = await Comentario.findById(datos).select('supervisor rutEmpleado comentario');
-
-      // Agregar la tarea y el comentario asociados al empleado
-      nuevoEmpleado.tarea = tareaAsociada;
-      nuevoEmpleado.datos = comentarioAsociado;
-
-      res.status(201).json(nuevoEmpleado);
-    } catch (error) {
-      console.error("Error al crear un empleado:", error);
-      res.status(500).json({ error: "Error interno del servidor" });
+    const empleado = await User.findById(params.id).populate('facultades roles');
+    if (!empleado) {
+      return respondError(req, res, 404, "Empleado no encontrado");
     }
-  },
-
-  async listarEmpleados(req, res) {
-    try {
-      // Obtener todos los empleados de la base de datos y popular los campos tarea y datos
-      const empleados = await Empleado.find().populate('tarea', 'nombreTarea descripcionTarea estado').populate('datos', 'supervisor rutEmpleado comentario');
-
-      res.status(200).json(empleados);
-    } catch (error) {
-      console.error("Error al listar empleados:", error);
-      res.status(500).json({ error: "Error interno del servidor" });
-    }
-  },
-
-  async modificarEmpleado(req, res) {
-    try {
-      const { id } = req.params;
-      const { tarea, datos } = req.body;
-
-      // Buscar el empleado por ID y actualizarlo
-      const empleadoModificado = await Empleado.findByIdAndUpdate(
-        id,
-        { tarea, datos },
-        { new: true }
-      ).populate('tarea', 'nombreTarea descripcionTarea estado').populate('datos', 'supervisor rutEmpleado comentario');
-
-      if (!empleadoModificado) {
-        return res.status(404).json({ error: "Empleado no encontrado" });
-      }
-
-      res.status(200).json(empleadoModificado);
-    } catch (error) {
-      console.error("Error al modificar empleado:", error);
-      res.status(500).json({ error: "Error interno del servidor" });
-    }
-  },
-
-  async eliminarEmpleado(req, res) {
-    try {
-      const { id } = req.params;
-
-      // Buscar el empleado por su ID y eliminarlo
-      const empleadoEliminado = await Empleado.findByIdAndDelete(id);
-
-      if (!empleadoEliminado) {
-        return res.status(404).json({ error: "Empleado no encontrado" });
-      }
-
-      res.status(200).json({ mensaje: "Empleado eliminado correctamente" });
-    } catch (error) {
-      console.error("Error al eliminar empleado:", error);
-      res.status(500).json({ error: "Error interno del servidor" });
-    }
-  },
+    respondSuccess(req, res, 200, empleado);
+  } catch (error) {
+    handleError(error, "empleado.controller -> getEmpleadoById");
+    respondError(req, res, 500, "No se pudo obtener el empleado");
+  }
 };

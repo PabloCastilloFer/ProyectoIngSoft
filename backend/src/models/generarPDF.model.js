@@ -1,16 +1,22 @@
-// generarPDF.js
+/*"use strict ";
 
-const PDFDocument = require('pdfkit');
-const fs = require('fs');
+import mongoose from "mongoose";
 
-function generarPDF(datos) {
-  const doc = new PDFDocument();
-  doc.pipe(fs.createWriteStream('reporte.pdf'));
+const generarPDFSchema = new mongoose.Schema({
+    empleadoId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Empleado",
+        required: true,
+    },
+    fecha: {
+        type: Date,
+        default: Date.now(),
+    },
+    horasTrabajadas: {
+        type: Number,
+        required: true,
+    },
+    });
 
-  // Agregar contenido al PDF basado en los datos proporcionados
-  doc.text(datos);
-
-  doc.end();
-}
-
-module.exports = generarPDF;
+    export default mongoose.model("generarPDF", generarPDFSchema);
+    */

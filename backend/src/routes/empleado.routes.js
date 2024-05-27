@@ -1,18 +1,10 @@
-import express from "express";
-import { EmpleadoController } from "../controllers/empleado.controller.js";
+// routes/empleado.routes.js
+import express from 'express';
+import { getEmpleados, getEmpleadoById } from '../controllers/empleado.controller.js';
 
 const router = express.Router();
 
-// Rutas para crear un empleado
-router.post("/empleado", EmpleadoController.crearEmpleado);
-
-// Ruta para listar todos los empleados
-router.get("/empleado", EmpleadoController.listarEmpleados);
-
-// Ruta para modificar un empleado por su ID
-router.put("/empleado/:id", EmpleadoController.modificarEmpleado);
-
-// Ruta para eliminar un empleado por su ID
-router.delete("/empleado/:id", EmpleadoController.eliminarEmpleado);
+router.get('/empleado', getEmpleados);
+router.get('/empleado/:id', getEmpleadoById);
 
 export default router;
