@@ -1,5 +1,6 @@
 import express from 'express';
-import { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId, actualizarTareaRealizada, eliminarTareaRealizada } from '../controllers/tareasRealizadas';
+import { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId, actualizarTareaRealizada, eliminarTareaRealizada } from '../controllers/tareaRealizada.controller.js';
+
 
 const router = express.Router();
 

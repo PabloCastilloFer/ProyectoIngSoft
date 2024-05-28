@@ -1,4 +1,4 @@
-import TareaRealizada from '../models/TareaRealizada';
+import TareaRealizada from '../models/tareaRealizada.model.js';
 
 // Crear una nueva tarea realizada
 async function crearTareaRealizada(req, res) {
@@ -27,7 +27,6 @@ async function crearTareaRealizada(req, res) {
             tarea,
             respuesta,
             archivoAdjunto,
-            comentario,
             estado
         });
 
