@@ -4,7 +4,7 @@ import { getEmpleados, getEmpleadoById } from '../controllers/empleado.controlle
 
 const router = express.Router();
 
-router.get('/empleado', getEmpleados);
-router.get('/empleado/:id', getEmpleadoById);
+router.get('/', getEmpleados);
+router.get('/:id', getEmpleadoById);
 
 export default router;

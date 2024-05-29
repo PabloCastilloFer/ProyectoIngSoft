@@ -1,5 +1,6 @@
-// empleado.controller.js
-import User from '../models/user.model.js';
+// controllers/empleado.controller.js
+import Empleado from '../models/empleado.model.js';
+import User from '../models/user.model.js'; // Asegúrate de que la ruta del archivo sea correcta
 import { respondSuccess, respondError } from "../utils/resHandler.js";
 import { userIdSchema } from "../schema/user.schema.js";
 import { handleError } from "../utils/errorHandler.js";
@@ -11,7 +12,7 @@ import { handleError } from "../utils/errorHandler.js";
  */
 export const getEmpleados = async (req, res) => {
   try {
-    const empleados = await User.find().populate('facultades roles');
+    const empleados = await Empleado.find().populate('usuario');
     empleados.length === 0
       ? respondSuccess(req, res, 204)
       : respondSuccess(req, res, 200, empleados);
@@ -32,7 +33,7 @@ export const getEmpleadoById = async (req, res) => {
     const { error: paramsError } = userIdSchema.validate(params);
     if (paramsError) return respondError(req, res, 400, paramsError.message);
 
-    const empleado = await User.findById(params.id).populate('facultades roles');
+    const empleado = await Empleado.findById(params.id).populate('usuario');
     if (!empleado) {
       return respondError(req, res, 404, "Empleado no encontrado");
     }
