@@ -1,133 +1,95 @@
-/*"use strict";
+"use strict";
 import PDFDocument from 'pdfkit-table';
 import fs from 'fs';
-import Empleado from '../models/empleado.model.js';
 import '../models/facultade.model.js';
-import '../models/tarea.model.js';
+import tareaRealizada from '../models/tareaRealizada.model.js';
 import Ticket from '../models/ticket.model.js';
-import '../models/user.model.js';
+import User from '../models/user.model.js';
+import { v4 as uuidv4 } from 'uuid'; // Importar uuid para generar nombres de archivo únicos
 
+async function generatePDF() {
+  // Se crea la instancia del PDF
+  const doc = new PDFDocument({ margin: 30, size: 'A4' });
 
-function createTable(data, options = {}) {
-  const doc = new PDFDocument();
-  const table = doc.addTable(options);
+  // Obtener datos
+  const [dataUser, dataTicket, dataComment, dataTask] = await Promise.all([dataUser(), dataTicket(), dataComment(), dataTask()]);
 
-  // Add table headers
-  if (data.headers) {
-    table.addRow(data.headers);
-  }
+  // Generar un nombre de archivo aleatorio
+  const randomFileName = uuidv4();
+  const filePath = `./src/Pdf/${randomFileName}.pdf`;
 
-  // Add table rows
-  data.rows.forEach(row => {
-    table.addRow(row);
+  // Canalizar el documento a un flujo escribible
+  doc.pipe(fs.createWriteStream(filePath));
+
+  // Definir el contenido de la tabla
+  const table = {
+    title: { label: 'Informe de rendimiento', color: 'blue' },
+    headers: ['Nombre', 'RUT', 'Email', 'Rol (nombre)', 'Cantidad de horas trabajadas', 'Tareas realizadas', 'Comentarios'],
+    rows: []
+  };
+
+  // Información del usuario en la constante table.rows
+  dataUser.forEach(user => {
+    table.rows.push([user.username, user.rut, user.email, user.rol, null, null, null]);
   });
 
-  // Apply formatting
-  table.layout(); // Arrange table cells
-  styleTable(table, options.styles); // Apply styles based on options
-
-  return doc;
-}
-
-function styleTable(table, styles = {}) {
-  // Apply default styles
-  table.style('fontSize', 12);
-  table.style('textAlign', 'left');
-
-  // Apply custom styles from options
-  if (styles) {
-    Object.keys(styles).forEach(key => {
-      table.style(key, styles[key]);
-    });
-  }
-}
-
-module.exports = {
-  createTable,
-  styleTable,
-};
-
-
-const calcularHorasTrabajadas = async (empleadoId) => {
-  const tickets = await Ticket.find({ asignadoA: empleadoId }).populate('tareaId');
-
-  let totalHoras = 0;
-  tickets.forEach(ticket => {
-    const [hInicio, mInicio, sInicio] = ticket.horaInicio.split(':').map(Number);
-    const [hFin, mFin, sFin] = ticket.horaFin.split(':').map(Number);
-
-    const inicio = new Date(1970, 0, 1, hInicio, mInicio, sInicio);
-    const fin = new Date(1970, 0, 1, hFin, mFin, sFin);
-
-    const diffMs = fin - inicio;
-    const diffHoras = diffMs / (1000 * 60 * 60);
-
-    totalHoras += diffHoras;
+  // Información de las horas trabajadas
+  dataTicket.forEach(ticket => {
+    // Suponiendo que ticket.horasTrabajadas ya está calculado, de lo contrario, calcularlo
+    const hoursWorked = calculateHoursWorked(ticket);
+    table.rows.push([null, null, null, null, hoursWorked, null, null]);
   });
 
-  return totalHoras;
-};
+  // Información de los comentarios
+  dataComment.forEach(comment => {
+    table.rows.push([null, null, null, null, null, null, comment.comentario]);
+  });
 
-const generarPDF = async () => {
-  try {
-    const empleados = await Empleado.find().populate('facultad').populate('tareas').populate('usuario');
+  // Información de las tareas realizadas
+  dataTask.forEach(task => {
+    table.rows.push([null, null, null, null, null, task.taskTotal, null]);
+  });
 
-    for (const empleado of empleados) {
-      const doc = new PDFDocument();
-      const stream = fs.createWriteStream(`reporte_${empleado.nombre}.pdf`);
-      doc.pipe(stream);
+  // Dibujar la tabla
+  await doc.table(table, { startY: 50 });
 
-      // Título del reporte
-      doc.fontSize(24).text('Empleado', { align: 'center' });
-      doc.moveDown();
+  // Finalizar el documento
+  doc.end();
+}
 
-      // Fecha
-      doc.fontSize(12).text(`Fecha: ${new Date().toLocaleDateString()}`, { align: 'right' });
-      doc.moveDown();
+function calculateHoursWorked(ticket) {
+  // Función placeholder para calcular las horas trabajadas a partir de los datos del ticket
+  // Ejemplo: devolver la diferencia en horas entre dos fechas
+  // Suponiendo que el ticket tiene 'startDate' y 'endDate'
+  const startDate = new Date(ticket.startDate);
+  const endDate = new Date(ticket.endDate);
+  const diffMs = endDate - startDate;
+  const diffHours = Math.round(diffMs / (1000 * 60 * 60));
+  return diffHours;
+}
 
-      // Datos del empleado
-      doc.fontSize(16).text(`Nombre: ${empleado.nombre}`);
-      doc.fontSize(16).text(`RUT: ${empleado.rut}`);
-      doc.fontSize(16).text(`Facultad: ${empleado.facultad.name}`);
-      doc.moveDown();
+async function dataUser() {
+  // Función placeholder para obtener datos de usuario
+  return User.find().exec();
+}
 
-      // Sección de tareas
-      doc.fontSize(16).text('Tareas Realizadas:');
-      empleado.tareas.forEach(tarea => {
-        doc.fontSize(12).text(`Tarea: ${tarea.nombreTarea}`);
-        doc.fontSize(12).text(`Descripción: ${tarea.descripcionTarea}`);
-        doc.fontSize(12).text(`Tipo: ${tarea.tipoTarea}`);
-        doc.fontSize(12).text(`Estado: ${tarea.estado}`);
-        doc.fontSize(12).text(`Archivo: ${tarea.archivo}`);
-        doc.fontSize(12).text(`Fecha de Creación: ${tarea.created_at.toISOString().split('T')[0]}`);
-        doc.moveDown();
-      });
-      doc.moveDown();
+async function dataTicket() {
+  // Función placeholder para obtener datos de ticket
+  return Ticket.find().exec();
+}
 
-      // Horas trabajadas
-      const horasTrabajadas = await calcularHorasTrabajadas(empleado.usuario._id);
-      doc.fontSize(16).text('Horas Trabajadas:');
-      doc.fontSize(12).text(horasTrabajadas.toFixed(2));
-      doc.moveDown();
+async function dataComment() {
+  // Función placeholder para obtener datos de comentario
+  return Comentario.find().exec();
+}
 
-      // Tabla de desempeño (simulada aquí como una lista, puede ser ajustada)
-      doc.fontSize(16).text('Tabla de Desempeño:');
-      doc.fontSize(12).text('Desempeño actual del empleado'); // Cambia esto según los datos reales
-      doc.moveDown();
+async function dataTask() {
+  // Función placeholder para obtener datos de tareas
+  return TareaRealizada.find().exec();
+}
 
-      doc.end();
-
-      stream.on('finish', () => {
-        console.log(`Reporte para ${empleado.nombre} generado con éxito.`);
-      });
-    }
-
-  } catch (err) {
-    console.error('Error al generar el reporte', err);
-  }
-};
-
-generarPDF();
-
-export { createTable }; 
-*/
+generatePDF().then(() => {
+  console.log('PDF generado con éxito');
+}).catch(error => {
+  console.error('Error al generar el PDF:', error);
+});
