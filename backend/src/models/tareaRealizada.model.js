@@ -1,14 +1,13 @@
 import { Schema, model } from 'mongoose';
 
+
 const tareaRealizadaSchema = new Schema({
     tarea: {
         type: Schema.Types.ObjectId,
         ref: 'Tarea',
         required: true,
     },
-    respuesta: {
-        type: String,
-    },
+    
     archivoAdjunto: {
         type: String,
     },
@@ -18,14 +17,14 @@ const tareaRealizadaSchema = new Schema({
     estado: {
         type: String,
         enum: ['completada', 'incompleta', 'no realizada'],
-        default: 'completada', // Por defecto, una tarea realizada se considera completada
+        default: 'inncompleta', 
     },
     tiempoRespuesta: {
         type: Date,
         default: Date.now,
     },
 }, {
-    timestamps: true // Esto agregará automáticamente los campos createdAt y updatedAt
+    timestamps: true 
 });
 
 export default model('TareaRealizada', tareaRealizadaSchema);
