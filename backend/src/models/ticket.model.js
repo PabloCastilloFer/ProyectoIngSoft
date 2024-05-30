@@ -41,7 +41,8 @@ const ticketSchema = new Schema(
 );
 
 ticketSchema.methods.agregarAsignacion = function(asignadoA) {
-  this.asignadoHistorial.push({ asignadoA, hora: new Date() });
+  const horaAsignacion = new Date();
+  this.asignadoHistorial.push({ asignadoA, horaAsignacion});
 };
 
 const Ticket = model("Ticket", ticketSchema);

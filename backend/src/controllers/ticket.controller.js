@@ -34,7 +34,21 @@ export const getTicket = async (req, res) => {
 // Actualizar un ticket por ID
 export const updateTicket = async (req, res) => {
   try {
-    const updatedTicket = await Ticket.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const ticket = await Ticket.findById(req.params.id);
+    if (!ticket) {
+      return res.status(404).json({ message: "Ticket no encontrado" });
+    }
+
+    // Verificar si se ha cambiado la asignación o el horario
+    if (req.body.asignadoA !== ticket.asignadoA || req.body.hora !== ticket.hora) {
+      // Agregar una nueva entrada al historial de asignaciones
+      ticket.agregarAsignacion(req.body.asignadoA, new Date());
+    }
+
+    // Actualizar el ticket con los datos de la solicitud
+    Object.assign(ticket, req.body);
+
+    const updatedTicket = await ticket.save();
     res.status(200).json(updatedTicket);
   } catch (error) {
     res.status(500).json(error);
