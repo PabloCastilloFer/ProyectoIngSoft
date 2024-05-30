@@ -1,54 +1,77 @@
 import TareaRealizada from '../models/tareaRealizada.model.js';
+import Tarea from '../models/tarea.model.js';
+import Ticket from '../models/ticket.model.js';
+import { HOST, PORT } from '../config/configEnv.js';
+
+
+
 
 // Crear una nueva tarea realizada
-async function crearTareaRealizada(req, res) {
+const crearTareaRealizada = async (req, res) => {
     try {
-        const { tarea, respuesta, archivoAdjunto, comentario, estado } = req.body;
+        const { tareaId, respuesta, comentario, estado } = req.body;
+        const archivoAdjunto = req.file.filename;
+        const URL = `http://${HOST}:${PORT}/api/tareaRealizada/src/upload/`;
+        // Buscar el ticket asociado a la tarea y al usuario
+        const ticket = await Ticket.findOne({ tareaId, asignadoA: req.user._id });
 
-        // Obtener la tarea asociada
-        const tareaAsociada = await Tarea.findById(tarea);
-        if (!tareaAsociada) {
-            return res.status(404).json({ message: 'Tarea asociada no encontrada' });
+        if (!ticket) {
+            return res.status(404).json({ message: 'Tarea asignada no encontrada' });
         }
 
-        // Validación del tiempo
+        // Verificar que estamos dentro del plazo
         const now = new Date();
-        if (now > tareaAsociada.plazo) {
-            return res.status(400).json({ message: 'Fuera de plazo asignado' });
+        if (now < new Date(ticket.Inicio) || now > new Date(ticket.Fin)) {
+            return res.status(400).json({ message: 'Tarea asignada fuera de plazo ' });
         }
 
-        // Validación del estado
-        const estadosValidos = ['completada', 'incompleta', 'no realizada'];
-        if (!estadosValidos.includes(estado)) {
-            return res.status(400).json({ message: 'Estado no válido. Debe ser completada, incompleta o no realizada' });
+        // Buscar la tarea asociada
+        const tarea = await Tarea.findById(tareaId);
+
+        if (!tarea) {
+            return res.status(404).json({ message: 'Tarea no encontrada' });
+        }
+
+        // Validar el estado de la tarea realizada
+        const estadosPermitidos = ['completa', 'incompleta', 'no realizada'];
+        if (!estadosPermitidos.includes(estado)) {
+            return res.status(400).json({ message: 'Estado no válido' });
         }
 
         const nuevaTareaRealizada = new TareaRealizada({
-            tarea,
-            respuesta,
-            archivoAdjunto,
-            estado
+            tarea: tareaId,
+            comentario:req.body.comentario,
+            archivoAdujunto: URL + archivoAdjunto,
+            estado: 'no realizada',
         });
 
         const tareaRealizada = await nuevaTareaRealizada.save();
-        res.status(201).json(tareaRealizada);
+
+        // Actualizar el estado de la tarea original
+        tarea.estado = estado;
+        await tarea.save();
+
+        res.status(201).json({
+            message: 'Tarea realizada completada exitosamente',
+            tareaRealizada
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}
+};
 
 // Obtener todas las tareas realizadas
-async function obtenerTareasRealizadas(req, res) {
+const obtenerTareasRealizadas = async (req, res) => {
     try {
         const tareasRealizadas = await TareaRealizada.find();
         res.status(200).json(tareasRealizadas);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}
+};
 
 // Obtener una tarea realizada por su ID
-async function obtenerTareaRealizadaPorId(req, res) {
+const obtenerTareaRealizadaPorId = async (req, res) => {
     const tareaRealizadaId = req.params.id;
     try {
         const tareaRealizada = await TareaRealizada.findById(tareaRealizadaId);
@@ -59,65 +82,6 @@ async function obtenerTareaRealizadaPorId(req, res) {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}
+};
 
-// Actualizar una tarea realizada
-async function actualizarTareaRealizada(req, res) {
-  const tareaRealizadaId = req.params.id;
-  const { respuesta, archivoAdjunto, comentario, estado } = req.body;
-  try {
-      let tareaRealizada = await TareaRealizada.findById(tareaRealizadaId);
-      if (!tareaRealizada) {
-          return res.status(404).json({ message: 'Tarea realizada no encontrada' });
-      }
-
-      // Obtener la tarea asociada
-      let tarea = await Tarea.findById(tareaRealizada.tarea);
-      if (!tarea) {
-          return res.status(404).json({ message: 'Tarea asociada no encontrada' });
-      }
-
-      // Validación del tiempo
-      if (tarea.plazo < Date.now()) {
-          return res.status(400).json({ message: 'El plazo para realizar la tarea ha expirado' });
-      }
-
-      // Validación del estado
-      if (estado && tarea.estado === 'completada') {
-          return res.status(400).json({ message: 'No se puede actualizar una tarea realizada asociada a una tarea completada' });
-      }
-
-      tareaRealizada.respuesta = respuesta || tareaRealizada.respuesta;
-      tareaRealizada.archivoAdjunto = archivoAdjunto || tareaRealizada.archivoAdjunto;
-      tareaRealizada.comentario = comentario || tareaRealizada.comentario;
-      tareaRealizada.estado = estado || tareaRealizada.estado;
-
-      // Actualizar el estado de la tarea asociada si es necesario
-      if (estado && tarea.estado !== estado) {
-          tarea.estado = estado;
-          await tarea.save();
-      }
-
-      const tareaActualizada = await tareaRealizada.save();
-      res.status(200).json(tareaActualizada);
-  } catch (error) {
-      res.status(500).json({ message: error.message });
-  }
-}
-
-
-// Eliminar una tarea realizada
-async function eliminarTareaRealizada(req, res) {
-    const tareaRealizadaId = req.params.id;
-    try {
-        const tareaRealizada = await TareaRealizada.findByIdAndDelete(tareaRealizadaId);
-        if (!tareaRealizada) {
-            return res.status(404).json({ message: 'Tarea realizada no encontrada' });
-        }
-        res.status(200).json({ message: 'Tarea realizada eliminada correctamente' });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
-
-export { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId, actualizarTareaRealizada, eliminarTareaRealizada };
+export { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId, upload };

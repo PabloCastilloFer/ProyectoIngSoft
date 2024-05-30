@@ -1,30 +1,32 @@
 import { Schema, model } from 'mongoose';
 
-
 const tareaRealizadaSchema = new Schema({
     tarea: {
         type: Schema.Types.ObjectId,
         ref: 'Tarea',
-        required: true,
+        required: true
     },
-    
-    archivoAdjunto: {
-        type: String,
+    ticket: {
+        type: Schema.Types.ObjectId,
+        ref: 'Ticket',
+        required: true
     },
     comentario: {
         type: String,
+        required: false
+    },
+    archivo: {
+        type: String,
+        required: false
     },
     estado: {
         type: String,
-        enum: ['completada', 'incompleta', 'no realizada'],
-        default: 'inncompleta', 
-    },
-    tiempoRespuesta: {
-        type: Date,
-        default: Date.now,
-    },
+        required: true,
+        enum: ['completa', 'incompleta', 'no realizada'],
+        default: 'no realizada'
+    }
 }, {
-    timestamps: true 
+    timestamps: true
 });
 
 export default model('TareaRealizada', tareaRealizadaSchema);
