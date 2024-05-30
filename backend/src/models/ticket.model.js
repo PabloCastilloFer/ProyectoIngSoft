@@ -5,67 +5,40 @@ import { Schema, model } from "mongoose";
 const ticketSchema = new Schema(
   {
     tareaId: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: 'Tarea',
       required: true,
-    },    
+    },
 
     asignadoA: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: 'User',
       required: true,
     },
 
-    horaInicio: {
-      type: String,
-      validate: {
-        validator: function(v) {
-          // Verificar si la hora está en el formato correcto (HH:MM:SS)
-          return /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(v);
-        },
-        message: props => `${props.value} no es una hora válida. Debe estar en el formato HH:MM:SS.`,
-      },
-      required: [true, 'La hora de inicio es requerida']
+    Inicio: {
+      type: Date,
+      required: [true, 'La fecha y hora de inicio son requeridas']
     },
 
-    horaFin: {
-      type: String,
-      validate: {
-        validator: function(v) {
-          // Verificar si la hora está en el formato correcto (HH:MM:SS)
-          return /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(v);
-        },
-        message: props => `${props.value} no es una hora válida. Debe estar en el formato HH:MM:SS.`,
-      },
-      required: [true, 'La hora de fin es requerida']
+    Fin: {
+      type: Date,
+      required: [true, 'La fecha y hora de fin son requeridas']
     },
 
     asignadoHistorial: {
-      type: [{ asignadoA: String, horaAsignacion: String }],
+      type: [{ asignadoA: String, horaAsignacion: Date }],
       default: function() {
-        const horaAsignacion = new Date().toISOString().substring(11, 19);
+        const horaAsignacion = new Date();
         return [{ asignadoA: this.asignadoA, horaAsignacion }];
       },
     },
-    
+
   },
   {
     versionKey: false,
   },
 );
-
-ticketSchema.pre('validate', function(next) {
-  if (this.horaInicio && this.horaFin) {
-    const inicio = new Date(`1970-01-01T${this.horaInicio}Z`);
-    const fin = new Date(`1970-01-01T${this.horaFin}Z`);
-
-    if (inicio >= fin) {
-      this.invalidate('horaFin', 'La hora de fin debe ser después de la hora de inicio.');
-    }
-  }
-
-  next();
-});
 
 ticketSchema.methods.agregarAsignacion = function(asignadoA) {
   this.asignadoHistorial.push({ asignadoA, hora: new Date() });
