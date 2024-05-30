@@ -1,19 +1,32 @@
-"use strict";
-import { Schema , model} from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const tareaRealizadaSchema = new Schema({
-  
-  Comentario: {
-    type: String,
-    required: true,
-  },
-  Estado: {
-    type: String,
-    enum: ["completa", "incompleta", "no realizada"],
-  },
+    tarea: {
+        type: Schema.Types.ObjectId,
+        ref: 'Tarea',
+        required: true
+    },
+    ticket: {
+        type: Schema.Types.ObjectId,
+        ref: 'Ticket',
+        required: true
+    },
+    comentario: {
+        type: String,
+        required: false
+    },
+    archivo: {
+        type: String,
+        required: false
+    },
+    estado: {
+        type: String,
+        required: true,
+        enum: ['completa', 'incompleta', 'no realizada'],
+        default: 'no realizada'
+    }
 }, {
-  versionKey: false,
+    timestamps: true
 });
 
-
-export default model ("TareaRealizada", tareaRealizadaSchema);
+export default model('TareaRealizada', tareaRealizadaSchema);
