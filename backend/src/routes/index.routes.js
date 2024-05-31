@@ -14,6 +14,11 @@ import authenticationMiddleware from "../middlewares/authentication.middleware.j
 /** Enrutador de Tareas  */
 import tareaRoutes from "./tarea.routes.js";
 
+import tareaRealizada from "./tareaRealizada.routes.js";
+
+
+
+
 /** Instancia del enrutador */
 const router = Router();
 
@@ -23,6 +28,11 @@ router.use("/users", authenticationMiddleware, userRoutes);
 router.use("/auth", authRoutes);
 // Defina la ruta para la tarea /api/tarea
 router.use("/tarea", authenticationMiddleware, tareaRoutes);
+
+// define las rutas para la tarea realizada /api/tareaRealizada
+
+router.use("/tareaRealizada", authenticationMiddleware, tareaRealizada);
+
 
 // Exporta el enrutador
 export default router;

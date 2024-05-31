@@ -1,3 +1,5 @@
+
+
 import TareaRealizada from '../models/tareaRealizada.model.js';
 import Tarea from '../models/tarea.model.js';
 import Ticket from '../models/ticket.model.js';
@@ -6,14 +8,16 @@ import { HOST, PORT } from '../config/configEnv.js';
 
 
 
+
 // Crear una nueva tarea realizada
 const crearTareaRealizada = async (req, res) => {
     try {
-        const { tareaId, respuesta, comentario, estado } = req.body;
+        const { tareaId, comentario, estado } = req.body;
         const archivoAdjunto = req.file.filename;
         const URL = `http://${HOST}:${PORT}/api/tareaRealizada/src/upload/`;
+
         // Buscar el ticket asociado a la tarea y al usuario
-        const ticket = await Ticket.findOne({ tareaId, asignadoA: req.user._id });
+        const ticket = await Ticket.findOne({ tarea: tareaId, asignadoA: req.user._id });
 
         if (!ticket) {
             return res.status(404).json({ message: 'Tarea asignada no encontrada' });
@@ -22,7 +26,7 @@ const crearTareaRealizada = async (req, res) => {
         // Verificar que estamos dentro del plazo
         const now = new Date();
         if (now < new Date(ticket.Inicio) || now > new Date(ticket.Fin)) {
-            return res.status(400).json({ message: 'Tarea asignada fuera de plazo ' });
+            return res.status(400).json({ message: 'Tarea asignada fuera de plazo' });
         }
 
         // Buscar la tarea asociada
@@ -40,9 +44,10 @@ const crearTareaRealizada = async (req, res) => {
 
         const nuevaTareaRealizada = new TareaRealizada({
             tarea: tareaId,
-            comentario:req.body.comentario,
-            archivoAdujunto: URL + archivoAdjunto,
-            estado: 'no realizada',
+            ticket: ticket._id,
+            comentario,
+            archivo: URL + archivoAdjunto,
+            estado
         });
 
         const tareaRealizada = await nuevaTareaRealizada.save();
@@ -63,12 +68,13 @@ const crearTareaRealizada = async (req, res) => {
 // Obtener todas las tareas realizadas
 const obtenerTareasRealizadas = async (req, res) => {
     try {
-        const tareasRealizadas = await TareaRealizada.find();
+        const tareasRealizadas = await TareaRealizada.find().populate('tarea').populate('ticket');
         res.status(200).json(tareasRealizadas);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 // Obtener una tarea realizada por su ID
 const obtenerTareaRealizadaPorId = async (req, res) => {
@@ -84,4 +90,4 @@ const obtenerTareaRealizadaPorId = async (req, res) => {
     }
 };
 
-export { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId, upload };
+export { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId };
