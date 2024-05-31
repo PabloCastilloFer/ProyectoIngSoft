@@ -15,7 +15,7 @@ const tareaRealizadaSchema = new Schema({
         type: String,
         required: false
     },
-    archivo: {
+    archivoAdjunto: {
         type: String,
         required: false
     },

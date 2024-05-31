@@ -32,7 +32,7 @@ const verifyJWT = (req, res, next) => {
       req.email = decoded.email;
       req.roles = decoded.roles;
       
-      req.user = user; // Añadimos el usuario autenticado al objeto req
+      // Añadimos el usuario autenticado al objeto req
       next();
     });
   } catch (error) {
@@ -41,3 +41,5 @@ const verifyJWT = (req, res, next) => {
 };
 
 export default verifyJWT;
+
+
