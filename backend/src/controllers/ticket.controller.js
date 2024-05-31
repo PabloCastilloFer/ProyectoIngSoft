@@ -1,4 +1,6 @@
 import Ticket from "../models/ticket.model.js";
+import sgMail from "@sendgrid/mail";
+import { API_KEY } from "../config/configEnv.js";
 
 // Crear un nuevo ticket
 export const createTicket = async (req, res) => {
@@ -6,6 +8,22 @@ export const createTicket = async (req, res) => {
   try {
     const savedTicket = await newTicket.save();
     res.status(201).json(savedTicket);
+    sgMail.setApiKey(API_KEY);
+      const msg = {
+        to: "luis.acuna2101@alumnos.ubiobio.cl",
+        from: "repondernttareas@gmail.com",
+        subject: "Tarea Asignada",
+        text: "Aviso de tarea asignada",
+      };
+
+      sgMail
+        .send(msg)
+        .then(() => {
+          console.log('Correo enviado');
+        })
+        .catch((error) => {
+          console.error('Error al enviar el correo:', error);
+        });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -84,3 +102,4 @@ export const getTicketsByTaskId = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
