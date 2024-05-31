@@ -16,7 +16,7 @@ import tareaRoutes from "./tarea.routes.js";
 
 // Tarea realizada
 
-import tareaRealizadaRoutes from "./tareaRealizada.routes.js";
+//import tareaRealizadaRoutes from "./tareaRealizada.routes.js";
 
 import comentarioRoutes from "./comentario.routes.js";
 
@@ -47,7 +47,7 @@ router.use("/empleado",authenticationMiddleware,empleadoRoutes);
 
 // Define las rutas para las tareas realizadas
 
-router.use("/tareaRealizada", tareaRealizadaRoutes);
+//router.use("/tareaRealizada", tareaRealizadaRoutes);
 
 router.use("/generatePDF", authenticationMiddleware,generatePDF);
 // Exporta el enrutador

@@ -1,4 +1,4 @@
-import TareaRealizada from '../models/tareaRealizada.model.js';
+/*import TareaRealizada from '../models/tareaRealizada.model.js';
 import Tarea from '../models/tarea.model.js';
 import Ticket from '../models/ticket.model.js';
 import { HOST, PORT } from '../config/configEnv.js';
@@ -84,4 +84,4 @@ const obtenerTareaRealizadaPorId = async (req, res) => {
     }
 };
 
-export { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId, upload };
+export { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId, upload };*/

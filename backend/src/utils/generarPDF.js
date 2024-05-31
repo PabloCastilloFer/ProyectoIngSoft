@@ -1,95 +1,112 @@
-"use strict";
+import User from '../models/user.model.js';
+import Ticket from '../models/ticket.model.js';
+import Comentario from '../models/comentario.model.js';
+import TareaRealizada from '../models/tarea.model.js';
 import PDFDocument from 'pdfkit-table';
 import fs from 'fs';
-import '../models/facultade.model.js';
-import tareaRealizada from '../models/tareaRealizada.model.js';
-import Ticket from '../models/ticket.model.js';
-import User from '../models/user.model.js';
-import { v4 as uuidv4 } from 'uuid'; // Importar uuid para generar nombres de archivo únicos
+import { v4 as uuidv4 } from 'uuid';
 
-async function generatePDF() {
-  // Se crea la instancia del PDF
+async function dataUser() {
+  try {
+    return await User.find().exec();
+  } catch (error) {
+    console.error('Error al obtener los datos del usuario:', error);
+    throw error;
+  }
+}
+
+async function dataTicket() {
+  try {
+    return await Ticket.find().exec();
+  } catch (error) {
+    console.error('Error al obtener los datos del ticket:', error);
+    throw error;
+  }
+}
+
+async function dataComment() {
+  try {
+    return await Comentario.find().exec();
+  } catch (error) {
+    console.error('Error al obtener los datos del comentario:', error);
+    throw error;
+  }
+}
+
+async function dataTask() {
+  try {
+    return await TareaRealizada.find().exec();
+  } catch (error) {
+    console.error('Error al obtener los datos de la tarea realizada:', error);
+    throw error;
+  }
+}
+
+export async function generatePDF(req, res) {
   const doc = new PDFDocument({ margin: 30, size: 'A4' });
 
-  // Obtener datos
-  const [dataUser, dataTicket, dataComment, dataTask] = await Promise.all([dataUser(), dataTicket(), dataComment(), dataTask()]);
+  let dataUserResults, dataTicketResults, dataCommentResults, dataTaskResults;
+  try {
+    [dataUserResults, dataTicketResults, dataCommentResults, dataTaskResults] = await Promise.all([
+      dataUser(),
+      dataTicket(),
+      dataComment(),
+      dataTask()
+    ]);
+  } catch (error) {
+    return res.status(500).send('Error al obtener los datos');
+  }
 
-  // Generar un nombre de archivo aleatorio
   const randomFileName = uuidv4();
   const filePath = `./src/Pdf/${randomFileName}.pdf`;
 
-  // Canalizar el documento a un flujo escribible
   doc.pipe(fs.createWriteStream(filePath));
 
-  // Definir el contenido de la tabla
   const table = {
     title: { label: 'Informe de rendimiento', color: 'blue' },
     headers: ['Nombre', 'RUT', 'Email', 'Rol (nombre)', 'Cantidad de horas trabajadas', 'Tareas realizadas', 'Comentarios'],
     rows: []
   };
 
-  // Información del usuario en la constante table.rows
-  dataUser.forEach(user => {
-    table.rows.push([user.username, user.rut, user.email, user.rol, null, null, null]);
+  dataUserResults.forEach(user => {
+    const roles = user.roles.map(role => role.name).join(', ') || 'N/A'; // Assuming roles have a 'name' property
+    table.rows.push([user.username, user.rut, user.email, roles, '', '', '']);
   });
 
-  // Información de las horas trabajadas
-  dataTicket.forEach(ticket => {
-    // Suponiendo que ticket.horasTrabajadas ya está calculado, de lo contrario, calcularlo
+  dataTicketResults.forEach(ticket => {
     const hoursWorked = calculateHoursWorked(ticket);
-    table.rows.push([null, null, null, null, hoursWorked, null, null]);
+    table.rows.push(['', '', '', '', hoursWorked, '', '']);
   });
 
-  // Información de los comentarios
-  dataComment.forEach(comment => {
-    table.rows.push([null, null, null, null, null, null, comment.comentario]);
+  dataCommentResults.forEach(comment => {
+    table.rows.push(['', '', '', '', '', '', comment.comentario]);
   });
 
-  // Información de las tareas realizadas
-  dataTask.forEach(task => {
-    table.rows.push([null, null, null, null, null, task.taskTotal, null]);
+  dataTaskResults.forEach(task => {
+    table.rows.push(['', '', '', '', '', task.tarea, '']);
   });
 
-  // Dibujar la tabla
-  await doc.table(table, { startY: 50 });
+  try {
+    await doc.table(table, { startY: 50 });
+  } catch (error) {
+    console.error('Error al crear la tabla PDF:', error);
+    return res.status(500).send('Error al crear el PDF');
+  }
 
-  // Finalizar el documento
   doc.end();
+
+  res.download(filePath, `${randomFileName}.pdf`, err => {
+    if (err) {
+      console.error('Error al descargar el archivo:', err);
+      res.status(500).send('Error al descargar el archivo');
+    }
+  });
 }
 
 function calculateHoursWorked(ticket) {
-  // Función placeholder para calcular las horas trabajadas a partir de los datos del ticket
-  // Ejemplo: devolver la diferencia en horas entre dos fechas
-  // Suponiendo que el ticket tiene 'startDate' y 'endDate'
-  const startDate = new Date(ticket.startDate);
-  const endDate = new Date(ticket.endDate);
+  const startDate = new Date(ticket.Inicio);
+  const endDate = new Date(ticket.Fin);
   const diffMs = endDate - startDate;
   const diffHours = Math.round(diffMs / (1000 * 60 * 60));
   return diffHours;
 }
-
-async function dataUser() {
-  // Función placeholder para obtener datos de usuario
-  return User.find().exec();
-}
-
-async function dataTicket() {
-  // Función placeholder para obtener datos de ticket
-  return Ticket.find().exec();
-}
-
-async function dataComment() {
-  // Función placeholder para obtener datos de comentario
-  return Comentario.find().exec();
-}
-
-async function dataTask() {
-  // Función placeholder para obtener datos de tareas
-  return TareaRealizada.find().exec();
-}
-
-generatePDF().then(() => {
-  console.log('PDF generado con éxito');
-}).catch(error => {
-  console.error('Error al generar el PDF:', error);
-});

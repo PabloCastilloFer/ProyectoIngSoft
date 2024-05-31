@@ -1,4 +1,4 @@
-/*import PDF from "../models/generarPDF.model.js";
+import generatePDF from "../utils/generarPDF.js";
 import { createTable } from "../utils/generarPDF.js";
 
 export async function createReports(req,res){
@@ -12,4 +12,3 @@ export async function createReports(req,res){
         data:reportSave
     })
 }
-*/

@@ -1,4 +1,4 @@
-import { Router } from "express";
+/*import { Router } from "express";
 import multer from 'multer';
 import { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId } from "../controllers/tareaRealizada.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
@@ -40,4 +40,4 @@ router.get('/', isEmpleado, obtenerTareasRealizadas);
 // Obtener una tarea realizada por su ID
 router.get('/:id', isEmpleado, obtenerTareaRealizadaPorId);
 
-export default router;
+export default router;*/

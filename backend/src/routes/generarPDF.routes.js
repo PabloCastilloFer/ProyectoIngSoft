@@ -1,9 +1,16 @@
-// generarPDF.routes.js
-/*import express from 'express';
-const router = express.Router();
-import { PDF } from '../controllers/generarPDF.controller.js'; // Import the function
 
-router.post('/generarPDF', PDF.generarPDF); // Use the imported function as the callback
 
-export default router;
-*/
+import { generatePDF } from '../utils/generarPDF.js';
+
+// Tu código de enrutamiento aquí
+
+// Por ejemplo, una ruta para generar el PDF:
+app.get('/', async (req, res) => {
+  try {
+    await generatePDF();
+    res.download('./Pdf/8912fe5c-202e-4a10-98a2-702909f0c302.pdf')
+    res.status(200).send('PDF generado con éxito');
+  } catch (error) {
+    res.status(500).send('Error al generar el PDF');
+  }
+});
