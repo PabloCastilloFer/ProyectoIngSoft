@@ -1,16 +1,16 @@
-
+"use strict";
 
 import { generatePDF } from '../utils/generarPDF.js';
+import { Router } from 'express';
+const router = Router(); 
 
-// Tu código de enrutamiento aquí
-
-// Por ejemplo, una ruta para generar el PDF:
-app.get('/', async (req, res) => {
-  try {
-    await generatePDF();
-    res.download('./Pdf/8912fe5c-202e-4a10-98a2-702909f0c302.pdf')
-    res.status(200).send('PDF generado con éxito');
-  } catch (error) {
-    res.status(500).send('Error al generar el PDF');
-  }
+router.get('/', async (req, res) => {
+    try {
+      await generatePDF();
+      } catch (error) {
+        console.error('Error al generar el PDF:', error);
+        res.status(500).send('Error al generar el PDF');
+      }
 });
+
+export default router;

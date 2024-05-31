@@ -4,7 +4,9 @@ import Comentario from '../models/comentario.model.js';
 import TareaRealizada from '../models/tarea.model.js';
 import PDFDocument from 'pdfkit-table';
 import fs from 'fs';
+import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { fileURLToPath } from 'url';
 
 async function dataUser() {
   try {
@@ -58,9 +60,18 @@ export async function generatePDF(req, res) {
   }
 
   const randomFileName = uuidv4();
-  const filePath = `./src/Pdf/${randomFileName}.pdf`;
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const directoryPath = path.join(__dirname, '../Pdf');
+  const filePath = path.join(directoryPath, `${randomFileName}.pdf`);
 
-  doc.pipe(fs.createWriteStream(filePath));
+  // AsegÃºrate de que el directorio exista
+  if (!fs.existsSync(directoryPath)) {
+    fs.mkdirSync(directoryPath, { recursive: true });
+  }
+
+  const writeStream = fs.createWriteStream(filePath);
+  doc.pipe(writeStream);
 
   const table = {
     title: { label: 'Informe de rendimiento', color: 'blue' },
@@ -69,7 +80,7 @@ export async function generatePDF(req, res) {
   };
 
   dataUserResults.forEach(user => {
-    const roles = user.roles.map(role => role.name).join(', ') || 'N/A'; // Assuming roles have a 'name' property
+    const roles = user.roles.map(role => role.name).join(', ') || 'N/A';
     table.rows.push([user.username, user.rut, user.email, roles, '', '', '']);
   });
 
@@ -95,11 +106,19 @@ export async function generatePDF(req, res) {
 
   doc.end();
 
-  res.download(filePath, `${randomFileName}.pdf`, err => {
-    if (err) {
-      console.error('Error al descargar el archivo:', err);
-      res.status(500).send('Error al descargar el archivo');
-    }
+  // Espera a que el archivo se haya escrito completamente antes de proceder a la descarga
+  writeStream.on('finish', () => {
+    res.download(filePath, `${randomFileName}.pdf`, err => {
+      if (err) {
+        console.error('Error al descargar el archivo:', err);
+        res.status(500).send('Error al descargar el archivo');
+      }
+    });
+  });
+
+  writeStream.on('error', err => {
+    console.error('Error al escribir el archivo:', err);
+    res.status(500).send('Error al escribir el archivo');
   });
 }
 
