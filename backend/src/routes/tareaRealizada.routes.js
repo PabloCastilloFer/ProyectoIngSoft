@@ -32,7 +32,7 @@ const handleFileSizeLimit = (err, req, res, next) => {
 };
 
 // Crear una nueva tarea realizada
-router.post('/', upload.single("archivoAdjunto"), isEmpleado, crearTareaRealizada);
+router.post('/:rutUsuario', upload.single("archivoAdjunto"), isEmpleado, crearTareaRealizada);
 
 // Obtener todas las tareas realizadas
 router.get('/', isEmpleado, obtenerTareasRealizadas);

@@ -3,7 +3,7 @@
 import TareaRealizada from '../models/tareaRealizada.model.js';
 import Tarea from '../models/tarea.model.js';
 import Ticket from '../models/ticket.model.js';
-import user from '../models/user.model.js';
+//import user from '../models/user.model.js';
 
 import { HOST, PORT } from '../config/configEnv.js';
 
@@ -13,21 +13,23 @@ const crearTareaRealizada = async (req, res) => {
     try {
         // Extraer información de la solicitud
         const { tareaId, comentario, estado } = req.body;
-        const rutUsuario = req.body;
+        const rutUsuario = req.params.rutUsuario;
         const URL = `http://${HOST}:${PORT}/api/tareaRealizada/src/upload/`;
         const archivoAdjunto = req.file.filename;
         
 
         // Verificar si la tarea está asignada al usuario
-        const ticket = await Ticket.findOne({ tareaId, 'asignadoA.rut': rutUsuario });
-
+        const ticket = await Ticket.findOne({ 'asignadoHistorial.asignadoA': rutUsuario  });
+        console.log("Ticket: ", ticket)
         if (!ticket) {
             return res.status(404).json({ message: 'Tarea no asignada al usuario' });
         }
-
+        
         // Verificar si se está dentro del plazo
         const now = new Date();
-        if (now < new Date(ticket.Inicio) || now > new Date(ticket.Fin)) {
+        const inicio = new Date(ticket.Inicio);
+        const fin = new Date(ticket.Fin);
+        if (now < inicio || now > fin) {
             return res.status(400).json({ message: 'Tarea fuera de plazo' });
         }
 

@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 const tareaRealizadaSchema = new Schema({
     tarea: {
-        type: Schema.Types.ObjectId,
+        type: String,
         ref: 'Tarea',
         required: true
     },
