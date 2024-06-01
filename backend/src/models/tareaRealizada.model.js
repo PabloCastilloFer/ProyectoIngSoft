@@ -7,7 +7,7 @@ const tareaRealizadaSchema = new Schema({
         required: true
     },
     ticket: {
-        type: Schema.Types.ObjectId,
+        type: String,
         ref: 'Ticket',
         required: true
     },
@@ -22,8 +22,8 @@ const tareaRealizadaSchema = new Schema({
     estado: {
         type: String,
         required: true,
-        enum: ['completa', 'incompleta', 'no realizada'],
-        default: 'no realizada'
+        enum: ['completa','incompleta','no realizada'],
+       
     }
 }, {
     timestamps: true

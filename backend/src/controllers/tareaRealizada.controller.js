@@ -13,6 +13,7 @@ const crearTareaRealizada = async (req, res) => {
     try {
         // Extraer información de la solicitud
         const { tareaId, comentario, estado } = req.body;
+        console.log("Valor de estado recibido:", estado); // Aquí se registra el valor de estado recibido
         const rutUsuario = req.params.rutUsuario;
         const URL = `http://${HOST}:${PORT}/api/tareaRealizada/src/upload/`;
         const archivoAdjunto = req.file.filename;
@@ -34,15 +35,20 @@ const crearTareaRealizada = async (req, res) => {
         }
 
         // Verificar si la tarea existe
-        const tarea = await Tarea.findById(tareaId);
+        const tarea = await Tarea.findOne({ idTarea: tareaId });
         if (!tarea) {
             return res.status(404).json({ message: 'Tarea no encontrada' });
         }
 
-        // Validar el estado de la tarea realizada
+
         const estadosPermitidos = ['completa', 'incompleta', 'no realizada'];
+        console.log("Estados permitidos:", estadosPermitidos);
+        console.log("Estado recibido:", estado);
         if (!estadosPermitidos.includes(estado)) {
+            console.log("Estado no válido");
             return res.status(400).json({ message: 'Estado no válido' });
+        } else {
+            console.log("Estado válido");
         }
 
         // Crear nueva tarea realizada
@@ -51,15 +57,15 @@ const crearTareaRealizada = async (req, res) => {
             ticket: ticket.asignadoA, // Utiliza el rut del usuario asignado al ticket
             comentario,
             archivoAdjunto:  URL + archivoAdjunto,
-            estado
+            estado:req.body.estado
         });
 
         // Guardar la tarea realizada
         const tareaRealizada = await nuevaTareaRealizada.save();
 
         // Actualizar estado de la tarea original
-        tarea.estado = estado;
-        await tarea.save();
+        //tarea.estado = estado;
+        //await tarea.save();
 
         // Respuesta exitosa
         res.status(201).json({
