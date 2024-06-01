@@ -2,18 +2,35 @@
 
 import { Schema, model } from "mongoose";
 
+import User from "./user.model.js"; // Asegúrate de que la ruta sea correcta
+import Tarea from "./tarea.model.js"; // Asegúrate de que la ruta sea correcta
+
+
 const ticketSchema = new Schema(
   {
-    tareaId: {
+    TareaID: {
       type: String,
-      ref: 'Tarea',
-      required: true,
+      required: [true, 'Por favor, ingrese una ID de tarea'],
+      validate: {
+        validator: async function(TareaID) {
+          const tarea = await Tarea.findOne({ idTarea: TareaID });
+          return !!tarea;
+        },
+        message: 'La ID de la tarea ingresada no existe'
+      }
     },
 
-    asignadoA: {
+    RutAsignado: {
       type: String,
       ref: 'User',
-      required: true,
+      required: [true, 'Por favor, ingrese el rut del usuario'],
+      validate: {
+        validator: async function(rutUsuario) {
+          const user = await User.findOne({ rut: rutUsuario });
+          return !!user;
+        },
+        message: 'El rut del usuario ingresado no existe'
+      }
     },
 
     Inicio: {
