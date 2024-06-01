@@ -80,11 +80,30 @@ const crearTareaRealizada = async (req, res) => {
 
 
 // Obtener todas las tareas realizadas
+
 const obtenerTareasRealizadas = async (req, res) => {
     try {
-        const tareasRealizadas = await TareaRealizada.find().populate('tarea').populate('ticket');
-        res.status(200).json(tareasRealizadas);
+        // Obtener todas las tareas realizadas
+        const tareasRealizadas = await TareaRealizada.find();
+
+        // Crear una lista de promesas para obtener las tareas y los tickets relacionados
+        const tareasPromises = tareasRealizadas.map(async tareaRealizada => {
+            const tarea = await Tarea.findOne({ idTarea: tareaRealizada.tarea });
+            const ticket = await Ticket.findOne({ asignadoA: tareaRealizada.ticket });
+            return {
+                ...tareaRealizada._doc,
+                tarea,
+                ticket
+            };
+        });
+
+        // Esperar a que todas las promesas se resuelvan
+        const tareasConDetalles = await Promise.all(tareasPromises);
+
+        // Enviar la respuesta con las tareas realizadas y sus detalles
+        res.status(200).json(tareasConDetalles);
     } catch (error) {
+        console.error("Error al obtener tareas realizadas: ", error);
         res.status(500).json({ message: error.message });
     }
 };
