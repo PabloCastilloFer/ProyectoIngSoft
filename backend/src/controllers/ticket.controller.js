@@ -7,13 +7,20 @@ import { API_KEY } from "../config/configEnv.js";
 export const createTicket = async (req, res) => {
   const newTicket = new Ticket(req.body);
   try {
+
+    // Verificar si ya existe un ticket con la misma tareaId
+    const existingTicket = await Ticket.findOne({ tareaId: req.body.tareaId });
+    if (existingTicket) {
+      return res.status(400).json({ message: "Ya existe un ticket para esta tarea" });
+    }
+
     const savedTicket = await newTicket.save();
     res.status(201).json(savedTicket);
     const tarea = await Tarea.findOne({ idTarea: req.body.tareaId });
       if (!tarea) {
         return res.status(404).json({ message: "Tarea no encontrada" });
       }
-      
+
       sgMail.setApiKey(API_KEY);
       const msg = {
         to: "luis.acuna2101@alumnos.ubiobio.cl",
@@ -40,16 +47,6 @@ export const getTickets = async (req, res) => {
   try {
     const tickets = await Ticket.find();
     res.status(200).json(tickets);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-};
-
-// Obtener un ticket por ID
-export const getTicket = async (req, res) => {
-  try {
-    const ticket = await Ticket.findById(req.params.id);
-    res.status(200).json(ticket);
   } catch (error) {
     res.status(500).json(error);
   }
