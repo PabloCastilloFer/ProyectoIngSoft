@@ -2,12 +2,12 @@ import { Schema, model } from 'mongoose';
 
 const tareaRealizadaSchema = new Schema({
     tarea: {
-        type: Schema.Types.ObjectId,
+        type: String,
         ref: 'Tarea',
         required: true
     },
     ticket: {
-        type: Schema.Types.ObjectId,
+        type: String,
         ref: 'Ticket',
         required: true
     },
@@ -15,15 +15,15 @@ const tareaRealizadaSchema = new Schema({
         type: String,
         required: false
     },
-    archivo: {
+    archivoAdjunto: {
         type: String,
         required: false
     },
     estado: {
         type: String,
         required: true,
-        enum: ['completa', 'incompleta', 'no realizada'],
-        default: 'no realizada'
+        enum: ['completa','incompleta','no realizada'],
+       
     }
 }, {
     timestamps: true

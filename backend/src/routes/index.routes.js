@@ -14,15 +14,11 @@ import authenticationMiddleware from "../middlewares/authentication.middleware.j
 /** Enrutador de Tareas  */
 import tareaRoutes from "./tarea.routes.js";
 
-// Tarea realizada
-
-//import tareaRealizadaRoutes from "./tareaRealizada.routes.js";
+import tareaRealizada from "./tareaRealizada.routes.js";
 
 import comentarioRoutes from "./comentario.routes.js";
 
 import ticketRoutes from "./ticket.routes.js";
-
-//import generarPDFRoutes from "./generarPDF.routes.js";
 
 import empleadoRoutes from "./empleado.routes.js"
 
@@ -36,18 +32,17 @@ router.use("/users", authenticationMiddleware, userRoutes);
 router.use("/auth", authRoutes);
 // Defina la ruta para la tarea /api/tarea
 router.use("/tarea", authenticationMiddleware, tareaRoutes);
+
+// define las rutas para la tarea realizada /api/tareaRealizada
+
+router.use("/tareaRealizada", authenticationMiddleware, tareaRealizada);
+
 // Defina la ruta para la tarea /api/ticket
 router.use("/ticket", authenticationMiddleware, ticketRoutes);
 
 router.use("/comentario",authenticationMiddleware, comentarioRoutes);
 
-//router.use("/pdf",authenticationMiddleware,generarPDFRoutes);
-
 router.use("/empleado",authenticationMiddleware,empleadoRoutes);
-
-// Define las rutas para las tareas realizadas
-
-//router.use("/tareaRealizada", tareaRealizadaRoutes);
 
 router.use("/generatePDF", authenticationMiddleware,generatePDF);
 // Exporta el enrutador
