@@ -2,18 +2,35 @@
 
 import { Schema, model } from "mongoose";
 
+import User from "./user.model.js"; // Asegúrate de que la ruta sea correcta
+import Tarea from "./tarea.model.js"; // Asegúrate de que la ruta sea correcta
+
+
 const ticketSchema = new Schema(
   {
-    tareaId: {
+    TareaID: {
       type: String,
-      ref: 'Tarea',
-      required: true,
+      required: [true, 'Por favor, ingrese una ID de tarea'],
+      validate: {
+        validator: async function(TareaID) {
+          const tarea = await Tarea.findOne({ idTarea: TareaID });
+          return !!tarea;
+        },
+        message: 'La ID de la tarea ingresada no existe'
+      }
     },
 
-    asignadoA: {
+    RutAsignado: {
       type: String,
       ref: 'User',
-      required: true,
+      required: [true, 'Por favor, ingrese el rut del usuario'],
+      validate: {
+        validator: async function(rutUsuario) {
+          const user = await User.findOne({ rut: rutUsuario });
+          return !!user;
+        },
+        message: 'El rut del usuario ingresado no existe'
+      }
     },
 
     Inicio: {
@@ -26,11 +43,11 @@ const ticketSchema = new Schema(
       required: [true, 'La fecha y hora de fin son requeridas']
     },
 
-    asignadoHistorial: {
-      type: [{ asignadoA: String, horaAsignacion: Date }],
+    Historial: {
+      type: [{ RutAsignado: String, horaAsignacion: Date }],
       default: function() {
         const horaAsignacion = new Date();
-        return [{ asignadoA: this.asignadoA, horaAsignacion }];
+        return [{ RutAsignado: this.RutAsignado, horaAsignacion }];
       },
     },
 
@@ -40,8 +57,9 @@ const ticketSchema = new Schema(
   },
 );
 
-ticketSchema.methods.agregarAsignacion = function(asignadoA) {
-  this.asignadoHistorial.push({ asignadoA, hora: new Date() });
+ticketSchema.methods.agregarAsignacion = function(RutAsignado) {
+  const horaAsignacion = new Date();
+  this.Historial.push({ RutAsignado, horaAsignacion});
 };
 
 const Ticket = model("Ticket", ticketSchema);

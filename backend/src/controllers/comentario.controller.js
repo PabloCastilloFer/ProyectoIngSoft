@@ -1,16 +1,54 @@
 import Comentario from "../models/comentario.model.js";
-import Tarea from "../models/tarea.model.js"; // Asegúrate de importar el modelo de Tarea
+import Tarea from "../models/tarea.model.js";
+import User from "../models/user.model.js";
+import Role from "../models/role.model.js";
+import mongoose from 'mongoose';
+
+async function obtenerInformacionPersonaPorRut(rut) {
+  try {
+    // Buscar el usuario por su RUT y poblar el campo roles
+    const usuario = await User.findOne({ rut }).populate('roles').exec();
+
+    // Verificar si el usuario existe
+    if (!usuario) {
+      throw new Error('Usuario no encontrado');
+    }
+
+    // Extraer los roles del usuario
+    const roles = usuario.roles.map(role => role.name);
+
+    return { rut, roles };
+  } catch (error) {
+    console.error('Error al obtener información de la persona por RUT:', error);
+    throw error;
+  }
+}
 
 export const ComentarioController = {
   async crearComentario(req, res) {
     try {
-      const { supervisor, rutEmpleado, tarea, comentario } = req.body; // Obtener datos de la solicitud incluyendo la tarea
+      const { supervisorRut, empleadoRut, tarea, comentario } = req.body;
 
-      // Crear un nuevo comentario
+      // Buscar el ObjectId del rol "supervisor"
+      const supervisorRole = await Role.findOne({ name: "supervisor" });
+
+      // Verificar que el usuario supervisor exista y sea un supervisor
+      const supervisorInfo = await obtenerInformacionPersonaPorRut(supervisorRut);
+      if (!supervisorInfo.roles.includes('supervisor')) {
+        return res.status(404).json({ error: "El usuario no es un supervisor" });
+      }
+
+      // Buscar al empleado por su RUT
+      const empleado = await User.findOne({ rut: empleadoRut });
+      if (!empleado) {
+        return res.status(404).json({ error: "Empleado no encontrado" });
+      }
+
+     // Crear un nuevo comentario
       const nuevoComentario = new Comentario({
-        supervisor,
-        rutEmpleado,
-        tarea, // Asignar el identificador único de la tarea
+        supervisorRut: supervisorRut,
+        empleadoRut: empleadoRut,
+        tarea,
         comentario,
       });
 
@@ -44,12 +82,12 @@ export const ComentarioController = {
 
   async modificarComentario(req, res) {
     try {
-      const { rutEmpleado } = req.params;
+      const { empleadoRut } = req.params;
       const { comentario } = req.body;
 
       // Buscar el comentario por rut y actualizarlo
       const comentarioModificado = await Comentario.findOneAndUpdate(
-        { rutEmpleado },
+        { empleadoRut },
         { comentario },
         { new: true }
       ).populate('tarea', 'nombreTarea descripcionTarea estado');
@@ -67,10 +105,10 @@ export const ComentarioController = {
 
   async eliminarComentario(req, res) {
     try {
-      const { rutEmpleado } = req.params;
+      const { empleadoRut } = req.params;
 
       // Buscar el comentario por su ID y eliminarlo
-      const comentarioEliminado = await Comentario.findOneAndDelete({ rutEmpleado });
+      const comentarioEliminado = await Comentario.findOneAndDelete({ empleadoRut });
 
       if (!comentarioEliminado) {
         return res.status(404).json({ error: "Comentario no encontrado" });

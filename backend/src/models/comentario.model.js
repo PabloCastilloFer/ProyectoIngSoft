@@ -1,16 +1,15 @@
 import { Schema, model } from "mongoose";
-import "./tarea.model.js";
-
 const comentarioSchema = new Schema(
   {
     supervisor: {
-        type: String,
-        required: true,
+      type: String,
+      ref: 'user',
+      required: true,
     },
     rutEmpleado: {
       type: String,
+      ref: 'user',
       required: true,
-      unique: true,
     },
     tarea:{
       type: String,
@@ -26,7 +25,6 @@ const comentarioSchema = new Schema(
       default: Date.now,
     },
   },
-  { collection: "comentarios", versionKey: false, timestamps: true },
-);
+  { collection: "comentarios", versionKey: false, timestamps: true});
 
 export default model("Comentario", comentarioSchema);

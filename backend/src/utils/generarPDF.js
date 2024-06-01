@@ -72,7 +72,7 @@ export async function generatePDF(req, res) {
   const directoryPath = path.join(__dirname, '../Pdf');
   const filePath = path.join(directoryPath, `${randomFileName}.pdf`);
 
-  // AsegÃºrate de que el directorio exista
+
   if (!fs.existsSync(directoryPath)) {
     fs.mkdirSync(directoryPath, { recursive: true });
   }
