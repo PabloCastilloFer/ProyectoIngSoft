@@ -43,11 +43,11 @@ const ticketSchema = new Schema(
       required: [true, 'La fecha y hora de fin son requeridas']
     },
 
-    asignadoHistorial: {
-      type: [{ asignadoA: String, horaAsignacion: Date }],
+    Historial: {
+      type: [{ RutAsignado: String, horaAsignacion: Date }],
       default: function() {
         const horaAsignacion = new Date();
-        return [{ asignadoA: this.asignadoA, horaAsignacion }];
+        return [{ RutAsignado: this.RutAsignado, horaAsignacion }];
       },
     },
 
@@ -57,9 +57,9 @@ const ticketSchema = new Schema(
   },
 );
 
-ticketSchema.methods.agregarAsignacion = function(asignadoA) {
+ticketSchema.methods.agregarAsignacion = function(RutAsignado) {
   const horaAsignacion = new Date();
-  this.asignadoHistorial.push({ asignadoA, horaAsignacion});
+  this.Historial.push({ RutAsignado, horaAsignacion});
 };
 
 const Ticket = model("Ticket", ticketSchema);
