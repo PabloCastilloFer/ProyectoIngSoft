@@ -3,6 +3,7 @@ import Ticket from '../models/ticket.model.js';
 import Comentario from '../models/comentario.model.js';
 import TareaRealizada from '../models/tarea.model.js';
 import PDFDocument from 'pdfkit-table';
+import Role from '../models/role.model.js'; 
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,7 +11,13 @@ import { fileURLToPath } from 'url';
 
 async function dataUser() {
   try {
-    return await User.find().exec();
+    // Encuentra el rol de empleado
+    const employeeRole = await Role.findOne({ name: 'empleado' }).exec();
+    if (!employeeRole) {
+      throw new Error('Rol de empleado no encontrado');
+    }
+    // Encuentra los usuarios con el rol de empleado
+    return await User.find({ roles: employeeRole._id }).populate('roles').exec();
   } catch (error) {
     console.error('Error al obtener los datos del usuario:', error);
     throw error;
