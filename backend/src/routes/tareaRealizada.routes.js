@@ -1,6 +1,6 @@
 import { Router } from "express";
 import multer from 'multer';
-import { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId } from "../controllers/tareaRealizada.controller.js";
+import { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId, obtenerTareasAsignadas, obtenerTareasCompletas, obtenerTareasIncompletas, obtenerTareasNoRealizadas } from "../controllers/tareaRealizada.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 import { isEmpleado } from "../middlewares/authorization.middleware.js";
 
@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 5 * 1024 *1024 // Validación de que el archivo sea como máximo de 5 MB
+        fileSize: 5 * 1024 * 1024 // Validación de que el archivo sea como máximo de 5 MB
     }
 });
 
@@ -39,5 +39,17 @@ router.get('/', isEmpleado, obtenerTareasRealizadas);
 
 // Obtener una tarea realizada por su ID
 router.get('/:id', isEmpleado, obtenerTareaRealizadaPorId);
+
+// Obtener todas las tareas asignadas a un usuario
+router.get('/asignadas/:rutUsuario', isEmpleado, obtenerTareasAsignadas);
+
+// Obtener todas la tareas completadas por un usuario
+router.get('/completadas/:rutUsuario', isEmpleado, obtenerTareasCompletas);
+
+// Obtener todas las tareas incompletas por un usuario
+router.get('/incompletas/:rutUsuario', isEmpleado, obtenerTareasIncompletas);
+
+// Obtener todas las tareas no realizadas por un usuario
+router.get('/noRealizadas/:rutUsuario', isEmpleado, obtenerTareasNoRealizadas);
 
 export default router;
