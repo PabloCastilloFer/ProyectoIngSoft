@@ -95,12 +95,12 @@ const obtenerTareasRealizadas = async (req, res) => {
         const tareasPromises = tareasRealizadas.map(async tareaRealizada => {
             const tarea = await Tarea.findOne({ idTarea: tareaRealizada.tareaId });
             const ticket = await Ticket.findOne({ asignadoA: tareaRealizada.ticket });
-            //const contadorTareasIncompletas = await contarTareasIncompletasPorEmpleador(ticket.asignadoA);
+            const contadorTareasIncompletas = await contarTareasIncompletasPorEmpleador(ticket.asignadoA);
             return {
                 ...tareaRealizada._doc,
                 tarea,
                 ticket,
-                //contadorTareasIncompletas
+                contadorTareasIncompletas
             };
         });
      
@@ -130,12 +130,11 @@ const obtenerTareaRealizadaPorId = async (req, res) => {
     }
 };
 
-/*const contarTareasIncompletasPorEmpleador = async (rutEmpleador) => {
+const contarTareasIncompletasPorEmpleador = async (rutEmpleador) => {
     try {
-
-      console.log("Valor de rutEmpleador:", rutEmpleador);
-        // Traer todas las tareas realizadas por el empleador
-        const tareasRealizadas = await TareaRealizada.find({ 'ticket.asignadoA': rutEmpleador });
+        console.log("Valor de rutEmpleador:", rutEmpleador);
+        // Traer todas las tareas realizadas por el empleador utilizando el campo 'ticket' que contiene el RUT
+        const tareasRealizadas = await TareaRealizada.find({ ticket: rutEmpleador });
 
         // Imprimir las tareas realizadas en la consola para verificar
         console.log("Tareas realizadas:", tareasRealizadas);
@@ -154,12 +153,12 @@ const obtenerTareaRealizadaPorId = async (req, res) => {
         console.error("Error al contar las tareas incompletas por el empleador: ", error);
         throw new Error("Error al contar las tareas incompletas por el empleador");
     }
-};*/
+};
 
 const obtenerTareasCompletas = async (req, res) => {
     const rutUsuario = req.params.rutUsuario;
     try {
-        const tareasCompletas = await TareaRealizada.find({ estado: 'completa', 'asignadoHistorial.asignadoA': rutUsuario });
+        const tareasCompletas = await TareaRealizada.find({ estado: 'completa', ticket: rutUsuario });
         res.status(200).json(tareasCompletas);
     } catch (error) {
         console.error("Error al obtener tareas completas: ", error);
