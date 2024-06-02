@@ -86,13 +86,14 @@ export async function generatePDF(req, res) {
     rows: []
   };
 
-  dataUserResults.forEach(user => {
+  for (const user of dataUserResults) {
     const roles = user.roles.map(role => role.name).join(', ') || 'N/A';
-    table.rows.push([user.username, user.rut, user.email, roles, '', '', '']);
-  });
+    const hoursWorked = await calculateHoursWorkedForUser(user);
+    table.rows.push([user.username, user.rut, user.email, roles, hoursWorked, '', '']);
+  }
 
   dataTicketResults.forEach(ticket => {
-    const hoursWorked = calculateHoursWorked(ticket);
+    const hoursWorked = calculateHoursWorked(ticket.Inicio, ticket.Fin);
     table.rows.push(['', '', '', '', hoursWorked, '', '']);
   });
 
@@ -110,6 +111,25 @@ export async function generatePDF(req, res) {
     console.error('Error al crear la tabla PDF:', error);
     return res.status(500).send('Error al crear el PDF');
   }
+
+  async function calculateHoursWorkedForUser(user) {
+    let totalHours = 0;
+    if (dataTicketResults) {
+      const userTickets = dataTicketResults.filter(ticket => ticket.RutAsignado === user.rut);
+      userTickets.forEach(ticket => {
+        totalHours += calculateHoursWorked(ticket.Inicio, ticket.Fin);
+      });
+    }
+    return totalHours;
+  }
+  
+  function calculateHoursWorked(startDate, endDate) {
+    const startTime = new Date(startDate);
+    const endTime = new Date(endDate);
+    const diffMs = endTime - startTime;
+    const diffHours = Math.round(diffMs / (1000 * 60 * 60));
+    return diffHours;
+  } 
 
   doc.end();
 
@@ -129,10 +149,6 @@ export async function generatePDF(req, res) {
   });
 }
 
-function calculateHoursWorked(ticket) {
-  const startDate = new Date(ticket.Inicio);
-  const endDate = new Date(ticket.Fin);
-  const diffMs = endDate - startDate;
-  const diffHours = Math.round(diffMs / (1000 * 60 * 60));
-  return diffHours;
-}
+
+
+
