@@ -3,12 +3,10 @@ const comentarioSchema = new Schema(
   {
     supervisor: {
       type: String,
-      ref: 'user',
       required: true,
     },
-    rutEmpleado: {
+    empleado: {
       type: String,
-      ref: 'user',
       required: true,
     },
     tarea:{

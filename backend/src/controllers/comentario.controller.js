@@ -1,53 +1,28 @@
 import Comentario from "../models/comentario.model.js";
 import Tarea from "../models/tarea.model.js";
 import User from "../models/user.model.js";
-import Role from "../models/role.model.js";
-import mongoose from 'mongoose';
-
-async function obtenerInformacionPersonaPorRut(rut) {
-  try {
-    // Buscar el usuario por su RUT y poblar el campo roles
-    const usuario = await User.findOne({ rut }).populate('roles').exec();
-
-    // Verificar si el usuario existe
-    if (!usuario) {
-      throw new Error('Usuario no encontrado');
-    }
-
-    // Extraer los roles del usuario
-    const roles = usuario.roles.map(role => role.name);
-
-    return { rut, roles };
-  } catch (error) {
-    console.error('Error al obtener información de la persona por RUT:', error);
-    throw error;
-  }
-}
 
 export const ComentarioController = {
   async crearComentario(req, res) {
     try {
-      const { supervisorRut, empleadoRut, tarea, comentario } = req.body;
+      const { supervisor, rutEmpleado, tarea, comentario } = req.body;
 
-      // Buscar el ObjectId del rol "supervisor"
-      const supervisorRole = await Role.findOne({ name: "supervisor" });
-
-      // Verificar que el usuario supervisor exista y sea un supervisor
-      const supervisorInfo = await obtenerInformacionPersonaPorRut(supervisorRut);
-      if (!supervisorInfo.roles.includes('supervisor')) {
-        return res.status(404).json({ error: "El usuario no es un supervisor" });
+      // Verificar si el usuario supervisor existe
+      const supervisorExistente = await User.findOne({ rut: supervisor });
+      if (!supervisorExistente) {
+        return res.status(404).json({ error: "Supervisor no encontrado" });
       }
 
-      // Buscar al empleado por su RUT
-      const empleado = await User.findOne({ rut: empleadoRut });
-      if (!empleado) {
+      // Verificar si el usuario empleado existe
+      const empleadoExistente = await User.findOne({ rut: rutEmpleado });
+      if (!empleadoExistente) {
         return res.status(404).json({ error: "Empleado no encontrado" });
       }
 
-     // Crear un nuevo comentario
+      // Crear un nuevo comentario
       const nuevoComentario = new Comentario({
-        supervisorRut: supervisorRut,
-        empleadoRut: empleadoRut,
+        supervisor,
+        empleado: rutEmpleado,
         tarea,
         comentario,
       });
