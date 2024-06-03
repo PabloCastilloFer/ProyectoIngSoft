@@ -126,51 +126,24 @@ export async function generatePDF(req, res) {
   }
   
   function calculateHoursWorked(startDate, endDate) {
-    const startTime = new Date(startDate);
-    const endTime = new Date(endDate);
-
-    // Verificar si las fechas caen en un fin de semana
-    if (startTime.getDay() === 0 || startTime.getDay() === 6 || endTime.getDay() === 0 || endTime.getDay() === 6) {
-        return 0; // No se trabajan horas los fines de semana
-    }
+    const startDateTime = new Date(startDate);
+    const endDateTime = new Date(endDate);
 
     // Establecer las horas de inicio y fin del horario laboral
     const startWorkingHour = 8; // 08:00 horas
     const endWorkingHour = 18; // 18:00 horas
 
-    // Establecer la fecha y hora de inicio del día laborable
-    const startOfDay = new Date(startTime);
-    startOfDay.setHours(startWorkingHour, 0, 0, 0);
+    // Calcular la fecha y hora de inicio y fin dentro del horario laboral
+    const startInsideWorkingHours = new Date(startDateTime);
+    startInsideWorkingHours.setHours(Math.max(startDateTime.getHours(), startWorkingHour), 0, 0, 0);
+    const endInsideWorkingHours = new Date(endDateTime);
+    endInsideWorkingHours.setHours(Math.min(endDateTime.getHours(), endWorkingHour), 0, 0, 0);
 
-    // Establecer la fecha y hora de fin del día laborable
-    const endOfDay = new Date(startTime);
-    endOfDay.setHours(endWorkingHour, 0, 0, 0);
+    // Calcular la diferencia en horas dentro del horario laboral
+    const diffMs = endInsideWorkingHours - startInsideWorkingHours;
+    const diffHours = Math.round(diffMs / (1000 * 60 * 60));
 
-    let totalHours = 0;
-
-    // Calcular las horas trabajadas para cada día laborable
-    while (startOfDay < endTime) {
-        // Calcular la fecha y hora de fin del día laborable actual
-        endOfDay.setDate(endOfDay.getDate() + 1);
-
-        // Calcular la hora de inicio y fin dentro del horario laboral
-        const start = Math.max(startTime, startOfDay);
-        const end = Math.min(endTime, endOfDay);
-
-        // Calcular la diferencia de tiempo en milisegundos
-        const diffMs = end - start;
-
-        // Convertir la diferencia de tiempo a horas redondeadas
-        const diffHours = Math.round(diffMs / (1000 * 60 * 60));
-
-        // Agregar las horas trabajadas para este día laborable
-        totalHours += diffHours;
-
-        // Actualizar la fecha y hora de inicio del próximo día laborable
-        startOfDay.setDate(startOfDay.getDate() + 1);
-    }
-
-    return totalHours;
+    return diffHours >= 0 ? diffHours : 0;
 }
 
 

@@ -1,83 +1,75 @@
 import Comentario from "../models/comentario.model.js";
 import Tarea from "../models/tarea.model.js";
-import User from "../models/user.model.js";
 
-export const ComentarioController = {
-  async crearComentario(req, res) {
-    try {
-      // Obtén los datos del comentario desde el cuerpo de la solicitud
-      const { rutEmpleado, tarea, comentario } = req.body;
+// Controlador para crear un nuevo comentario
+export const crearComentario = async (req, res) => {
+  try {
+    const { RutAsignado, tareaId, comentario } = req.body;
+    // Agregar logs para depuración
+    console.log('RutAsignado:', RutAsignado);
+    console.log('tareaId:', tareaId);
+    console.log('comentario:', comentario);
 
-      // No se realiza ninguna verificación de autenticación aquí
-
-      // Crear un nuevo comentario
-      const nuevoComentario = new Comentario({
-        RutAsignado: rutEmpleado,
-        tarea,
-        comentario,
-      });
-
-      // Guardar el comentario en la base de datos
-      await nuevoComentario.save();
-
-      // Retornar el comentario creado
-      res.status(201).json(nuevoComentario);
-    } catch (error) {
-      console.error("Error al dejar un comentario:", error);
-      res.status(500).json({ error: "Error interno del servidor" });
+    // Verificar si la tarea existe
+    const tareaExistente = await Tarea.findOne({ idTarea: tareaId });
+    if (!tareaExistente) {
+      return res.status(404).json({ mensaje: "La tarea no existe" });
     }
-  },
 
-  async listarComentarios(req, res) {
-    try {
-      // Obtener todos los comentarios de la base de datos y popular el campo tarea
-      const comentarios = await Comentario.find().populate('tarea', 'nombreTarea descripcionTarea estado');
+    const nuevoComentario = await Comentario.create({ RutAsignado, tarea: tareaExistente._id, comentario });
+    res.status(201).json({ mensaje: "Comentario creado correctamente", comentario: nuevoComentario });
+  } catch (error) {
+    res.status(400).json({ mensaje: "Hubo un error al crear el comentario", error: error.message });
+  }
+};
+// Controlador para actualizar un comentario por su ID
+export const actualizarComentario = async (req, res) => {
+  const { id } = req.params;
+  const { comentario } = req.body;
+  console.log('ID del comentario a actualizar:', id);
+  console.log('Nuevo comentario:', comentario);
 
-      res.status(200).json(comentarios);
-    } catch (error) {
-      console.error("Error al listar comentarios:", error);
-      res.status(500).json({ error: "Error interno del servidor" });
+  try {
+    const comentarioActualizado = await Comentario.findByIdAndUpdate(id, { comentario }, { new: true });
+    if (!comentarioActualizado) {
+      return res.status(404).json({ mensaje: "Comentario no encontrado" });
     }
-  },
+    res.status(200).json({ mensaje: "Comentario actualizado correctamente", comentario: comentarioActualizado });
+  } catch (error) {
+    res.status(500).json({ mensaje: "Hubo un error al actualizar el comentario", error: error.message });
+  }
+};
+// Controlador para obtener comentarios por el RUT del usuario asignado
+export const obtenerComentariosPorRut = async (req, res) => {
+  const { rut } = req.params;
 
-  async modificarComentario(req, res) {
-    try {
-      const { id } = req.params;
-      const { comentario } = req.body;
-
-      // Buscar el comentario por ID y actualizarlo
-      const comentarioModificado = await Comentario.findByIdAndUpdate(
-        id,
-        { comentario },
-        { new: true }
-      ).populate('tarea', 'nombreTarea descripcionTarea estado');
-
-      if (!comentarioModificado) {
-        return res.status(404).json({ error: "Comentario no encontrado" });
-      }
-
-      res.status(200).json(comentarioModificado);
-    } catch (error) {
-      console.error("Error al modificar comentario:", error);
-      res.status(500).json({ error: "Error interno del servidor" });
+  try {
+    const comentarios = await Comentario.find({ RutAsignado: rut }).populate('tarea');
+    res.status(200).json(comentarios);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Hubo un error al obtener los comentarios", error: error.message });
+  }
+};
+// Controlador para eliminar un comentario por su ID
+export const eliminarComentarioPorId = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const comentarioEliminado = await Comentario.findByIdAndDelete(id);
+    if (!comentarioEliminado) {
+      return res.status(404).json({ mensaje: "Comentario no encontrado" });
     }
-  },
+    res.status(200).json({ mensaje: "Comentario eliminado correctamente" });
+  } catch (error) {
+    res.status(500).json({ mensaje: "Hubo un error al eliminar el comentario", error: error.message });
+  }
+};
 
-  async eliminarComentario(req, res) {
-    try {
-      const { id } = req.params;
-
-      // Buscar el comentario por ID y eliminarlo
-      const comentarioEliminado = await Comentario.findByIdAndDelete(id);
-
-      if (!comentarioEliminado) {
-        return res.status(404).json({ error: "Comentario no encontrado" });
-      }
-
-      res.status(200).json({ mensaje: "Comentario eliminado correctamente" });
-    } catch (error) {
-      console.error("Error al eliminar comentario:", error);
-      res.status(500).json({ error: "Error interno del servidor" });
-    }
-  },
+// Controlador para obtener todos los comentarios
+export const obtenerComentarios = async (req, res) => {
+  try {
+    const comentarios = await Comentario.find();
+    res.status(200).json(comentarios);
+  } catch (error) {
+    res.status(500).json({ mensaje: "Hubo un error al obtener los comentarios", error: error.message });
+  }
 };

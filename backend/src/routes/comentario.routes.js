@@ -1,18 +1,20 @@
 import express from "express";
-import { ComentarioController } from "../controllers/comentario.controller.js";
-import { isSupervisor }  from "../middlewares/authorization.middleware.js";
+import {crearComentario,obtenerComentariosPorRut,actualizarComentario,eliminarComentarioPorId,obtenerComentarios} from "../controllers/comentario.controller.js";
+import { isSupervisor } from "../middlewares/authorization.middleware.js";
 
 const router = express.Router();
 
 // Ruta para crear un nuevo comentario
-router.post("/",isSupervisor, ComentarioController.crearComentario);
+router.post("/", isSupervisor, crearComentario);
 
-// Ruta para obtener todos los comentarios
-router.get("/", ComentarioController.listarComentarios);
+// Ruta para obtener comentarios por el rut del usuario asignado
+router.get("/:rut", obtenerComentariosPorRut);
 
-router.delete("/:rutEmpleado", isSupervisor, ComentarioController.eliminarComentario);
-// Ruta para modificar un comentario por rutEmpleado
-router.put("/:rutEmpleado", isSupervisor, ComentarioController.modificarComentario);
+// Ruta para actualizar un comentario por su ID
+router.put("/:id", isSupervisor, actualizarComentario);
 
+router.get('/', obtenerComentarios);
+// Ruta para eliminar un comentario por su ID
+router.delete("/:id", isSupervisor, eliminarComentarioPorId);
 
 export default router;

@@ -1,10 +1,9 @@
 import { Schema, model } from "mongoose";
+import User from "./user.model.js"; // Asegúrate de importar el modelo User correctamente
+import tarea from "./tarea.model.js"; // Asegúrate de importar el modelo tarea correctamente
+
 const comentarioSchema = new Schema(
   {
-    supervisor: {
-      type: String,
-      required: true,
-    },
     RutAsignado: {
       type: String,
       ref: 'User',
@@ -17,9 +16,9 @@ const comentarioSchema = new Schema(
         message: 'El rut del usuario ingresado no existe'
       }
     },
-    tarea:{
-      type: String,
-      ref: "tarea",
+    tarea: {
+      type: Schema.Types.ObjectId,
+      ref: "Tarea",
       required: true,
     },
     comentario: {
@@ -31,6 +30,9 @@ const comentarioSchema = new Schema(
       default: Date.now,
     },
   },
-  { collection: "comentarios", versionKey: false, timestamps: true});
+  { collection: "comentarios", versionKey: false, timestamps: true }
+);
+
+comentarioSchema.index({ RutAsignado: 1, tarea: 1 }, { unique: true });
 
 export default model("Comentario", comentarioSchema);
