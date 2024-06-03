@@ -5,9 +5,17 @@ const comentarioSchema = new Schema(
       type: String,
       required: true,
     },
-    empleado: {
+    RutAsignado: {
       type: String,
-      required: true,
+      ref: 'User',
+      required: [true, 'Por favor, ingrese el rut del usuario'],
+      validate: {
+        validator: async function(rutUsuario) {
+          const user = await User.findOne({ rut: rutUsuario });
+          return !!user;
+        },
+        message: 'El rut del usuario ingresado no existe'
+      }
     },
     tarea:{
       type: String,
