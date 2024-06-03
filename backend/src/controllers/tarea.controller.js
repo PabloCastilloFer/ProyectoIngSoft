@@ -66,21 +66,45 @@ export const deleteTarea = async (req, res) => {
 };
 
 export const updateTarea = async (req, res) => {
-    
     try {
-        const tareaActual = req.params.nombreTarea;
-        const tareaModificada = await tarea.findOne({ nombreTarea: tareaActual });
+        // Generar una ID aleatoria utilizando uuidv4
+        const idTarea = uuidv4();
+        const tareaActual = req.params.idTarea;
+        const tareaModificada = await tarea.findOne({ idTarea: tareaActual });
 
-        const { error } = crearTareaSchema.validate(req.body);
+        if (!tareaModificada) {
+            return res.status(404).json({ message: "Tarea no encontrada" });
+        }
+
+        const archivo = req.file ? req.file.filename : tareaModificada.archivo.split('/').pop();
+        const URL = `http://${HOST}:${PORT}/api/tarea/src/upload/`;
+
+        const updatedTarea = {
+            nombreTarea: req.body.nombreTarea || tareaModificada.nombreTarea,
+            descripcionTarea: req.body.descripcionTarea || tareaModificada.descripcionTarea,
+            tipoTarea: req.body.tipoTarea || tareaModificada.tipoTarea,
+            estado: 'nueva',
+            archivo: req.file ? URL + archivo : tareaModificada.archivo,
+            idTarea: req.body.idTarea || idTarea
+        };
+
+        const { error } = crearTareaSchema.validate(updatedTarea);
         if (error) {
             return res.status(400).json({ error: error.message });
         }
-        tareaModificada.nombreTarea = req.body.nombreTarea;
-        tareaModificada.descripcionTarea = req.body.descripcionTarea;
-        tareaModificada.tipoTarea = req.body.tipoTarea;
+
+        tareaModificada.nombreTarea = updatedTarea.nombreTarea;
+        tareaModificada.descripcionTarea = updatedTarea.descripcionTarea;
+        tareaModificada.tipoTarea = updatedTarea.tipoTarea;
+        tareaModificada.estado = updatedTarea.estado;
+        tareaModificada.archivo = updatedTarea.archivo;
+        tareaModificada.idTarea = updatedTarea.idTarea;
 
         const tareaActualizada = await tareaModificada.save();
-        res.status(201).json(tareaActualizada);
+        res.status(200).json({
+            message: "Tarea actualizada exitosamente!",
+            tarea: tareaActualizada
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
