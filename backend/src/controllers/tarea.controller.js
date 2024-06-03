@@ -85,3 +85,42 @@ export const updateTarea = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const updateNewTarea = async (req, res) => {
+    try {
+        const { nombreTarea } = req.params;
+        const tareaOriginal = await tarea.findOne({ nombreTarea });
+
+        if (!tareaOriginal) {
+            return res.status(404).json({ message: "Tarea no encontrada" });
+        }
+
+        const archivo = req.file ? req.file.filename : tareaOriginal.archivo.split('/').pop();
+        const URL = `http://${HOST}:${PORT}/api/tarea/src/upload/`;
+        const idTarea = uuidv4();
+
+        const nuevaTarea = {
+            nombreTarea: req.body.nombreTarea || tareaOriginal.nombreTarea,
+            descripcionTarea: req.body.descripcionTarea || tareaOriginal.descripcionTarea,
+            tipoTarea: req.body.tipoTarea || tareaOriginal.tipoTarea,
+            estado: req.body.estado || tareaOriginal.estado,
+            idTarea: idTarea,
+            archivo: req.file ? URL + archivo : tareaOriginal.archivo
+        };
+
+        const { error } = crearTareaSchema.validate(nuevaTarea);
+        if (error) {
+            return res.status(400).json({ error: error.message });
+        }
+
+        const newTarea = new tarea(nuevaTarea);
+        const tareaGuardada = await newTarea.save();
+        
+        res.status(201).json({
+            message: "Nueva tarea creada con las modificaciones!",
+            tarea: tareaGuardada
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
