@@ -1,10 +1,6 @@
-
-
 import TareaRealizada from '../models/tareaRealizada.model.js';
 import Tarea from '../models/tarea.model.js';
 import Ticket from '../models/ticket.model.js';
-//import user from '../models/user.model.js';
-
 import { HOST, PORT } from '../config/configEnv.js';
 
 // Crear una nueva tarea realizada
@@ -189,7 +185,7 @@ const obtenerTareasNoRealizadas = async (req, res) => {
 const obtenerTareasAsignadas = async (req, res) => {
     const rutUsuario = req.params.rutUsuario;
     try {
-        const tareasAsignadas = await TareaRealizada.find({ 'ticket.asignadoA': rutUsuario });
+        const tareasAsignadas = await TareaRealizada.find({ ticket: rutUsuario });
         // Extraer los nombres de las tareas asignadas
         const nombresTareasAsignadas = tareasAsignadas.map(tarea => tarea.nombreTarea); // Reemplaza "nombre" por el campo que contiene los nombres de las tareas
         res.status(200).json(nombresTareasAsignadas);
