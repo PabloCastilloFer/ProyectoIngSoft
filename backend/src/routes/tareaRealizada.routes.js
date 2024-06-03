@@ -1,6 +1,6 @@
 import { Router } from "express";
 import multer from 'multer';
-import { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId, obtenerTareasAsignadas, obtenerTareasCompletas, obtenerTareasIncompletas, obtenerTareasNoRealizadas } from "../controllers/tareaRealizada.controller.js";
+import { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareasAsignadas, obtenerTareasCompletas, obtenerTareasIncompletas, obtenerTareasNoRealizadas } from "../controllers/tareaRealizada.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 import { isEmpleado } from "../middlewares/authorization.middleware.js";
 
@@ -37,8 +37,6 @@ router.post('/:rutUsuario', upload.single("archivoAdjunto"), isEmpleado, crearTa
 // Obtener todas las tareas realizadas
 router.get('/', isEmpleado, obtenerTareasRealizadas);
 
-// Obtener una tarea realizada por su ID
-router.get('/:id', isEmpleado, obtenerTareaRealizadaPorId);
 
 // Obtener todas las tareas asignadas a un usuario
 router.get('/asignadas/:rutUsuario', isEmpleado, obtenerTareasAsignadas);
