@@ -8,7 +8,7 @@ import { HOST, PORT } from '../config/configEnv.js';
 const crearTareaRealizada = async (req, res) => {
     try {
         // Extraer información de la solicitud
-        const { tareaId, comentario, estado } = req.body;
+        const { TareaID, comentario, estado } = req.body;
         console.log("Valor de estado recibido:", estado); // Aquí se registra el valor de estado recibido
         const rutUsuario = req.params.rutUsuario;
         const URL = `http://${HOST}:${PORT}/api/tareaRealizada/src/upload/`;
@@ -16,8 +16,9 @@ const crearTareaRealizada = async (req, res) => {
         
 
         // Verificar si la tarea está asignada al usuario
-        const ticket = await Ticket.findOne({ 'asignadoHistorial.asignadoA': rutUsuario  });
-        console.log("Ticket: ", ticket)
+        const ticket = await Ticket.findOne({ RutAsignado: rutUsuario  });
+        console.log("Consulta de Ticket: ", { RutAsignado: rutUsuario });
+        console.log("Ticket encontrado: ", ticket);
         if (!ticket) {
             return res.status(404).json({ message: 'Tarea no asignada al usuario' });
         }
@@ -26,12 +27,15 @@ const crearTareaRealizada = async (req, res) => {
         const now = new Date();
         const inicio = new Date(ticket.Inicio);
         const fin = new Date(ticket.Fin);
+        console.log("Fecha actual:", now);
+        console.log("Fecha de inicio:", inicio);
+        console.log("Fecha de fin:", fin);
+
         if (now < inicio || now > fin) {
             return res.status(400).json({ message: 'Tarea fuera de plazo' });
         }
-
         // Verificar si la tarea existe
-        const tarea = await Tarea.findOne({ idTarea: tareaId });
+        const tarea = await Tarea.findOne({ idTarea: TareaID });
         if (!tarea) {
             return res.status(404).json({ message: 'Tarea no encontrada' });
         }
@@ -48,14 +52,14 @@ const crearTareaRealizada = async (req, res) => {
         }
 
         // Verificar si la tarea ya fue realizada
-        const tareaRealizadaExistente = await TareaRealizada.findOne({ ticket: ticket.asignadoA });
+        const tareaRealizadaExistente = await TareaRealizada.findOne({ ticket: ticket.RutAsignado });
         if (tareaRealizadaExistente) {
             return res.status(400).json({ message: 'Ya se ha respondido a esta tarea' });
         }
         // Crear nueva tarea realizada
         const nuevaTareaRealizada = new TareaRealizada({
-            tarea: tareaId,
-            ticket: ticket.asignadoA, // Utiliza el rut del usuario asignado al ticket
+            tarea: TareaID,
+            ticket: ticket.RutAsignado, // Utiliza el rut del usuario asignado al ticket
             comentario,
             archivoAdjunto:  URL + archivoAdjunto,
             estado:req.body.estado
@@ -89,14 +93,14 @@ const obtenerTareasRealizadas = async (req, res) => {
 
         // Crear una lista de promesas para obtener las tareas y los tickets relacionados
         const tareasPromises = tareasRealizadas.map(async tareaRealizada => {
-            const tarea = await Tarea.findOne({ idTarea: tareaRealizada.tareaId });
-            const ticket = await Ticket.findOne({ asignadoA: tareaRealizada.ticket });
-            const contadorTareasIncompletas = await contarTareasIncompletasPorEmpleador(ticket.asignadoA);
+            const tarea = await Tarea.findOne({ idTarea: tareaRealizada.TareaID });
+            const ticket = await Ticket.findOne({ RutAsignado: tareaRealizada.ticket });
+            const contadorTareasCompletas = await contarTareasCompletasPorEmpleador(ticket.RutAsignado);
             return {
                 ...tareaRealizada._doc,
                 tarea,
                 ticket,
-                contadorTareasIncompletas
+                contadorTareasCompletas
             };
         });
      
@@ -112,21 +116,8 @@ const obtenerTareasRealizadas = async (req, res) => {
 };
 
 
-// Obtener una tarea realizada por su ID
-const obtenerTareaRealizadaPorId = async (req, res) => {
-    const tareaRealizadaId = req.params.id;
-    try {
-        const tareaRealizada = await TareaRealizada.findById(tareaRealizadaId);
-        if (!tareaRealizada) {
-            return res.status(404).json({ message: 'Tarea realizada no encontrada' });
-        }
-        res.status(200).json(tareaRealizada);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
 
-const contarTareasIncompletasPorEmpleador = async (rutEmpleador) => {
+const contarTareasCompletasPorEmpleador = async (rutEmpleador) => {
     try {
         console.log("Valor de rutEmpleador:", rutEmpleador);
         // Traer todas las tareas realizadas por el empleador utilizando el campo 'ticket' que contiene el RUT
@@ -139,7 +130,7 @@ const contarTareasIncompletasPorEmpleador = async (rutEmpleador) => {
         let contador = 0;
         tareasRealizadas.forEach(tareaRealizada => {
             console.log("Estado de la tarea realizada:", tareaRealizada.estado); // Imprime el estado de cada tarea realizada
-            if (tareaRealizada.estado === "incompleta") {
+            if (tareaRealizada.estado === "completa") {
                 contador++;
             }
         });
@@ -182,6 +173,7 @@ const obtenerTareasNoRealizadas = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 const obtenerTareasAsignadas = async (req, res) => {
     const rutUsuario = req.params.rutUsuario;
     try {
@@ -193,6 +185,7 @@ const obtenerTareasAsignadas = async (req, res) => {
         console.error("Error al obtener tareas asignadas: ", error);
         res.status(500).json({ message: error.message });
     }
+
 };
 
-export { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId,obtenerTareasAsignadas,obtenerTareasCompletas,obtenerTareasIncompletas,obtenerTareasNoRealizadas };
+export { crearTareaRealizada, obtenerTareasRealizadas,obtenerTareasAsignadas,obtenerTareasCompletas,obtenerTareasIncompletas,obtenerTareasNoRealizadas };
