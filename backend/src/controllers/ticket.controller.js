@@ -3,24 +3,54 @@ import Tarea from '../models/tarea.model.js';
 import sgMail from "@sendgrid/mail";
 import { API_KEY } from "../config/configEnv.js";
 
+// Función para validar si una fecha está dentro de los días laborables y el horario de trabajo
+function isValidDate(date) {
+  const dayOfWeek = date.getUTCDay();
+  const hour = date.getUTCHours();
+
+  // Verificar si el día de la semana es entre lunes (1) y viernes (5)
+  if (dayOfWeek < 1 || dayOfWeek > 5) {
+    return false;
+  }
+
+  // Verificar si la hora está entre 8 a.m. y 6 p.m.
+  if (hour < 8 || hour > 18) {
+    return false;
+  }
+
+  return true;
+}
+
 // Crear un nuevo ticket
 export const createTicket = async (req, res) => {
   const newTicket = new Ticket(req.body);
   try {
 
-    // Verificar si ya existe un ticket con la misma tareaId
+    const tarea = await Tarea.findOne({ idTarea: req.body.TareaID });
+      if (!tarea) {
+        return res.status(404).json({ message: "Tarea no encontrada" });
+    }
+
     const existingTicket = await Ticket.findOne({ TareaID: req.body.TareaID });
     if (existingTicket) {
       return res.status(400).json({ message: "Ya existe un ticket para esta tarea" });
     }
 
+    const inicio = new Date(req.body.Inicio);
+    const now = new Date();
+    if (inicio <= now || !isValidDate(inicio)) {
+      return res.status(400).json({ message: "La fecha de inicio de la tarea debe ser en el futuro y dentro de los días laborables y el horario de trabajo" });
+    }
+
+    const fin = new Date(req.body.Fin);
+    if (fin <= inicio || !isValidDate(fin)) {
+      return res.status(400).json({ message: "La fecha de fin de la tarea debe ser después de la fecha de inicio y dentro de los días laborables y el horario de trabajo" });
+    }
+
+
     const savedTicket = await newTicket.save();
     res.status(201).json(savedTicket);
-    const tarea = await Tarea.findOne({ idTarea: req.body.TareaID });
-      if (!tarea) {
-        return res.status(404).json({ message: "Tarea no encontrada" });
-      }
-      
+
       sgMail.setApiKey(API_KEY);
       const msg = {
         to: "luis.acuna2101@alumnos.ubiobio.cl",
@@ -55,10 +85,6 @@ export const getTickets = async (req, res) => {
 // Actualizar un ticket por ID
 export const updateTicket = async (req, res) => {
   try {
-    const ticket = await Ticket.findById(req.params.id);
-    if (!ticket) {
-      return res.status(404).json({ message: "Ticket no encontrado" });
-    }
 
     // Verificar si se ha cambiado la asignación o el horario
     if (req.body.asignadoA !== ticket.asignadoA || req.body.hora !== ticket.hora) {
@@ -66,16 +92,32 @@ export const updateTicket = async (req, res) => {
       ticket.agregarAsignacion(req.body.asignadoA, new Date());
     }
 
+    const tarea = await Tarea.findOne({ idTarea: req.body.TareaID });
+      if (!tarea) {
+        return res.status(404).json({ message: "Tarea no encontrada" });
+    }
+
+    const existingTicket = await Ticket.findOne({ TareaID: req.body.TareaID });
+    if (existingTicket) {
+      return res.status(400).json({ message: "Ya existe un ticket para esta tarea" });
+    }
+
+    const inicio = new Date(req.body.Inicio);
+    const now = new Date();
+    if (inicio <= now || !isValidDate(inicio)) {
+      return res.status(400).json({ message: "La fecha de inicio de la tarea debe ser en el futuro y dentro de los días laborables y el horario de trabajo" });
+    }
+
+    const fin = new Date(req.body.Fin);
+    if (fin <= inicio || !isValidDate(fin)) {
+      return res.status(400).json({ message: "La fecha de fin de la tarea debe ser después de la fecha de inicio y dentro de los días laborables y el horario de trabajo" });
+    }
+
     // Actualizar el ticket con los datos de la solicitud
     Object.assign(ticket, req.body);
 
     const updatedTicket = await ticket.save();
     res.status(200).json(updatedTicket);
-
-    const tarea = await Tarea.findOne({ idTarea: req.body.tareaId });
-      if (!tarea) {
-        return res.status(404).json({ message: "Tarea no encontrada" });
-      }
 
       sgMail.setApiKey(API_KEY);
       const msg = {
@@ -128,4 +170,3 @@ export const getTicketsByTaskId = async (req, res) => {
     res.status(500).json(error);
   }
 };
-
