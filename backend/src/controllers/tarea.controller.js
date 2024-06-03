@@ -35,6 +35,7 @@ export const createTarea = async (req, res) => {
     }
 };
 
+
 export const getTareas = async (req, res) => {
     try {
         const tareas = await tarea.find();

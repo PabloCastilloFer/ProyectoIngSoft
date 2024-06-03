@@ -31,7 +31,6 @@ async function isAdmin(req, res, next) {
     handleError(error, "authorization.middleware -> isAdmin");
   }
 }
-
 async function isSupervisor(req, res, next) {
   try {
     const user = await User.findOne({ email: req.email });
@@ -46,7 +45,7 @@ async function isSupervisor(req, res, next) {
       req,
       res,
       401,
-      "Se requiere un rol de supervisor para realizar esta acción",
+      "Se requiere un rol de administrador para realizar esta acción",
     );
   } catch (error) {
     handleError(error, "authorization.middleware -> isSupervisor");
@@ -67,7 +66,7 @@ async function isEmpleado(req, res, next) {
       req,
       res,
       401,
-      "Se requiere un rol de empleado para realizar esta acción",
+      "Se requiere un rol de administrador para realizar esta acción",
     );
   } catch (error) {
     handleError(error, "authorization.middleware -> isEmpleado");
