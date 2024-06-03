@@ -5,39 +5,14 @@ import User from "../models/user.model.js";
 export const ComentarioController = {
   async crearComentario(req, res) {
     try {
-      // Verificar si el usuario está autenticado y tiene el RUT en el token
-      if (!req.rut) {
-        return res.status(401).json({ error: 'Usuario no autenticado' });
-      }
-
+      // Obtén los datos del comentario desde el cuerpo de la solicitud
       const { rutEmpleado, tarea, comentario } = req.body;
-      const supervisor = req.rut;
 
-      // Mensajes de depuración
-      console.log("Datos recibidos en la solicitud:");
-      console.log("Supervisor:", supervisor);
-      console.log("Rut del Empleado:", rutEmpleado);
-      console.log("Tarea:", tarea);
-      console.log("Comentario:", comentario);
-
-      // Verificar si el usuario empleado existe
-      const empleadoExistente = await User.findOne({ rut: rutEmpleado });
-      if (!empleadoExistente) {
-        console.log('Empleado no encontrado:', rutEmpleado);
-        return res.status(404).json({ error: "Empleado no encontrado" });
-      }
-
-      // Verificar si la tarea existe
-      const tareaExistente = await Tarea.findById(tarea);
-      if (!tareaExistente) {
-        console.log('Tarea no encontrada:', tarea);
-        return res.status(404).json({ error: "Tarea no encontrada" });
-      }
+      // No se realiza ninguna verificación de autenticación aquí
 
       // Crear un nuevo comentario
       const nuevoComentario = new Comentario({
-        supervisor,
-        RutAsignado: rutEmpleado,  // Asegúrate de que el campo es correcto
+        RutAsignado: rutEmpleado,
         tarea,
         comentario,
       });
