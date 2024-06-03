@@ -95,12 +95,12 @@ const obtenerTareasRealizadas = async (req, res) => {
         const tareasPromises = tareasRealizadas.map(async tareaRealizada => {
             const tarea = await Tarea.findOne({ idTarea: tareaRealizada.TareaID });
             const ticket = await Ticket.findOne({ RutAsignado: tareaRealizada.ticket });
-            const contadorTareasIncompletas = await contarTareasIncompletasPorEmpleador(ticket.RutAsignado);
+            const contadorTareasCompletas = await contarTareasCompletasPorEmpleador(ticket.RutAsignado);
             return {
                 ...tareaRealizada._doc,
                 tarea,
                 ticket,
-                contadorTareasIncompletas
+                contadorTareasCompletas
             };
         });
      
@@ -117,7 +117,7 @@ const obtenerTareasRealizadas = async (req, res) => {
 
 
 
-const contarTareasIncompletasPorEmpleador = async (rutEmpleador) => {
+const contarTareasCompletasPorEmpleador = async (rutEmpleador) => {
     try {
         console.log("Valor de rutEmpleador:", rutEmpleador);
         // Traer todas las tareas realizadas por el empleador utilizando el campo 'ticket' que contiene el RUT
@@ -130,7 +130,7 @@ const contarTareasIncompletasPorEmpleador = async (rutEmpleador) => {
         let contador = 0;
         tareasRealizadas.forEach(tareaRealizada => {
             console.log("Estado de la tarea realizada:", tareaRealizada.estado); // Imprime el estado de cada tarea realizada
-            if (tareaRealizada.estado === "incompleta") {
+            if (tareaRealizada.estado === "completa") {
                 contador++;
             }
         });
