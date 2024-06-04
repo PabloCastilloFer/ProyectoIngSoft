@@ -13,7 +13,6 @@ const tareaSchema = new Schema({
     descripcionTarea: {
         type: String,
         required: true,
-        unique: true,
     },
     tipoTarea: {
         type: String,

@@ -7,7 +7,6 @@ export const createTarea = async (req, res) => {
     try {
         let archivoURL = null;
 
-        // Verificar si req.file está definido
         if (req.file) {
             const archivo = req.file.filename;
             archivoURL = `http://${HOST}:${PORT}/api/tarea/src/upload/` + archivo;
@@ -51,19 +50,20 @@ export const getTareas = async (req, res) => {
 };
 
 export const getTarea = async (req, res) => {
-    const { nombreTarea } = req.params;
+    const { idTarea } = req.params;
     try {
-        const tareaEncontrada = await tarea.findOne({ nombreTarea });
+        const tareaEncontrada = await tarea.findOne({ idTarea });
         res.status(200).json(tareaEncontrada);
     } catch (error) {
         res.status(404).json({ message: error.message })
     }
 };
 
-export const deleteTarea = async (req, res) => {
-    const { nombreTarea } = req.params;
+
+export const deleteTareaById = async (req, res) => {
     try {
-        await tarea.findOneAndDelete(nombreTarea);
+        const { idTarea } = req.params;
+        await tarea.findOneAndDelete({ idTarea });
         res.status(200).json({ message: "Tarea eliminada" });
     } catch (error) {
         res.status(404).json({ message: error.message });
@@ -116,8 +116,8 @@ export const updateTarea = async (req, res) => {
 
 export const updateNewTarea = async (req, res) => {
     try {
-        const { nombreTarea } = req.params;
-        const tareaOriginal = await tarea.findOne({ nombreTarea });
+        const { idTarea } = req.params;
+        const tareaOriginal = await tarea.findOne({ idTarea });
 
         if (!tareaOriginal) {
             return res.status(404).json({ message: "Tarea no encontrada" });
@@ -125,14 +125,14 @@ export const updateNewTarea = async (req, res) => {
 
         const archivo = req.file ? req.file.filename : tareaOriginal.archivo.split('/').pop();
         const URL = `http://${HOST}:${PORT}/api/tarea/src/upload/`;
-        const idTarea = uuidv4();
+        const idTareaa = uuidv4();
 
         const nuevaTarea = {
             nombreTarea: req.body.nombreTarea || tareaOriginal.nombreTarea,
             descripcionTarea: req.body.descripcionTarea || tareaOriginal.descripcionTarea,
             tipoTarea: req.body.tipoTarea || tareaOriginal.tipoTarea,
             estado: req.body.estado || tareaOriginal.estado,
-            idTarea: idTarea,
+            idTarea: idTareaa,
             archivo: req.file ? URL + archivo : tareaOriginal.archivo
         };
 
