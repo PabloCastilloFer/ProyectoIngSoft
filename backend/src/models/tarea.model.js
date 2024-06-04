@@ -57,7 +57,7 @@ const tareaSchema = new Schema({
     },
     archivo: {
         type: String,
-        required: true,
+        required: false,
     },
     
     idTarea: {
@@ -74,9 +74,8 @@ const tareaSchema = new Schema({
         }
     });
 
-// Función para generar un ID aleatorio único
 const generateRandomID = () => {
-    const idLength = 5; // Longitud deseada del ID
+    const idLength = 5;
     const characters = '0123456789';
     let id = '';
     for (let i = 0; i < idLength; i++) {
@@ -85,7 +84,6 @@ const generateRandomID = () => {
     return id;
 };
 
-// Middleware para generar un ID único antes de guardar una tarea
 tareaSchema.pre('save', function (next) {
     if (!this.idTarea) {
         this.idTarea = generateRandomID();

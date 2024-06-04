@@ -9,7 +9,7 @@ router.use(authenticationMiddleware);
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './src/upload/'); // Se define la carpeta de destino donde se guardarán los archivos
+        cb(null, './src/upload/'); 
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname);
@@ -37,8 +37,8 @@ router.post('/', upload.single("archivo"), isSupervisor, createTarea);
 router.get('/', isSupervisor, getTareas);
 router.get('/:nombreTarea', isSupervisor, getTarea);
 router.delete('/:nombreTarea', isSupervisor, deleteTarea);
-router.put('/:idTarea', upload.single("archivo"),isSupervisor, updateTarea); //modificar nombretarea por idtarea
-router.post('/:nombreTarea', upload.single("archivo"), isSupervisor, updateNewTarea); //modificar nombretarea por idtarea
+router.put('/:idTarea', upload.single("archivo"),isSupervisor, updateTarea);
+router.post('/:nombreTarea', upload.single("archivo"), isSupervisor, updateNewTarea);
 router.use(handleFileSizeLimit); // Aplicar middleware para manejar el error de límite de tamaño de archivo
 
 
