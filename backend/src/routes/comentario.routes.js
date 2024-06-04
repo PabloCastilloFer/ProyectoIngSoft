@@ -1,6 +1,7 @@
 import express from "express";
 import {crearComentario,obtenerComentariosPorRut,actualizarComentario,eliminarComentarioPorId,obtenerComentarios} from "../controllers/comentario.controller.js";
 import { isSupervisor } from "../middlewares/authorization.middleware.js";
+import{ isEmpleado } from "../middlewares/authorization.middleware.js";
 
 const router = express.Router();
 

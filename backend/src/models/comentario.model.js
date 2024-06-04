@@ -32,6 +32,4 @@ const comentarioSchema = new Schema(
   { collection: "comentarios", versionKey: false, timestamps: true }
 );
 
-comentarioSchema.index({ RutAsignado: 1, tarea: 1 }, { unique: true });
-
 export default model("Comentario", comentarioSchema);

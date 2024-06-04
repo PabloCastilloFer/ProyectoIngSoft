@@ -122,9 +122,7 @@ export async function generatePDF(req, res) {
     table.rows.push([user.username, user.rut, user.email, roles, hoursWorked, tareasCompletas, tareasIncompletas, '']);
   }
 
-  dataCommentResults.forEach(comment => {
-    table.rows.push(['', '', '', '', '', '','', comment.comentario]);
-  });
+
 
 
   try {
