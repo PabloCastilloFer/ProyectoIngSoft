@@ -128,7 +128,7 @@ export async function generatePDF(req, res) {
   });
 
   dataCommentResults.forEach(comment => {
-    table.rows.push(['', '', '', '', '', '', comment.comentario]);
+    table.rows.push(['', '', '', '', '', '','', comment.comentario]);
   });
 
 
@@ -142,13 +142,15 @@ export async function generatePDF(req, res) {
   async function calculateHoursWorkedForUser(user) {
     let totalHours = 0;
     if (dataTicketResults) {
-      const userTickets = dataTicketResults.filter(ticket => ticket.RutAsignado === user.rut);
-      userTickets.forEach(ticket => {
-        totalHours += calculateHoursWorked(ticket.Inicio, ticket.Fin);
-      });
+        const userTickets = dataTicketResults.filter(ticket => ticket.RutAsignado === user.rut);
+        userTickets.forEach(ticket => {
+            const hoursWorked = calculateHoursWorked(ticket.Inicio, ticket.Fin);
+            console.log('Horas trabajadas para el ticket:', hoursWorked); // Agregar console.log aquí
+            totalHours += hoursWorked;
+        });
     }
     return totalHours;
-  }
+}
   
   function calculateHoursWorked(startDate, endDate) {
     const startDateTime = new Date(startDate);
