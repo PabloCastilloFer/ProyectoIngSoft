@@ -28,19 +28,26 @@ const crearTareaRealizada = async (req, res) => {
         }
 
         // Verificar si la tarea está asignada al usuario
-        const ticket = await Ticket.findOne({ 'Historial.RutAsignado': req.params.rutUsuario });
-        
+        const ticket = await Ticket.findOne({ TareaID: TareaID, 'Historial.RutAsignado': req.params.rutUsuario });
+
         if (!ticket) {
             return res.status(404).json({ message: 'Tarea no asignada al usuario' });
         }
 
+        // Verificar si la tarea está en el historial del ticket y asignada al usuario
+        const tareaAsignada = ticket.Historial.find(historial => 
+            historial.RutAsignado === req.params.rutUsuario && ticket.TareaID === TareaID
+        );
+
+        if (!tareaAsignada) {
+            return res.status(404).json({ message: 'Tarea no asignada en el historial del usuario' });
+        }
+
+        // Buscar la tarea
         const tarea = await Tarea.findOne({ idTarea: TareaID });
         if (!tarea) {
             return res.status(404).json({ message: 'Tarea no encontrada' });
         }
-
-
-
         // Verificar si se está dentro del plazo
         const now = new Date();
         const inicio = new Date(ticket.Inicio.$date);
@@ -85,9 +92,9 @@ const crearTareaRealizada = async (req, res) => {
         const response = {
             id: tareaRealizada._id,
             tarea: {
-                nombre: tareaRealizada.tarea.nombreTarea,
-                descripcion: tareaRealizada.tarea.descripcionTarea,
-                tipo: tareaRealizada.tarea.tipoTarea,
+                nombreTarea: tarea.nombreTarea,
+                descripcionTarea: tarea.descripcionTarea,
+                tipoTarea: tarea.tipoTarea,
             },
             ticket: {
                 inicio: ticket.Inicio,
@@ -219,9 +226,9 @@ const obtenerTareasCompletas = async (req, res) => {
             return {
                 id: tareaRealizada._id,
                 tarea: {
-                    nombre: tarea.nombre,
-                    descripcion: tarea.descripcion,
-                    tipo: tarea.tipo,
+                    nombreTarea: tarea.nombreTarea,
+                    descripcion: tarea.descripcionTarea,
+                    tipoTarea: tarea.tipoTarea,
                 },
                 ticket: {
                     inicio: ticket.Inicio,
@@ -264,9 +271,9 @@ const obtenerTareasIncompletas = async (req, res) => {
             return {
                 id: tareaRealizada._id,
                 tarea: {
-                    nombre: tarea.nombre,
-                    descripcion: tarea.descripcion,
-                    tipo: tarea.tipo,
+                    nombreTarea: tarea.nombreTarea,
+                    descripcion: tarea.descripcionTarea,
+                    tipoTarea: tarea.tipoTarea,
                 },
                 ticket: {
                     inicio: ticket.Inicio,
@@ -310,9 +317,9 @@ const obtenerTareasNoRealizadas = async (req, res) => {
             return {
                 id: tareaRealizada._id,
                 tarea: {
-                    nombre: tarea.nombre,
-                    descripcion: tarea.descripcion,
-                    tipo: tarea.tipo,
+                    nombreTarea: tarea.nombreTarea,
+                    descripcion: tarea.descripcionTarea,
+                    tipoTarea: tarea.tipoTarea,
                 },
                 ticket: {
                     inicio: ticket.Inicio,
