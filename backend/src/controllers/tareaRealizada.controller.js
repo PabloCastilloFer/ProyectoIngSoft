@@ -3,6 +3,8 @@ import Tarea from '../models/tarea.model.js';
 import Ticket from '../models/ticket.model.js';
 import { HOST, PORT } from '../config/configEnv.js';
 import {crearTareaRealizadaSchema} from '../schema/tareaRealizada.schema.js';
+import sgMail from "@sendgrid/mail";
+import { API_KEY } from "../config/configEnv.js";
 
 // Crear una nueva tarea realizada
 
@@ -27,10 +29,17 @@ const crearTareaRealizada = async (req, res) => {
 
         // Verificar si la tarea está asignada al usuario
         const ticket = await Ticket.findOne({ 'Historial.RutAsignado': req.params.rutUsuario });
-
+        
         if (!ticket) {
             return res.status(404).json({ message: 'Tarea no asignada al usuario' });
         }
+
+        const tarea = await Tarea.findOne({ idTarea: TareaID });
+        if (!tarea) {
+            return res.status(404).json({ message: 'Tarea no encontrada' });
+        }
+
+
 
         // Verificar si se está dentro del plazo
         const now = new Date();
@@ -43,7 +52,8 @@ const crearTareaRealizada = async (req, res) => {
         if (now.getTime() > fin.getTime()) {
             return res.status(400).json({ message: 'Tarea después del plazo valido' });
         }
-
+        
+       
         // Verificar si el estado es válido
         const estadosPermitidos = ['completa', 'incompleta', 'no realizada'];
 
@@ -88,6 +98,24 @@ const crearTareaRealizada = async (req, res) => {
             archivoAdjunto: tareaRealizada.archivoAdjunto,
             fechaCreacion: tareaRealizada.createdAt,
         };
+
+        // Enviar un correo electrónico al supervisor para notificarle que se ha completado una tarea
+        sgMail.setApiKey(API_KEY);
+        const msg = {
+            to: "luis.acuna2101@alumnos.ubiobio.cl",
+            from: "repondernttareas@gmail.com",
+            subject: "Tarea Realizada",
+            text: `Aviso de tarea realizada:'\nnombre tarea: ${tarea.nombreTarea}\nEstado: ${tareaRealizada.estado}\nComentario: ${tareaRealizada.comentario}`,
+        };
+
+        sgMail
+            .send(msg)
+            .then(() => {
+                console.log('Correo enviado');
+            })
+            .catch((error) => {
+                console.error('Error al enviar el correo:', error);
+            });
 
         // Respuesta exitosa
         res.status(201).json({
