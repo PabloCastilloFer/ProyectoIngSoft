@@ -50,15 +50,16 @@ const crearTareaRealizada = async (req, res) => {
         }
         // Verificar si se está dentro del plazo
         const now = new Date();
-        const inicio = new Date(ticket.Inicio.$date);
-        const fin = new Date(ticket.Fin.$date);
+        const inicio = new Date(ticket.Inicio);
+        const fin = new Date(ticket.Fin);
 
-        if (now.getTime() < inicio.getTime()) {
+        if (now < inicio) {
             return res.status(400).json({ message: 'Aun no comienza la tarea' });
         }
-        if (now.getTime() > fin.getTime()) {
+        if (now > fin) {
             return res.status(400).json({ message: 'Tarea después del plazo valido' });
         }
+
         
        
         // Verificar si el estado es válido
