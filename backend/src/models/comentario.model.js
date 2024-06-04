@@ -1,6 +1,5 @@
 import { Schema, model } from "mongoose";
 import User from "./user.model.js"; // Asegúrate de importar el modelo User correctamente
-import tarea from "./tarea.model.js"; // Asegúrate de importar el modelo tarea correctamente
 
 const comentarioSchema = new Schema(
   {

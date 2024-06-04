@@ -1,7 +1,7 @@
 import User from '../models/user.model.js';
 import Ticket from '../models/ticket.model.js';
 import Comentario from '../models/comentario.model.js';
-import TareaRealizada from '../models/tarea.model.js';
+import TareaRealizada from '../models/tareaRealizada.model.js';
 import PDFDocument from 'pdfkit-table';
 import Role from '../models/role.model.js'; 
 import fs from 'fs';
@@ -52,7 +52,6 @@ async function dataTask() {
 }
 
 
-
 export async function generatePDF(req, res) {
   const doc = new PDFDocument({ margin: 30, size: 'A4' });
 
@@ -67,6 +66,12 @@ export async function generatePDF(req, res) {
   } catch (error) {
     return res.status(500).send('Error al obtener los datos');
   }
+  console.log('Data de usuario:', dataUserResults);
+  console.log('Data de tickets:', dataTicketResults);
+  console.log('Data de comentarios:', dataCommentResults);
+  console.log('Data de tareas realizadas:', dataTaskResults);
+
+    
 
   const randomFileName = uuidv4();
   const __filename = fileURLToPath(import.meta.url);
