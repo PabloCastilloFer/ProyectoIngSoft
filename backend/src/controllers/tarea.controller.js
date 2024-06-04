@@ -1,14 +1,18 @@
 import tarea from '../models/tarea.model.js';
 import { HOST, PORT } from '../config/configEnv.js';
 import { crearTareaSchema } from '../schema/tarea.schema.js';
-import { v4 as uuidv4 } from 'uuid'; // Importar la función uuidv4
+import { v4 as uuidv4 } from 'uuid';
 
 export const createTarea = async (req, res) => {
     try {
-        const archivo = req.file.filename;
-        const URL = `http://${HOST}:${PORT}/api/tarea/src/upload/`;
+        let archivoURL = null;
 
-        // Generar una ID aleatoria utilizando uuidv4
+        // Verificar si req.file está definido
+        if (req.file) {
+            const archivo = req.file.filename;
+            archivoURL = `http://${HOST}:${PORT}/api/tarea/src/upload/` + archivo;
+        }
+
         const idTarea = uuidv4();
 
         const nuevaTarea = {
@@ -16,16 +20,18 @@ export const createTarea = async (req, res) => {
             descripcionTarea: req.body.descripcionTarea,
             tipoTarea: req.body.tipoTarea,
             estado: 'nueva',
-            idTarea: idTarea, // Usar la ID generada
-            archivo: URL + archivo
+            idTarea: idTarea,
+            archivo: archivoURL
         };
+
         const { error } = crearTareaSchema.validate(nuevaTarea);
         if (error) {
             return res.status(400).json({ error: error.message });
         }
 
         const newTarea = new tarea(nuevaTarea);
-        const tareaGuardada = await newTarea.save();  
+        const tareaGuardada = await newTarea.save();
+
         res.status(201).json({
             message: "Tarea creada exitosamente!",
             tarea: tareaGuardada
@@ -34,7 +40,6 @@ export const createTarea = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
 
 export const getTareas = async (req, res) => {
     try {
@@ -67,7 +72,6 @@ export const deleteTarea = async (req, res) => {
 
 export const updateTarea = async (req, res) => {
     try {
-        // Generar una ID aleatoria utilizando uuidv4
         const idTarea = uuidv4();
         const tareaActual = req.params.idTarea;
         const tareaModificada = await tarea.findOne({ idTarea: tareaActual });
