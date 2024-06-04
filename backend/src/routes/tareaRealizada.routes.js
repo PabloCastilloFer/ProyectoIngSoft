@@ -20,6 +20,12 @@ const upload = multer({
     storage: storage,
     limits: {
         fileSize: 5 * 1024 * 1024 // Validación de que el archivo sea como máximo de 5 MB
+    },
+    fileFilter: function (req, file, cb) {
+        if (!file.originalname.match(/\.(pdf)$/)) {
+            return cb(new Error('Solo se permiten archivos PDF'));
+        }
+        cb(null, true);
     }
 });
 
@@ -36,6 +42,7 @@ router.post('/:rutUsuario', upload.single("archivoAdjunto"), isEmpleado, crearTa
 
 // Obtener todas las tareas realizadas
 router.get('/', isEmpleado, obtenerTareasRealizadas);
+
 
 
 // Obtener todas las tareas asignadas a un usuario
