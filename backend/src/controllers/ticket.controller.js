@@ -47,6 +47,16 @@ export const createTicket = async (req, res) => {
       return res.status(400).json({ message: "La fecha de fin de la tarea debe ser después de la fecha de inicio y dentro de los días laborables y el horario de trabajo" });
     }
 
+    const overlappingTicket = await Ticket.findOne({
+      RutAsignado: req.body.RutAsignado,
+      $or: [
+        { Inicio: { $gte: inicio, $lt: fin } },
+        { Fin: { $gt: inicio, $lte: fin } },
+      ],
+    });
+    if (overlappingTicket) {
+      return res.status(400).json({ message: "Ya existe un ticket para esta persona en el mismo horario" });
+    }
 
     const savedTicket = await newTicket.save();
     res.status(201).json(savedTicket);
@@ -111,6 +121,17 @@ export const updateTicket = async (req, res) => {
     const fin = new Date(req.body.Fin);
     if (fin <= inicio || !isValidDate(fin)) {
       return res.status(400).json({ message: "La fecha de fin de la tarea debe ser después de la fecha de inicio y dentro de los días laborables y el horario de trabajo" });
+    }
+
+    const overlappingTicket = await Ticket.findOne({
+      RutAsignado: req.body.RutAsignado,
+      $or: [
+        { Inicio: { $gte: inicio, $lt: fin } },
+        { Fin: { $gt: inicio, $lte: fin } },
+      ],
+    });
+    if (overlappingTicket) {
+      return res.status(400).json({ message: "Ya existe un ticket para esta persona en el mismo horario" });
     }
 
     // Actualizar el ticket con los datos de la solicitud
