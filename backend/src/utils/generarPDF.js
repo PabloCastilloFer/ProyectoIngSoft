@@ -122,11 +122,6 @@ export async function generatePDF(req, res) {
     table.rows.push([user.username, user.rut, user.email, roles, hoursWorked, tareasCompletas, tareasIncompletas, '']);
   }
 
-  dataTicketResults.forEach(ticket => {
-    const hoursWorked = calculateHoursWorked(ticket.Inicio, ticket.Fin);
-    table.rows.push(['', '', '', '', hoursWorked, '', '']);
-  });
-
   dataCommentResults.forEach(comment => {
     table.rows.push(['', '', '', '', '', '','', comment.comentario]);
   });
@@ -192,7 +187,4 @@ export async function generatePDF(req, res) {
     res.status(500).send('Error al escribir el archivo');
   });
 }
-
-
-
 
