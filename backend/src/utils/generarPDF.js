@@ -143,9 +143,10 @@ export async function generatePDF(req, res) {
     let totalHours = 0;
     if (dataTicketResults) {
         const userTickets = dataTicketResults.filter(ticket => ticket.RutAsignado === user.rut);
+        console.log(`Tickets asignados a ${user.rut}:`, userTickets); // Agregar console.log aquí
         userTickets.forEach(ticket => {
             const hoursWorked = calculateHoursWorked(ticket.Inicio, ticket.Fin);
-            console.log('Horas trabajadas para el ticket:', hoursWorked); // Agregar console.log aquí
+            console.log(`Horas trabajadas para el ticket ${ticket._id}: ${hoursWorked}`); // Agregar console.log aquí
             totalHours += hoursWorked;
         });
     }
