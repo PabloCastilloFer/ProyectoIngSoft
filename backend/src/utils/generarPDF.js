@@ -44,20 +44,42 @@ async function dataComment() {
 
 async function dataTask() {
   try {
-    return await TareaRealizada.find().exec();
+    const tareasRealizadas = await TareaRealizada.find().exec();
+    return tareasRealizadas;
   } catch (error) {
     console.error('Error al obtener los datos de la tarea realizada:', error);
     throw error;
   }
 }
 
+const contarTareasPorEstadoPorEmpleador = async (rutEmpleador) => {
+  try {
+    const tareasRealizadas = await TareaRealizada.find({ ticket: rutEmpleador });
+    let tareasCompletas = 0;
+    let tareasIncompletas = 0;
+
+    tareasRealizadas.forEach(tareaRealizada => {
+      if (tareaRealizada.estado === "completa") {
+        tareasCompletas++;
+      } else if (tareaRealizada.estado === "incompleta") {
+        tareasIncompletas++;
+      }
+    });
+
+    return { tareasCompletas, tareasIncompletas };
+  } catch (error) {
+    console.error("Error al contar las tareas por estado por el empleador: ", error);
+    throw new Error("Error al contar las tareas por estado por el empleador");
+  }
+};
+
 
 export async function generatePDF(req, res) {
   const doc = new PDFDocument({ margin: 30, size: 'A4' });
 
-  let dataUserResults, dataTicketResults, dataCommentResults, dataTaskResults;
+  let dataUserResults, dataTicketResults, dataCommentResults, TareaRealizada;
   try {
-    [dataUserResults, dataTicketResults, dataCommentResults, dataTaskResults] = await Promise.all([
+    [dataUserResults, dataTicketResults, dataCommentResults, TareaRealizada] = await Promise.all([
       dataUser(),
       dataTicket(),
       dataComment(),
@@ -69,7 +91,7 @@ export async function generatePDF(req, res) {
   console.log('Data de usuario:', dataUserResults);
   console.log('Data de tickets:', dataTicketResults);
   console.log('Data de comentarios:', dataCommentResults);
-  console.log('Data de tareas realizadas:', dataTaskResults);
+  console.log('Data de tareas realizadas:', TareaRealizada);
 
     
 
@@ -89,14 +111,15 @@ export async function generatePDF(req, res) {
 
   const table = {
     title: { label: 'Informe de rendimiento', color: 'blue' },
-    headers: ['Nombre', 'RUT', 'Email', 'Rol (nombre)', 'Cantidad de horas trabajadas', 'Tareas realizadas', 'Comentarios'],
+    headers: ['Nombre', 'RUT', 'Email', 'Rol (nombre)', 'Cantidad de horas trabajadas', 'Tareas completas', 'Tareas incompletas', 'Comentarios'],
     rows: []
   };
 
   for (const user of dataUserResults) {
     const roles = user.roles.map(role => role.name).join(', ') || 'N/A';
     const hoursWorked = await calculateHoursWorkedForUser(user);
-    table.rows.push([user.username, user.rut, user.email, roles, hoursWorked, '', '']);
+    const { tareasCompletas, tareasIncompletas } = await contarTareasPorEstadoPorEmpleador(user.rut); // Obtener tareas completas e incompletas para el usuario
+    table.rows.push([user.username, user.rut, user.email, roles, hoursWorked, tareasCompletas, tareasIncompletas, '']);
   }
 
   dataTicketResults.forEach(ticket => {
@@ -108,9 +131,6 @@ export async function generatePDF(req, res) {
     table.rows.push(['', '', '', '', '', '', comment.comentario]);
   });
 
-  dataTaskResults.forEach(task => {
-    table.rows.push(['', '', '', '', '', task.tarea, '']);
-  });
 
   try {
     await doc.table(table, { startY: 50 });
