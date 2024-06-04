@@ -1,11 +1,6 @@
 import { Schema, model } from 'mongoose';
 
 const tareaSchema = new Schema({
-    idTarea: {
-        type: String,
-        unique: true,
-        required: true
-    },
     nombreTarea: {
         type: String,
         required: true,
