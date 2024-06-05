@@ -8,7 +8,7 @@ router.use(authenticationMiddleware);
 
 router.post('/', createTicket , isSupervisor);
 router.get('/', getTickets , isSupervisor);
-router.put('/:id', updateTicket, isSupervisor);
+router.put('/task/:id', updateTicket, isSupervisor);
 router.delete('/:id', deleteTicket, isAdmin);
 router.get('/user/:rut', getTicketsByUserRut , isSupervisor);
 router.get('/task/:id', getTicketsByTaskId , isSupervisor);
