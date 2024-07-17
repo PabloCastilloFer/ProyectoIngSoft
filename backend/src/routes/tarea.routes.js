@@ -33,7 +33,7 @@ const handleFileSizeLimit = (err, req, res, next) => {
     }
 };
 
-router.post('/', upload.single("archivo"), isSupervisor, createTarea);
+router.post('/', isSupervisor,upload.single("archivo"), createTarea);
 router.get('/', isSupervisor, getTareas);
 router.get('/:idTarea', isSupervisor, getTarea);
 router.put('/:idTarea', upload.single("archivo"),isSupervisor, updateTarea);
