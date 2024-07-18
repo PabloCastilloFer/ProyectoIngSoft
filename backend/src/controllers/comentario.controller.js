@@ -5,12 +5,7 @@ import Tarea from "../models/tarea.model.js";
 export const crearComentario = async (req, res) => {
   try {
     const { RutAsignado, tareaId, comentario } = req.body;
-    // Agregar logs para depuración
-    console.log('RutAsignado:', RutAsignado);
-    console.log('tareaId:', tareaId);
-    console.log('comentario:', comentario);
 
-    // Verificar si la tarea existe
     const tareaExistente = await Tarea.findOne({ idTarea: tareaId});
     if (!tareaExistente) {
       return res.status(404).json({ mensaje: "La tarea no existe" });
@@ -39,17 +34,29 @@ export const actualizarComentario = async (req, res) => {
     res.status(500).json({ mensaje: "Hubo un error al actualizar el comentario", error: error.message });
   }
 };
-// Controlador para obtener comentarios por el RUT del usuario asignado
+
+
 export const obtenerComentariosPorRut = async (req, res) => {
-  const { rut } = req.params;
+  const { RutAsignado } = req.params;
+
+  console.log('RutAsignado recibido:', RutAsignado); // Log para verificar el parámetro
 
   try {
-    const comentarios = await Comentario.find({ RutAsignado: rut }).populate('tarea');
+    const comentarios = await Comentario.find({ ticket: RutAsignado }).populate('tarea');
+    console.log('Comentarios encontrados:', comentarios); // Log de los comentarios obtenidos
+
+    if (comentarios.length === 0) {
+      return res.status(404).json({ mensaje: 'No se encontraron comentarios para este rut' });
+    }
+
     res.status(200).json(comentarios);
   } catch (error) {
+    console.error('Error al obtener los comentarios:', error); // Log del error
     res.status(500).json({ mensaje: "Hubo un error al obtener los comentarios", error: error.message });
   }
 };
+
+
 // Controlador para eliminar un comentario por su ID
 export const eliminarComentarioPorId = async (req, res) => {
   const { id } = req.params;
