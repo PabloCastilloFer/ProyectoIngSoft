@@ -1,6 +1,6 @@
 import { Router } from "express";
 import multer from 'multer';
-import { createTarea , getTareas , getTarea , deleteTarea , updateTarea } from "../controllers/tarea.controller.js";
+import { createTarea , getTareas , getTarea , updateTarea, updateNewTarea, deleteTareaById } from "../controllers/tarea.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 import { isSupervisor } from "../middlewares/authorization.middleware.js";
 
@@ -9,7 +9,7 @@ router.use(authenticationMiddleware);
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './src/upload/'); // Se define la carpeta de destino donde se guardarán los archivos
+        cb(null, './src/upload/'); 
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname);
@@ -35,9 +35,10 @@ const handleFileSizeLimit = (err, req, res, next) => {
 
 router.post('/', upload.single("archivo"), isSupervisor, createTarea);
 router.get('/', isSupervisor, getTareas);
-router.get('/:nombreTarea', isSupervisor, getTarea);
-router.delete('/:nombreTarea', isSupervisor, deleteTarea);
-router.put('/:nombreTarea', isSupervisor, updateTarea);
+router.get('/:idTarea', isSupervisor, getTarea);
+router.put('/:idTarea', upload.single("archivo"),isSupervisor, updateTarea);
+router.post('/:idTarea', upload.single("archivo"), isSupervisor, updateNewTarea);
+router.delete('/:idTarea', isSupervisor, deleteTareaById);
 router.use(handleFileSizeLimit); // Aplicar middleware para manejar el error de límite de tamaño de archivo
 
 

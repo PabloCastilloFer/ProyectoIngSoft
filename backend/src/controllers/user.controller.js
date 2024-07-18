@@ -5,6 +5,7 @@ import UserService from "../services/user.service.js";
 import { userBodySchema, userIdSchema } from "../schema/user.schema.js";
 import { handleError } from "../utils/errorHandler.js";
 
+
 /**
  * Obtiene todos los usuarios
  * @param {Object} req - Objeto de petición
