@@ -122,14 +122,7 @@ export async function generatePDF(req, res) {
     table.rows.push([user.username, user.rut, user.email, roles, hoursWorked, tareasCompletas, tareasIncompletas, '']);
   }
 
-  dataTicketResults.forEach(ticket => {
-    const hoursWorked = calculateHoursWorked(ticket.Inicio, ticket.Fin);
-    table.rows.push(['', '', '', '', hoursWorked, '', '']);
-  });
 
-  dataCommentResults.forEach(comment => {
-    table.rows.push(['', '', '', '', '', '','', comment.comentario]);
-  });
 
 
   try {
@@ -143,9 +136,10 @@ export async function generatePDF(req, res) {
     let totalHours = 0;
     if (dataTicketResults) {
         const userTickets = dataTicketResults.filter(ticket => ticket.RutAsignado === user.rut);
+        console.log(`Tickets asignados a ${user.rut}:`, userTickets); // Agregar console.log aquí
         userTickets.forEach(ticket => {
             const hoursWorked = calculateHoursWorked(ticket.Inicio, ticket.Fin);
-            console.log('Horas trabajadas para el ticket:', hoursWorked); // Agregar console.log aquí
+            console.log(`Horas trabajadas para el ticket ${ticket._id}: ${hoursWorked}`); // Agregar console.log aquí
             totalHours += hoursWorked;
         });
     }
@@ -191,7 +185,4 @@ export async function generatePDF(req, res) {
     res.status(500).send('Error al escribir el archivo');
   });
 }
-
-
-
 

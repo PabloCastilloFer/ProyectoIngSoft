@@ -11,12 +11,12 @@ export const crearComentario = async (req, res) => {
     console.log('comentario:', comentario);
 
     // Verificar si la tarea existe
-    const tareaExistente = await Tarea.findOne({ idTarea: tareaId });
+    const tareaExistente = await Tarea.findOne({ idTarea: tareaId});
     if (!tareaExistente) {
       return res.status(404).json({ mensaje: "La tarea no existe" });
     }
 
-    const nuevoComentario = await Comentario.create({ RutAsignado, tarea: tareaExistente._id, comentario });
+    const nuevoComentario = await Comentario.create({ ticket: RutAsignado, tarea: tareaId, comentario });
     res.status(201).json({ mensaje: "Comentario creado correctamente", comentario: nuevoComentario });
   } catch (error) {
     res.status(400).json({ mensaje: "Hubo un error al crear el comentario", error: error.message });

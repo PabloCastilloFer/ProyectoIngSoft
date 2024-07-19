@@ -3,54 +3,55 @@ import Tarea from '../models/tarea.model.js';
 import Ticket from '../models/ticket.model.js';
 import { HOST, PORT } from '../config/configEnv.js';
 import {crearTareaRealizadaSchema} from '../schema/tareaRealizada.schema.js';
+import sgMail from "@sendgrid/mail";
+import { API_KEY } from "../config/configEnv.js";
 
 // Crear una nueva tarea realizada
 
 const crearTareaRealizada = async (req, res) => {
     try {
+        console.log("Body de la solicitud:", req.body);
 
+        // Validar los datos de entrada utilizando el esquema Joi
         const { error, value } = crearTareaRealizadaSchema.validate(req.body);
 
-        // Verificar si hay errores de validación
         if (error) {
             return res.status(400).json({ message: error.details[0].message });
         }
-        // Extraer información de la solicitud
+
+        // Extraer información de la solicitud validada
         const { TareaID, comentario, estado } = value;
-            if (!TareaID || !comentario || !estado) {
-                return res.status(400).json({ message: 'Todos los campos son obligatorios: TareaID, comentario, estado' });
-            };
-            if (typeof TareaID !== 'string' || TareaID.trim() === '') {
-                return res.status(400).json({ message: 'TareaID debe ser una cadena no vacía' });};
 
-        console.log("Valor de estado recibido:", estado); 
-        const rutUsuario = req.params.rutUsuario;
-        const URL = `http://${HOST}:${PORT}/api/tareaRealizada/src/upload/`;
-        const archivoAdjunto = req.file.filename;
-        
-     const moment = require('moment');
-
-    // Verificar si la fecha de inicio y fin están en el formato correcto
-        if (!moment(ticket.Inicio, 'YYYY-MM-DDTHH:mm:ssZ', true).isValid() || 
-                !moment(ticket.Fin, 'YYYY-MM-DDTHH:mm:ssZ', true).isValid()) {
-            return res.status(400).json({ message: 'Formato de fecha y hora inválido' });
-}
+        // Verificar que todos los campos requeridos estén presentes
+        if (!TareaID || !comentario || !estado) {
+            return res.status(400).json({ message: 'Todos los campos son obligatorios: TareaID, comentario, estado' });
+        }
 
         // Verificar si la tarea está asignada al usuario
-        const ticket = await Ticket.findOne({ RutAsignado: rutUsuario  });
-        console.log("Consulta de Ticket: ", { RutAsignado: rutUsuario });
-        console.log("Ticket encontrado: ", ticket);
+        const ticket = await Ticket.findOne({ TareaID: TareaID, 'Historial.RutAsignado': req.params.rutUsuario });
+
         if (!ticket) {
             return res.status(404).json({ message: 'Tarea no asignada al usuario' });
         }
-        
+
+        // Verificar si la tarea está en el historial del ticket y asignada al usuario
+        const tareaAsignada = ticket.Historial.find(historial => 
+            historial.RutAsignado === req.params.rutUsuario && ticket.TareaID === TareaID
+        );
+
+        if (!tareaAsignada) {
+            return res.status(404).json({ message: 'Tarea no asignada en el historial del usuario' });
+        }
+
+        // Buscar la tarea
+        const tarea = await Tarea.findOne({ idTarea: TareaID });
+        if (!tarea) {
+            return res.status(404).json({ message: 'Tarea no encontrada' });
+        }
         // Verificar si se está dentro del plazo
         const now = new Date();
         const inicio = new Date(ticket.Inicio);
         const fin = new Date(ticket.Fin);
-        console.log("Fecha actual:", now);
-        console.log("Fecha de inicio:", inicio);
-        console.log("Fecha de fin:", fin);
 
         if (now < inicio) {
             return res.status(400).json({ message: 'Aun no comienza la tarea' });
@@ -59,59 +60,70 @@ const crearTareaRealizada = async (req, res) => {
             return res.status(400).json({ message: 'Tarea después del plazo valido' });
         }
 
+        
+       
+        // Verificar si el estado es válido
         const estadosPermitidos = ['completa', 'incompleta', 'no realizada'];
-        console.log("Estados permitidos:", estadosPermitidos);
-        console.log("Estado recibido:", estado);
+
         if (!estadosPermitidos.includes(estado)) {
-            console.log("Estado no válido");
             return res.status(400).json({ message: 'Estado no válido' });
-        } else {
-            console.log("Estado válido");
         }
 
         // Verificar si la tarea ya fue realizada
-        const tareaRealizadaExistente = await TareaRealizada.findOne({ ticket:ticket.RutAsignado });
+        const tareaRealizadaExistente = await TareaRealizada.findOne({ tarea: TareaID, ticket: ticket.RutAsignado });
+
         if (tareaRealizadaExistente) {
             return res.status(400).json({ message: 'Ya se ha respondido a esta tarea' });
         }
 
         // Crear nueva tarea realizada
+        const URL = `http://${HOST}:${PORT}/api/tareaRealizada/src/upload/`;
         const nuevaTareaRealizada = new TareaRealizada({
             tarea: TareaID,
-            ticket: ticket.RutAsignado, 
-            archivoAdjunto:  URL + archivoAdjunto,
-            estado:req.body.estado
+            ticket: ticket.RutAsignado,
+            archivoAdjunto: req.file ? URL + req.file.filename : null,
+            estado: estado,
+            comentario: comentario
         });
 
-        // Guardar la tarea realizada
+        // Guardar la tarea realizada en la base de datos
         const tareaRealizada = await nuevaTareaRealizada.save();
 
-        // Actualizar estado de la tarea original
-        //tarea.estado = estado;
-        //await tarea.save();
-        
-        // Poblar las referencias de tarea y ticket
-        const tareaRealizadaPopulada = await TareaRealizada.findById(tareaRealizada._id)
-            .populate('tarea', 'nombreTarea', 'descripcionTarea','tipoTarea') // Selecciona los campos deseados de tarea
-            .populate('ticket', 'Inicio' ,'Fin'); // Selecciona los campos deseados de ticket
-
-        // Crear un objeto de respuesta con las propiedades deseadas
+        // Construir la respuesta
         const response = {
-            id: tareaRealizadaPopulada._id,
+            id: tareaRealizada._id,
             tarea: {
-                nombre: tareaRealizadaPopulada.tarea.nombreTarea,
-                descripcion: tareaRealizadaPopulada.tarea.descripcionTarea,
-                tipo: tareaRealizadaPopulada.tarea.tipoTarea,
+                nombreTarea: tarea.nombreTarea,
+                descripcionTarea: tarea.descripcionTarea,
+                tipoTarea: tarea.tipoTarea,
             },
             ticket: {
-                inicio: tareaRealizadaPopulada.ticket.Inicio,
-                fin: tareaRealizadaPopulada.ticket.Fin,
+                inicio: ticket.Inicio,
+                fin: ticket.Fin,
             },
-            estado: tareaRealizadaPopulada.estado,
-            comentario: tareaRealizadaPopulada.comentario,
-            archivoAdjunto: tareaRealizadaPopulada.archivoAdjunto,
-            fechaCreacion: tareaRealizadaPopulada.createdAt,
+            estado: tareaRealizada.estado,
+            comentario: tareaRealizada.comentario,
+            archivoAdjunto: tareaRealizada.archivoAdjunto,
+            fechaCreacion: tareaRealizada.createdAt,
         };
+
+        // Enviar un correo electrónico al supervisor para notificarle que se ha completado una tarea
+        sgMail.setApiKey(API_KEY);
+        const msg = {
+            to: "luis.acuna2101@alumnos.ubiobio.cl",
+            from: "repondernttareas@gmail.com",
+            subject: "Tarea Realizada",
+            text: `Aviso de tarea realizada:'\nnombre tarea: ${tarea.nombreTarea}\nEstado: ${tareaRealizada.estado}\nComentario: ${tareaRealizada.comentario}`,
+        };
+
+        sgMail
+            .send(msg)
+            .then(() => {
+                console.log('Correo enviado');
+            })
+            .catch((error) => {
+                console.error('Error al enviar el correo:', error);
+            });
 
         // Respuesta exitosa
         res.status(201).json({
@@ -120,15 +132,13 @@ const crearTareaRealizada = async (req, res) => {
         });
     } catch (error) {
         console.error("Error al crear tarea realizada: ", error);
-        // Eliminar el archivo subido si existe
-        if (req.file) {
-            const fs = require('fs');
-            fs.unlinkSync(req.file.path); // Elimina el archivo subido
-        }
-        res.status(500).json({ message: 'Hubo un error al procesar la solicitud' });
 
+        // Si se produce un error, manejarlo adecuadamente
+        res.status(500).json({ message: 'Hubo un error al procesar la solicitud' });
     }
 };
+
+
 
 
 // Obtener todas las tareas realizadas
@@ -217,9 +227,9 @@ const obtenerTareasCompletas = async (req, res) => {
             return {
                 id: tareaRealizada._id,
                 tarea: {
-                    nombre: tarea.nombre,
-                    descripcion: tarea.descripcion,
-                    tipo: tarea.tipo,
+                    nombreTarea: tarea.nombreTarea,
+                    descripcion: tarea.descripcionTarea,
+                    tipoTarea: tarea.tipoTarea,
                 },
                 ticket: {
                     inicio: ticket.Inicio,
@@ -262,9 +272,9 @@ const obtenerTareasIncompletas = async (req, res) => {
             return {
                 id: tareaRealizada._id,
                 tarea: {
-                    nombre: tarea.nombre,
-                    descripcion: tarea.descripcion,
-                    tipo: tarea.tipo,
+                    nombreTarea: tarea.nombreTarea,
+                    descripcion: tarea.descripcionTarea,
+                    tipoTarea: tarea.tipoTarea,
                 },
                 ticket: {
                     inicio: ticket.Inicio,
@@ -308,9 +318,9 @@ const obtenerTareasNoRealizadas = async (req, res) => {
             return {
                 id: tareaRealizada._id,
                 tarea: {
-                    nombre: tarea.nombre,
-                    descripcion: tarea.descripcion,
-                    tipo: tarea.tipo,
+                    nombreTarea: tarea.nombreTarea,
+                    descripcion: tarea.descripcionTarea,
+                    tipoTarea: tarea.tipoTarea,
                 },
                 ticket: {
                     inicio: ticket.Inicio,
