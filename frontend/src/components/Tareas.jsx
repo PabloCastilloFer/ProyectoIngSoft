@@ -1,7 +1,7 @@
 import 'bulma/css/bulma.min.css';
 import { useState, useEffect } from 'react';
 import { getAllTareas, deleteTarea } from '../services/tarea.service.js';
-import { showDeleteTarea } from '../helpers/swaHelper.js';
+import { showDeleteTarea , DeleteQuestion } from '../helpers/swaHelper.js';
 import Navbar from '../components/navbar.jsx';
 import axios from '../services/root.service.js';
 
@@ -35,12 +35,16 @@ export default function VerTareas() {
     };
 
     const handleDeleted = async (tareaToDelete) => {
-        const response = await deleteTarea(tareaToDelete);
-        if (response.status === 200) {
+        const isConfirmed = await DeleteQuestion();
+        console.log(isConfirmed)
+        if (isConfirmed) {
+          const response = await deleteTarea(tareaToDelete);
+          if (response.status === 200) {
             await showDeleteTarea();
-            fetchData();
+          }
+          window.location.reload();
         }
-    };
+      };
 
     const handleArchivo = async (url) => {
         try {
