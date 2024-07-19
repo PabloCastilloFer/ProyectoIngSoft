@@ -1,12 +1,13 @@
-import 'tailwindcss/tailwind.css';
+import 'bulma/css/bulma.min.css';
 import { useEffect, useState } from 'react';
-import { showError } from '../helpers/swaHelper.js';
+import { showError , showConfirmFormTarea } from '../helpers/swaHelper.js';
 import { useForm } from 'react-hook-form'; 
 import { createTarea } from '../services/tarea.service.js';
 import { useAuth } from '../context/AuthContext'; // Importa el contexto de autenticación
+import Navbar from '../components/navbar.jsx';
 
 export default function FormSupervisor() {
-    const jwt = useAuth(); // Obtiene el token JWT del contexto de autenticación
+    const jwt = useAuth();
 
     const userStorage = localStorage.getItem('user');
     const userDat = JSON.parse(userStorage); // Corregido
@@ -16,8 +17,6 @@ export default function FormSupervisor() {
     const [nombreTarea, setNombreTarea] = useState('');
     const [descripcionTarea, setDescripcionTarea] = useState('');
     const [tipoTarea, setTipoTarea] = useState('');
-
-
     const { register, formState: { errors }, handleSubmit, reset } = useForm();
 
     const onSubmit = async (data) => {
@@ -33,9 +32,9 @@ export default function FormSupervisor() {
             const response = await createTarea(formData); // Pasa el token JWT a la función createTarea
             console.log(response)
             if (response.status === 201) {
-                await showConfirmForm();
-                reset();
+                await showConfirmFormTarea();
                 setArchivo(null);
+                reset(); // Resetea los campos del formulario
             } else if (response.status === 400) {
                 await showError(response.data[0].response.data.message);
             } else if (response.status === 500) {
@@ -59,70 +58,77 @@ export default function FormSupervisor() {
     };
 
     return (
-        <div className="max-w-md mx-auto bg-white shadow-md rounded-lg p-6">
-            <h2 className="text-2xl font-semibold mb-4">Formulario de tarea: </h2>
-            <p className="text-gray-600 mb-6">Ingresa los detalles de tu nueva tarea.</p>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nombreTarea">
-                        Nombre de Tarea: 
-                    </label>
-                    <input
-                        id="nombreTarea"
-                        type="text"
-                        placeholder="Ej. Diseñar logotipo"
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        {...register('nombreTarea', { required: true })}
-                    />
-                    {errors.nombreTarea && <span className="text-red-500 text-sm">Este campo es obligatorio</span>}
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="tipoTarea">
-                        Tipo de Tarea:
-                    </label>
-                    <select
-                        id="tipoTarea"
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        {...register('tipoTarea', { required: true })}
-                        onChange={(e) => setTipoTarea(e.target.value)}
-                    >
-                        <option  value="simple">simple</option>
-                        <option value="extensa">extensa</option>
-                    </select>
-                    {errors.tipoTarea && <span className="text-red-500 text-sm">Este campo es obligatorio</span>}
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="descripcionTarea">
-                        Descripción de Tarea: 
-                    </label>
-                    <textarea
-                        id="descripcionTarea"
-                        placeholder="Describe la tarea..."
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        {...register('descripcionTarea', { required: true })}
-                    />
-                    {errors.descripcionTarea && <span className="text-red-500 text-sm">Este campo es obligatorio</span>}
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="archivoAdjunto">
-                        Archivo Adjunto: 
-                    </label>
-                    <input
-                        id="archivoAdjunto"
-                        type="file"
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        onChange={handleArchivoChange}
-                    />
-                </div>
-                <div className="flex items-center justify-between">
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="submit"
-                    >
-                        Guardar Tarea
-                    </button>
-                </div>
-            </form>
+        <div className="container is-max-desktop">
+            <Navbar/>
+            <div className="box">
+                <h2 className="title is-4">Formulario para crear tarea</h2>
+                <p className="subtitle is-6"><h2 className="title is-6">Ingresa los detalles de tu nueva tarea</h2></p>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="field">
+                        <label className="label" htmlFor="nombreTarea">Nombre de la tarea:</label>
+                        <div className="control">
+                            <input
+                                id="nombreTarea"
+                                type="text"
+                                placeholder="Ej. Diseñar logotipo"
+                                className={`input ${errors.nombreTarea ? 'is-danger' : ''}`}
+                                {...register('nombreTarea', { required: true })}
+                            />
+                        </div>
+                        {errors.nombreTarea && <p className="help is-danger">Este campo es obligatorio</p>}
+                    </div>
+                    <div className="field">
+                        <label className="label" htmlFor="tipoTarea">Tipo de tarea:</label>
+                        <div className="control">
+                            <div className={`select ${errors.tipoTarea ? 'is-danger' : ''}`}>
+                                <select
+                                    id="tipoTarea"
+                                    {...register('tipoTarea', { required: true })}
+                                    onChange={(e) => setTipoTarea(e.target.value)}
+                                >
+                                    <option value="simple">Selecciona un tipo</option>
+                                    <option value="simple">simple</option>
+                                    <option value="extensa">extensa</option>
+                                </select>
+                            </div>
+                        </div>
+                        {errors.tipoTarea && <p className="help is-danger">Este campo es obligatorio</p>}
+                    </div>
+                    <div className="field">
+                        <label className="label" htmlFor="descripcionTarea">Descripción de la Tarea:</label>
+                        <div className="control">
+                            <textarea
+                                id="descripcionTarea"
+                                placeholder="Describe la tarea..."
+                                className={`textarea ${errors.descripcionTarea ? 'is-danger' : ''}`}
+                                {...register('descripcionTarea', { required: true })}
+                            />
+                        </div>
+                        {errors.descripcionTarea && <p className="help is-danger">Este campo es obligatorio</p>}
+                    </div>
+                    <div className="field">
+                        <label className="label" htmlFor="archivoAdjunto">Archivo Adjunto:</label>
+                        <div className="control">
+                            <input
+                                id="archivoAdjunto"
+                                type="file"
+                                className="input"
+                                onChange={handleArchivoChange}
+                            />
+                        </div>
+                    </div>
+                    <div className="field is-grouped">
+                        <div className="control">
+                            <button
+                                className="button is-link"
+                                type="submit"
+                            >
+                                Guardar Tarea
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }
