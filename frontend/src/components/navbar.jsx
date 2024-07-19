@@ -16,11 +16,11 @@ const Navbar = () => {
       <ul>
         <li onClick={() => handleNavigation('/home')}>Página Principal</li>
         <li onClick={() => handleNavigation('/tarea')}>Crear una tarea</li>
-        <li onClick={() => handleNavigation('/historial-precios')}>Ver tareas</li>
-        <li onClick={() => handleNavigation('/estadisticas')}>asignar tarea</li>
-        <li onClick={() => handleNavigation('/finanzas')}>Finanzas</li>
-        <li onClick={() => handleNavigation('/proveedores')}>Proveedores</li>
-        <li onClick={() => handleNavigation('/finanzas-boletas')}>Finanzas Boletas</li>
+        <li onClick={() => handleNavigation('/tareas')}>Ver tareas</li>
+        <li onClick={() => handleNavigation('/')}>asignar tarea</li>
+        <li onClick={() => handleNavigation('/')}>Finanzas</li>
+        <li onClick={() => handleNavigation('/')}>Proveedores</li>
+        <li onClick={() => handleNavigation('/')}>Finanzas Boletas</li>
       </ul>
     </div>
   );

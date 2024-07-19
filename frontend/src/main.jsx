@@ -6,6 +6,7 @@ import Root from './routes/Root.jsx';
 import ErrorPage from './routes/ErrorPage.jsx';
 import Login from './routes/Login.jsx';
 import Tarea from './routes/Tarea.jsx';
+import Tareas from './routes/verTareas.jsx';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
     path: '/Tarea',
     element: <Tarea/>,
   },
+  {
+    path: '/Tareas',
+    element: <Tareas/>,
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(

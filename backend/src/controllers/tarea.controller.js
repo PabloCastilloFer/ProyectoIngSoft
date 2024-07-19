@@ -50,9 +50,9 @@ export const getTareas = async (req, res) => {
 };
 
 export const getTarea = async (req, res) => {
-    const { idTarea } = req.params;
+    const { nombreTarea } = req.params;
     try {
-        const tareaEncontrada = await tarea.findOne({ idTarea });
+        const tareaEncontrada = await tarea.findOne({ nombreTarea });
         res.status(200).json(tareaEncontrada);
     } catch (error) {
         res.status(404).json({ message: error.message })
@@ -147,6 +147,32 @@ export const updateNewTarea = async (req, res) => {
         res.status(201).json({
             message: "Nueva tarea creada con las modificaciones!",
             tarea: tareaGuardada
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const getArchives = async (req, res) => {
+    try {
+        const { error, value } = fileParamsSchema.validate({ filename: req.params.filename });
+
+        if (error) {
+            return res.status(400).json({ message: error.message });
+        }
+
+        const filename = value.filename;
+        const file = path.join(__dirname, '..', 'src', 'upload', filename);
+
+        if (!fs.existsSync(file)) {
+            return res.status(404).json({ message: 'Archivo no encontrado' });
+        }
+
+        res.download(file, (err) => {
+            if (err) {
+                console.error('Error al descargar el archivo:', err);
+                res.status(500).send('Error interno al descargar el archivo');
+            }
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
