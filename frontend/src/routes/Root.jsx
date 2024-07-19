@@ -2,11 +2,15 @@ import { Outlet } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../services/auth.service';
 import { AuthProvider, useAuth } from '../context/AuthContext';
+import Navbar from '../components/navbar.jsx';
+import { BrowserRouter } from 'react-router-dom';
 
 function Root() {
   return (
     <AuthProvider>
+
       <PageRoot />
+     
     </AuthProvider>
   );
 }
@@ -23,6 +27,7 @@ function PageRoot() {
 
   return (
     <div>
+      <Navbar />
       <div>
         <h1>Aqui deberia ir un header</h1>
         <p>Estas logeado como: {user.email}</p>

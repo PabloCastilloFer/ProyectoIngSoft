@@ -1,5 +1,5 @@
-import FormTarea from '../components/FormTarea.jsx'
-export default function Tarea() {
+import Tareas from '../components/Tareas.jsx';
+export default function verTareas() {
 
     return (
         <>
@@ -10,7 +10,7 @@ export default function Tarea() {
                 </div>
             </header>
         </div>
-        <FormTarea/>
+        <Tareas/>
         </>
     )
 }
