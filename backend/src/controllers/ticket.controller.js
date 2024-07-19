@@ -1,7 +1,9 @@
 import Ticket from "../models/ticket.model.js";
 import Tarea from '../models/tarea.model.js';
+import Usuario from '../models/user.model.js';
 import sgMail from "@sendgrid/mail";
 import { API_KEY } from "../config/configEnv.js";
+import User from "../models/user.model.js";
 
 // Función para validar si una fecha está dentro de los días laborables y el horario de trabajo
 function isValidDate(date) {
@@ -61,9 +63,11 @@ export const createTicket = async (req, res) => {
     const savedTicket = await newTicket.save();
     res.status(201).json(savedTicket);
 
+    const usuario = await Usuario.findOne({ rut: req.body.RutAsignado });
+
       sgMail.setApiKey(API_KEY);
       const msg = {
-        to: "luis.acuna2101@alumnos.ubiobio.cl",
+        to: usuario.email,
         from: "repondernttareas@gmail.com",
         subject: "Tarea Asignada",
         text: `Aviso de tarea asignada: ${tarea.nombreTarea}\nDescripción: ${tarea.descripcionTarea}`,
@@ -140,14 +144,17 @@ export const updateTicket = async (req, res) => {
     const updatedTicket = await ticket.save();
     res.status(200).json(updatedTicket);
 
+    const usuario = await Usuario.findOne({ rut: req.body.RutAsignado });
+
       sgMail.setApiKey(API_KEY);
       const msg = {
-        to: "luis.acuna2101@alumnos.ubiobio.cl",
+        to: usuario.email,
         from: "repondernttareas@gmail.com",
         subject: "Tarea Asignada",
         text: `Aviso de tarea asignada: ${tarea.nombreTarea}\nDescripción: ${tarea.descripcionTarea}`,
       };
 
+      
       sgMail
         .send(msg)
         .then(() => {
