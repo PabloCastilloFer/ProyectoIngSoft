@@ -6,6 +6,7 @@ import Root from './routes/Root.jsx';
 import ErrorPage from './routes/ErrorPage.jsx';
 import Login from './routes/Login.jsx';
 import Tarea from './routes/Tarea.jsx';
+import GenerarPDF from './routes/PDF.jsx';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,11 @@ const router = createBrowserRouter([
     path: '/tarea',
     element: <Tarea/>,
   },
+  {
+    path: '/generarpdf',
+    element: <GenerarPDF/>,
+  }
+
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
