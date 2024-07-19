@@ -173,7 +173,7 @@ export const deleteTicket = async (req, res) => {
 };
 
 // Obtener tickets asignados a un usuario específico por RUT
-export const getTicketsByUserRut = async (req, res) => {
+export const getTicketporRut = async (req, res) => {
   try {
     const tickets = await Ticket.find({ 'RutAsignado': req.params.rut });
     res.status(200).json(tickets);
@@ -183,10 +183,49 @@ export const getTicketsByUserRut = async (req, res) => {
 };
 
 // Obtener tickets por ID de tarea
-export const getTicketsByTaskId = async (req, res) => {
+export const getTicketporTareaID = async (req, res) => {
   try {
     const tickets = await Ticket.find({ 'TareaID': req.params.id });
     res.status(200).json(tickets);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+// Listar todas las tareas con al menos un ticket
+export const getTareaConTicket = async (req, res) => {
+  try {
+    // Realizar una consulta agregada para unir las colecciones
+    const tareaConTicket = await Tarea.aggregate([
+      {
+        $lookup: {
+          from: "tickets", // Asegúrate de que el nombre de la colección sea correcto
+          localField: "idTarea", // El campo en la colección Tarea que se relaciona con Ticket
+          foreignField: "TareaID", // El campo correspondiente en la colección Ticket
+          as: "ticket" // El nombre del campo donde se almacenarán los tickets asociados
+        }
+      },
+      {
+        $match: {
+          "ticket": { $ne: [] } // Filtrar para incluir solo las tareas con tickets asociados
+        }
+      }
+    ]);
+
+    res.status(200).json(tareaConTicket);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+// Listar todas las tareas sin tickets
+export const getTareaSinTicket = async (req, res) => {
+  try {
+    // Buscar todos los tickets y extraer los TareaID únicos
+    const tickets = await Ticket.find().distinct('TareaID');
+    // Buscar tareas que no estén en esos TareaID
+    const tareaSinTicket = await Tarea.find({ 'idTarea': { $nin: tickets } });
+    res.status(200).json(tareaSinTicket);
   } catch (error) {
     res.status(500).json(error);
   }
