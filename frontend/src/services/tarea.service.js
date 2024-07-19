@@ -59,3 +59,13 @@ export const deleteTarea = async (idTarea) => {
         return { status: 500, data: [error], error: error.message };
     }
 };
+
+export const getAllTareas = async () => {
+    try {
+        const response = await axios.get('/tarea');
+        return response.data;
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        return { status: 500, data: [], error: error.message };
+    }
+};
