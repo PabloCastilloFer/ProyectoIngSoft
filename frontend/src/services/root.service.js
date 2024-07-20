@@ -1,5 +1,7 @@
+// frontend/src/services/root.service.js
 import axios from 'axios';
 import cookies from 'js-cookie';
+
 const API_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000/api';
 
 const instance = axios.create({
@@ -28,6 +30,11 @@ instance.interceptors.response.use(
   }
 );
 
-
+export const generarPDF = async () => {
+  const response = await instance.post('/generar-pdf', {}, {
+    responseType: 'blob',
+  });
+  return response;
+};
 
 export default instance;

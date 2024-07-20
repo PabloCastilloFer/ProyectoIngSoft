@@ -1,12 +1,19 @@
 import React from 'react';
 import navbar from '../components/navbar.jsx';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import GenerarPDF from '../components/GenerarPDF';
 
-function App() {
+const App = () => {
   return (
-    <>
-      <h1>Pagina principal</h1>
-    </>
+    <Router>
+      <div className="app">
+        <Switch>
+          <Route path="/generarpdf" component={GenerarPDF} />
+          {/* Otras rutas pueden ir aquí */}
+        </Switch>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
