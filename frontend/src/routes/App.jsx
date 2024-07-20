@@ -4,7 +4,6 @@ import navbar from '../components/navbar.jsx';
 function App() {
   return (
     <>
-      <h1>Pagina principal</h1>
     </>
   );
 }
