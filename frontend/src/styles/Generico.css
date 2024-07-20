@@ -1,8 +1,9 @@
 /* frontend/src/styles/PDF.css */
 .pdf-section {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
+  flex-direction: column;
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 10px;
@@ -17,7 +18,7 @@
 
 .add-comment button {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #387ADF;
   color: white;
   border: none;
   border-radius: 5px;
@@ -26,9 +27,9 @@
 }
 
 .add-comment button:hover {
-  background-color: #0056b3;
+  background-color: #50C4ED;
 }
 
 .add-comment button:active {
-  background-color: #004080;
+  background-color: #387ADF;
 }

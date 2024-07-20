@@ -1,7 +1,7 @@
 import 'bulma/css/bulma.min.css';
 import { useState, useEffect } from 'react';
 import axios from '../services/root.service.js';
-import Navbar from '..components/navbar.jsx';
+import Navbar from '../components/navbar.jsx';
 
 export default function VerTicket() {
     const [tareasConTicket, setTareasConTicket] = useState([]);

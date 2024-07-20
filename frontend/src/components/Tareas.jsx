@@ -4,6 +4,7 @@ import { getAllTareas, deleteTarea } from '../services/tarea.service.js';
 import { showDeleteTarea , DeleteQuestion } from '../helpers/swaHelper.js';
 import Navbar from '../components/navbar.jsx';
 import axios from '../services/root.service.js';
+import '../styles/Generico.css';  // Importa los estilos
 
 export default function VerTareas() {
     const [tareas, setTareas] = useState([]);
@@ -109,29 +110,32 @@ export default function VerTareas() {
 
     const containerStyle = {
         display: 'flex',
+        marginRight:'300px',
+        marginTop: '64px', // Ajustar para la altura de la navbar
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100vh',
-        backgroundColor: '#f5f5f5',
-        marginRigth: '300px',
-    };
+};
 
     const BoxStyle = {
-        width: '1200px',
-        padding: '2rem',
+        alignItems: 'center',
+        paddingTop: '64px', // Ajustar para la altura de la navbar
+        width: '800px',
+        padding: '1rem',
         borderRadius: '8px',
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+        textAlign: 'left',
+        boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)',
         backgroundColor: '#fff',
-        textAlign: 'center',
     };
 
     const BoxStyle2 = {
-        width: '1135px',
-        padding: '2rem',
-        borderRadius: '8px',
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+        alignItems: 'center',
+        paddingTop: '10px', // Ajustar para la altura de la navbar
+        padding: '1rem',
+        borderRadius: '10px',
+        textAlign: 'left',
+        boxShadow: '0 5px 10px rgba(0, 0, 0, 0.2)',
         backgroundColor: '#fff',
-        textAlign: 'center',
+        marginBottom: '10px',
     };
 
     return (

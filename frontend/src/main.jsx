@@ -8,6 +8,7 @@ import Login from './routes/Login.jsx';
 import Tarea from './routes/Tarea.jsx';
 import Tareas from './routes/verTareas.jsx';
 import GenerarPDF from './routes/PDF.jsx';
+import VerTicket from './routes/verTicket.jsx';
 
 const router = createBrowserRouter([
   {
@@ -36,8 +37,11 @@ const router = createBrowserRouter([
   {
     path: '/generarpdf',
     element: <GenerarPDF/>,
+  },
+  {
+    path: '/verTicket',
+    element: <VerTicket/>,
   }
-
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
