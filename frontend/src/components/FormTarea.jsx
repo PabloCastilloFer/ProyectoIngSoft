@@ -69,7 +69,7 @@ export default function FormSupervisor() {
         paddingTop: '64px', // Ajustar para la altura de la navbar
         width: '700px',
         padding: '2rem',
-        borderRadius: '8px',
+        borderRadius: '10px',
         boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
         backgroundColor: '#fff',
         textAlign: 'center',

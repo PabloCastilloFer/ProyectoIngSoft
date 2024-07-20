@@ -107,10 +107,37 @@ export default function VerTareas() {
         )
     }
 
+    const containerStyle = {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight:'250px', // Ajustar el margen según el estado de la barra lateral
+    };
+
+    const BoxStyle = {
+        alignItems: 'center',
+        paddingTop: '64px', // Ajustar para la altura de la navbar
+        width: '1500px',
+        padding: '2rem',
+        borderRadius: '8px',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+        backgroundColor: '#fff',
+        textAlign: 'center',
+    };
+
+    const BoxStyle2 = {
+        alignItems: 'left',
+        paddingTop: '40px', // Ajustar para la altura de la navbar
+        padding: '2rem',
+        borderRadius: '10px',
+        boxShadow: '0 5px 5px rgba(0, 0, 0, 0.1)',
+        textAlign: 'left',
+    };
+
     return (
-        <div className="container">
+        <div style={containerStyle}>
             <Navbar />
-            <div className="max-w-4xl mx-auto p-4">
+            <div style={BoxStyle}>
                 <div className="has-text-centered">
                     <h1 className="title is-2">Lista de Tareas</h1>
                 </div>
@@ -133,8 +160,7 @@ export default function VerTareas() {
                     </div>
                 </form>
                 {tareas.map((tarea, index) => (
-                    <div key={index} className="box">
-                        <div className="content">
+                        <div style={BoxStyle2}>
                             <h2 className="title is-4">{tarea.nombreTarea}</h2>
                             <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
                             <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
@@ -172,7 +198,7 @@ export default function VerTareas() {
                                     <span>Editar Tarea</span>
                                 </button>
                             </div>
-                        </div>
+                      
                     </div>
                 ))}
             </div>
