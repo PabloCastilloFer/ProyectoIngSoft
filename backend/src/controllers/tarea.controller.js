@@ -72,10 +72,8 @@ export const deleteTareaById = async (req, res) => {
 
 export const updateTarea = async (req, res) => {
     try {
-        const idTarea = uuidv4();
-        const tareaActual = req.params.idTarea;
+        const tareaActual = req.params.idTarea; 
         const tareaModificada = await tarea.findOne({ idTarea: tareaActual });
-
         if (!tareaModificada) {
             return res.status(404).json({ message: "Tarea no encontrada" });
         }
@@ -89,7 +87,7 @@ export const updateTarea = async (req, res) => {
             tipoTarea: req.body.tipoTarea || tareaModificada.tipoTarea,
             estado: 'nueva',
             archivo: req.file ? URL + archivo : tareaModificada.archivo,
-            idTarea: req.body.idTarea || idTarea
+            idTarea: tareaActual
         };
 
         const { error } = crearTareaSchema.validate(updatedTarea);

@@ -8,6 +8,7 @@ import Login from './routes/Login.jsx';
 import Tarea from './routes/Tarea.jsx';
 import Tareas from './routes/verTareas.jsx';
 import GenerarPDF from './routes/PDF.jsx';
+import UpdateTarea  from './routes/UpdateTareaRoute.jsx';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
   {
     path: '/generarpdf',
     element: <GenerarPDF/>,
+  },
+  {
+    path: '/tarea/modificar',
+    element: <UpdateTarea />,
   }
 
 ]);

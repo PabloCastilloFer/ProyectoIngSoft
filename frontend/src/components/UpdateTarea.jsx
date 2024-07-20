@@ -1,88 +1,62 @@
-import 'bulma/css/bulma.min.css';
-import { useState } from 'react';
-import { showError , showConfirmFormTarea } from '../helpers/swaHelper.js';
-import { useForm } from 'react-hook-form'; 
-import { createTarea } from '../services/tarea.service.js';
-import { useAuth } from '../context/AuthContext'; // Importa el contexto de autenticación
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import Navbar from '../components/navbar.jsx';
+import { updateTarea } from '../services/tarea.service.js';
+import { useLocation } from 'react-router-dom';
+import { UpdateQuestion } from '../helpers/swaHelper.js'; // Asegúrate de importar UpdateQuestion
 
-export default function FormSupervisor() {
-    const jwt = useAuth();
-
-    const userStorage = localStorage.getItem('user');
-    const userDat = JSON.parse(userStorage); // Corregido
-
-    const [archivo, setArchivo] = useState(null);
+const EditarTarea = ({ initialData }) => {
+    const location = useLocation();
+    const { tarea } = location.state;
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm({
+        defaultValues: initialData
+    });
     const [isLoading, setIsLoading] = useState(false);
-    const [nombreTarea, setNombreTarea] = useState('');
-    const [descripcionTarea, setDescripcionTarea] = useState('');
-    const [tipoTarea, setTipoTarea] = useState('');
-    const { register, formState: { errors }, handleSubmit, reset } = useForm();
-
-    const onSubmit = async (data) => {
-        try {
-            setIsLoading(true);
-            const formData = new FormData();
-            formData.append("nombreTarea", data.nombreTarea);
-            formData.append("descripcionTarea", data.descripcionTarea);
-            formData.append("tipoTarea", data.tipoTarea);
-            formData.append("archivo", archivo);
-            console.log(formData)
-
-            const response = await createTarea(formData);
-            console.log(response)
-            if (response.status === 201) {
-                await showConfirmFormTarea();
-                setArchivo(null);
-                reset(); // Resetea los campos del formulario
-            } else if (response.status === 400) {
-                await showError(response.data[0].response.data.message);
-            } else if (response.status === 500) {
-                await showError(response.data[0].response.data.message);
-            }
-            console.log(response);
-        } catch (error) {
-            console.log("Error:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const [archivo, setArchivo] = useState(null);
 
     const handleArchivoChange = (e) => {
         setArchivo(e.target.files[0]);
     };
 
-    const handleGuardarTarea = () => {
-        // Enviar formulario con handleSubmit
-        handleSubmit(onSubmit)();
-    };
+    const onSubmit = async (data) => {
+        // Solicita confirmación antes de continuar
+        const isConfirmed = await UpdateQuestion();
+        
+        if (!isConfirmed) {
+            // Si el usuario cancela, no hace nada
+            return;
+        }
 
-    const containerStyle = {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight:'250px', // Ajustar el margen según el estado de la barra lateral
-    };
+        setIsLoading(true);
+        const formData = new FormData();
+        formData.append('nombreTarea', data.nombreTarea);
+        formData.append('tipoTarea', data.tipoTarea);
+        formData.append('descripcionTarea', data.descripcionTarea);
+        if (archivo) {
+            formData.append('archivo', archivo);
+        }
 
-    const BoxStyle = {
-        alignItems: 'center',
-        paddingTop: '64px', // Ajustar para la altura de la navbar
-        width: '700px',
-        padding: '2rem',
-        borderRadius: '8px',
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-        backgroundColor: '#fff',
-        textAlign: 'center',
+        try {
+            const response = await updateTarea(formData, tarea.idTarea);
+            if (response.status === 200) {
+                window.location.reload();
+            } else {
+                alert('Error al actualizar la tarea');
+            }
+        } catch (error) {
+            alert('Ocurrió un error al actualizar la tarea');
+        } finally {
+            setIsLoading(false);
+        }
     };
-
 
     return (
         <div style={containerStyle}>
-            <Navbar/>
+            <Navbar />
             <div style={BoxStyle}>
                 <div>
-                    <h2 className="title is-4">Formulario para crear tarea</h2>
-                    <p className="subtitle is-6">Ingresa los detalles de tu nueva tarea</p>
+                    <h2 className="title is-4">Formulario de edición de tarea</h2>
+                    <p className="subtitle is-6">Ingresa las modificaciones a la tarea</p>
                     <div className="columns is-centered">
                         <div className="column is-two-thirds">
                             <form onSubmit={handleSubmit(onSubmit)}>
@@ -92,9 +66,9 @@ export default function FormSupervisor() {
                                         <input
                                             id="nombreTarea"
                                             type="text"
-                                            placeholder="Ej. Diseñar logotipo"
+                                            placeholder={tarea.nombreTarea}
                                             className={`input ${errors.nombreTarea ? 'is-danger' : ''}`}
-                                            {...register('nombreTarea', { required: true })}
+                                            {...register('nombreTarea', { required: false })}
                                         />
                                     </div>
                                     {errors.nombreTarea && <p className="help is-danger">Este campo es obligatorio</p>}
@@ -120,18 +94,17 @@ export default function FormSupervisor() {
                                     <div className="control">
                                         <textarea
                                             id="descripcionTarea"
-                                            placeholder="Describe la tarea..."
+                                            placeholder={tarea.descripcionTarea}
                                             className={`textarea ${errors.descripcionTarea ? 'is-danger' : ''}`}
-                                            {...register('descripcionTarea', { required: true })}
+                                            {...register('descripcionTarea', { required: false })}
                                         />
                                     </div>
-                                    {errors.descripcionTarea && <p className="help is-danger">Este campo es obligatorio</p>}
                                 </div>
                                 <div className="field">
-                                    <label className="label" htmlFor="archivoAdjunto">Archivo Adjunto:</label>
+                                    <label className="label" htmlFor="archivo">Archivo Adjunto:</label>
                                     <div className="control">
                                         <input
-                                            id="archivoAdjunto"
+                                            id="archivo"
                                             type="file"
                                             className="input"
                                             onChange={handleArchivoChange}
@@ -144,7 +117,7 @@ export default function FormSupervisor() {
                                             className={`button is-link ${isLoading ? 'is-loading' : ''}`}
                                             type="submit"
                                         >
-                                            Guardar Tarea
+                                            Actualizar Tarea
                                         </button>
                                     </div>
                                     {isLoading && <p className="help is-info">Guardando tarea...</p>}
@@ -156,4 +129,20 @@ export default function FormSupervisor() {
             </div>
         </div>
     );
-}
+};
+
+export default EditarTarea;
+
+// Define tus estilos de contenedor y caja
+const containerStyle = {
+    padding: '20px'
+};
+
+const BoxStyle = {
+    margin: '20px auto',
+    padding: '20px',
+    maxWidth: '800px',
+    backgroundColor: '#f5f5f5',
+    borderRadius: '8px',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+};

@@ -1,11 +1,13 @@
 import 'bulma/css/bulma.min.css';
 import { useState, useEffect } from 'react';
-import { getAllTareas, deleteTarea } from '../services/tarea.service.js';
+import { deleteTarea } from '../services/tarea.service.js';
 import { showDeleteTarea , DeleteQuestion } from '../helpers/swaHelper.js';
 import Navbar from '../components/navbar.jsx';
 import axios from '../services/root.service.js';
+import { useNavigate } from 'react-router-dom';
 
 export default function VerTareas() {
+    const navigate = useNavigate();
     const [tareas, setTareas] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -27,7 +29,7 @@ export default function VerTareas() {
         e.preventDefault();
         axios.get(`/tarea?nombreTarea=${searchQuery}`)
             .then((response) => {
-                setTareas(response.data); 
+                setTareas(response.data);
             })
             .catch((error) => {
                 console.error('Error al obtener las tareas filtradas:', error);
@@ -38,34 +40,36 @@ export default function VerTareas() {
         const isConfirmed = await DeleteQuestion();
         console.log(isConfirmed)
         if (isConfirmed) {
-        const response = await deleteTarea(tareaToDelete);
-        if (response.status === 200) {
-            await showDeleteTarea();
+            const response = await deleteTarea(tareaToDelete);
+            if (response.status === 200) {
+                await showDeleteTarea();
+            }
+            window.location.reload();
         }
-        window.location.reload();
-        }
+    };
+
+    const handleEditClick = (tarea) => {
+        navigate(`/tarea/modificar`, {
+            state: { tarea },
+        });
     };
 
     const handleArchivo = async (url) => {
         try {
-        const prot = '';
-        const uniqueTimestamp = new Date().getTime();
-        const Url =  `${prot}${url}?timestamp=${uniqueTimestamp}`;
+            const prot = '';
+            const uniqueTimestamp = new Date().getTime();
+            const Url =  `${prot}${url}?timestamp=${uniqueTimestamp}`;
 
-        const fileContent = await getArchive(Url);
+            const fileContent = await getArchive(Url);
 
-        const blob = new Blob([fileContent], { type: 'application/pdf' });
+            const blob = new Blob([fileContent], { type: 'application/pdf' });
 
-        const fileUrl = URL.createObjectURL(blob);
+            const fileUrl = URL.createObjectURL(blob);
 
-        window.open(fileUrl, '_blank');
+            window.open(fileUrl, '_blank');
         } catch (error) {
-        console.error('Error al hacer la solicitud:', error.message);
+            console.error('Error al hacer la solicitud:', error.message);
         }
-    };
-
-    const handleEdit = (tareaId) => {
-        history.push(`/editar-tarea/${tareaId}`);
     };
 
     const TrashIcon = (props) => (
@@ -89,21 +93,21 @@ export default function VerTareas() {
 
     function PencilIcon(props) {
         return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-            <path d="m15 5 4 4" />
-        </svg>
+            <svg
+                {...props}
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                <path d="m15 5 4 4" />
+            </svg>
         )
     }
 
@@ -115,22 +119,7 @@ export default function VerTareas() {
                     <h1 className="title is-2">Lista de Tareas</h1>
                 </div>
                 <form onSubmit={handleSearch} className="mb-4">
-                    <div className="field has-addons">
-                        <div className="control is-expanded">
-                            <input
-                                className="input"
-                                type="text"
-                                placeholder="Buscar tarea por nombre..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                        </div>
-                        <div className="control">
-                            <button type="submit" className="button is-info">
-                                Buscar
-                            </button>
-                        </div>
-                    </div>
+                
                 </form>
                 {tareas.map((tarea, index) => (
                     <div key={index} className="box">
@@ -139,7 +128,6 @@ export default function VerTareas() {
                             <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
                             <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
                             <p><strong>Estado:</strong> {tarea.estado}</p>
-                            <p><strong>ID:</strong> {tarea.idTarea}</p>
                             <p>
                                 <strong>Archivo adjunto:</strong> {tarea.archivo ? tarea.archivo : 'No hay archivo adjunto'}
                                 {tarea.archivo && (
@@ -164,7 +152,7 @@ export default function VerTareas() {
                                 </button>
                                 <button 
                                     className="button is-primary is-outlined" 
-                                    onClick={() => handleEdit(tarea.idTarea)}
+                                    onClick={() => handleEditClick(tarea)}
                                 >
                                     <span className="icon is-small">
                                         <PencilIcon />
