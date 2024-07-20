@@ -56,17 +56,9 @@ const BoxStyle = {
         <div className="add-comment">
           <button onClick={handleGeneratePDF}>Descargar PDF</button>
         </div>
-        <div className="field">
-            <label className="label" htmlFor="comentario">Comentario:</label>
-              <div className="control">
-                <textarea //cambiar
-                  placeholder="Comentario..."
-                />
                 </div>
             </div>
       </div>
-      </div>
-    </div>
   );
 };
 export default GenerarPDF;

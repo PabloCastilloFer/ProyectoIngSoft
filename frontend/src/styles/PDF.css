@@ -1,34 +1,106 @@
-/* frontend/src/styles/PDF.css */
+/* Estilos generales para la sección del PDF */
+.container {
+  display: flex;
+}
+
+.content {
+  margin-left: 250px; /* Espacio para la barra de navegación */
+  padding: 20px;
+  flex: 1; /* Para que la sección PDF ocupe el espacio restante */
+}
+
 .pdf-section {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.add-comment {
+  margin: 20px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 20px;
 }
 
-.pdf-section h2 {
-  color: #333;
-  margin-bottom: 20px;
+.add-comment input,
+.add-comment textarea {
+  display: block;
+  width: 80%;
+  max-width: 600px;
+  margin-bottom: 10px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .add-comment button {
   padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  border-radius: 4px;
   transition: background-color 0.3s ease;
+  margin-top: 10px; /* Añadir margen superior a los botones */
 }
 
 .add-comment button:hover {
   background-color: #0056b3;
 }
 
-.add-comment button:active {
-  background-color: #004080;
+.generate-pdf {
+  margin-top: 20px;
+}
+
+.comments-list {
+  margin-top: 30px;
+}
+
+.comments-list h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.comments-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.comments-list li {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.comments-list li strong {
+  font-weight: bold;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin: 0 5px;
+  transition: background-color 0.3s ease;
+}
+
+.tabs button:hover {
+  background-color: #0056b3;
+}
+
+.tabs button.active {
+  background-color: #0056b3;
 }
