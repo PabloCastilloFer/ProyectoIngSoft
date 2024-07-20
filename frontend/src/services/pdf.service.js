@@ -1,9 +1,9 @@
 // frontend/src/services/pdf.service.js
 import instance from './root.service';
 
-export const generarPDF = async (data) => {
+export const generarPDF = async () => {
   try {
-    const response = await instance.post('/generatePDF', { data }, {
+    const response = await instance.post('/generatePDF', {}, {
       responseType: 'blob',
     });
     return response;

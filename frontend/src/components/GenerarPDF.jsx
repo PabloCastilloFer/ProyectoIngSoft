@@ -6,7 +6,7 @@ import '../styles/PDF.css';  // Importa los estilos
 const GenerarPDF = () => {
   const handleGeneratePDF = async () => {
     try {
-      const response = await generarPDF({ data: 'Tu contenido aquí' });
+      const response = await generarPDF();
       if (response.status === 200) {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
