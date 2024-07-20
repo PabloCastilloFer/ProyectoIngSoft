@@ -28,10 +28,13 @@ function PageRoot() {
   return (
     <div>
       <Navbar />
-      <div>
-        <h1>Aqui deberia ir un header</h1>
-        <p>Estas logeado como: {user.email}</p>
-        <button onClick={handleLogout}>Cerrar sesion</button>
+      <div className="user-details-container">
+      <h2>Datos del Usuario</h2>
+      <p>Nombre: {user?.username}</p>
+      <p>RUT: {user?.rut}</p>
+      <p>Correo electrónico: {user?.email}</p>
+      <p>Facultad: {user?.facultades}</p>
+      <button onClick={handleLogout}>Cerrar sesión</button>
       </div>
       <Outlet />
     </div>
