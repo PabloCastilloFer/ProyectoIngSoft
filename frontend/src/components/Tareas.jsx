@@ -38,31 +38,31 @@ export default function VerTareas() {
         const isConfirmed = await DeleteQuestion();
         console.log(isConfirmed)
         if (isConfirmed) {
-          const response = await deleteTarea(tareaToDelete);
-          if (response.status === 200) {
+        const response = await deleteTarea(tareaToDelete);
+        if (response.status === 200) {
             await showDeleteTarea();
-          }
-          window.location.reload();
         }
-      };
+        window.location.reload();
+        }
+    };
 
     const handleArchivo = async (url) => {
         try {
-          const prot = '';
-          const uniqueTimestamp = new Date().getTime();
-          const Url =  `${prot}${url}?timestamp=${uniqueTimestamp}`;
-      
-          const fileContent = await getArchive(Url);
-      
-          const blob = new Blob([fileContent], { type: 'application/pdf' });
-      
-          const fileUrl = URL.createObjectURL(blob);
-      
-          window.open(fileUrl, '_blank');
+        const prot = '';
+        const uniqueTimestamp = new Date().getTime();
+        const Url =  `${prot}${url}?timestamp=${uniqueTimestamp}`;
+
+        const fileContent = await getArchive(Url);
+
+        const blob = new Blob([fileContent], { type: 'application/pdf' });
+
+        const fileUrl = URL.createObjectURL(blob);
+
+        window.open(fileUrl, '_blank');
         } catch (error) {
-          console.error('Error al hacer la solicitud:', error.message);
+        console.error('Error al hacer la solicitud:', error.message);
         }
-      };
+    };
 
     const handleEdit = (tareaId) => {
         history.push(`/editar-tarea/${tareaId}`);
@@ -89,7 +89,7 @@ export default function VerTareas() {
 
     function PencilIcon(props) {
         return (
-          <svg
+        <svg
             {...props}
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -100,12 +100,12 @@ export default function VerTareas() {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-          >
+        >
             <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
             <path d="m15 5 4 4" />
-          </svg>
+        </svg>
         )
-      }
+    }
 
     return (
         <div className="container">
@@ -117,12 +117,12 @@ export default function VerTareas() {
                 <form onSubmit={handleSearch} className="mb-4">
                     <div className="field has-addons">
                         <div className="control is-expanded">
-                            <input 
-                                className="input" 
-                                type="text" 
-                                placeholder="Buscar tarea por nombre..." 
-                                value={searchQuery} 
-                                onChange={(e) => setSearchQuery(e.target.value)} 
+                            <input
+                                className="input"
+                                type="text"
+                                placeholder="Buscar tarea por nombre..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
                         <div className="control">
