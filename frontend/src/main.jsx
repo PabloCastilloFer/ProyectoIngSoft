@@ -7,6 +7,7 @@ import ErrorPage from './routes/ErrorPage.jsx';
 import Login from './routes/Login.jsx';
 import Tarea from './routes/Tarea.jsx';
 import Tareas from './routes/verTareas.jsx';
+import GenerarPDF from './routes/PDF.jsx';
 
 const router = createBrowserRouter([
   {
@@ -31,7 +32,12 @@ const router = createBrowserRouter([
   {
     path: '/Tareas',
     element: <Tareas/>,
+  },
+  {
+    path: '/generarpdf',
+    element: <GenerarPDF/>,
   }
+
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(

@@ -111,13 +111,13 @@ export default function VerTareas() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight:'250px', // Ajustar el margen según el estado de la barra lateral
+        height: '100vh',
+        backgroundColor: '#f5f5f5',
+        marginRigth: '300px',
     };
 
     const BoxStyle = {
-        alignItems: 'center',
-        paddingTop: '64px', // Ajustar para la altura de la navbar
-        width: '1500px',
+        width: '1200px',
         padding: '2rem',
         borderRadius: '8px',
         boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
@@ -126,12 +126,12 @@ export default function VerTareas() {
     };
 
     const BoxStyle2 = {
-        alignItems: 'left',
-        paddingTop: '40px', // Ajustar para la altura de la navbar
+        width: '1135px',
         padding: '2rem',
-        borderRadius: '10px',
-        boxShadow: '0 5px 5px rgba(0, 0, 0, 0.1)',
-        textAlign: 'left',
+        borderRadius: '8px',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+        backgroundColor: '#fff',
+        textAlign: 'center',
     };
 
     return (
@@ -160,45 +160,44 @@ export default function VerTareas() {
                     </div>
                 </form>
                 {tareas.map((tarea, index) => (
-                        <div style={BoxStyle2}>
-                            <h2 className="title is-4">{tarea.nombreTarea}</h2>
-                            <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
-                            <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
-                            <p><strong>Estado:</strong> {tarea.estado}</p>
-                            <p><strong>ID:</strong> {tarea.idTarea}</p>
-                            <p>
-                                <strong>Archivo adjunto:</strong> {tarea.archivo ? tarea.archivo : 'No hay archivo adjunto'}
-                                {tarea.archivo && (
-                                    <a 
-                                        href={tarea.archivo} 
-                                        className="button is-link is-small ml-2" 
-                                        download
-                                    >
-                                        Descargar
-                                    </a>
-                                )}
-                            </p>
-                            <div className="buttons">
-                                <button 
-                                    className="button is-danger is-outlined mr-2" 
-                                    onClick={() => handleDeleted(tarea.idTarea)}
+                    <div key={tarea.idTarea} style={BoxStyle2}>
+                        <h2 className="title is-4">{tarea.nombreTarea}</h2>
+                        <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
+                        <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
+                        <p><strong>Estado:</strong> {tarea.estado}</p>
+                        <p><strong>ID:</strong> {tarea.idTarea}</p>
+                        <p>
+                            <strong>Archivo adjunto:</strong> {tarea.archivo ? tarea.archivo : 'No hay archivo adjunto'}
+                            {tarea.archivo && (
+                                <a 
+                                    href={tarea.archivo} 
+                                    className="button is-link is-small ml-2" 
+                                    download
                                 >
-                                    <span className="icon is-small">
-                                        <TrashIcon />
-                                    </span>
-                                    <span>Eliminar</span>
-                                </button>
-                                <button 
-                                    className="button is-primary is-outlined" 
-                                    onClick={() => handleEdit(tarea.idTarea)}
-                                >
-                                    <span className="icon is-small">
-                                        <PencilIcon />
-                                    </span>
-                                    <span>Editar Tarea</span>
-                                </button>
-                            </div>
-                      
+                                    Descargar
+                                </a>
+                            )}
+                        </p>
+                        <div className="buttons">
+                            <button 
+                                className="button is-danger is-outlined mr-2" 
+                                onClick={() => handleDeleted(tarea.idTarea)}
+                            >
+                                <span className="icon is-small">
+                                    <TrashIcon />
+                                </span>
+                                <span>Eliminar</span>
+                            </button>
+                            <button 
+                                className="button is-primary is-outlined" 
+                                onClick={() => handleEdit(tarea.idTarea)}
+                            >
+                                <span className="icon is-small">
+                                    <PencilIcon />
+                                </span>
+                                <span>Editar Tarea</span>
+                            </button>
+                        </div>
                     </div>
                 ))}
             </div>

@@ -61,18 +61,19 @@ export default function FormSupervisor() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight:'250px', // Ajustar el margen según el estado de la barra lateral
+        height: '100vh',
+        backgroundColor: '#f5f5f5',
+        marginRigth: '300px',
     };
 
     const BoxStyle = {
-        alignItems: 'center',
-        paddingTop: '64px', // Ajustar para la altura de la navbar
-        width: '700px',
+        width: '1000px',
         padding: '2rem',
-        borderRadius: '10px',
+        borderRadius: '8px',
         boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
         backgroundColor: '#fff',
-        textAlign: 'center',
+        textAlign: 'left',
+marginRigth: '300px',
     };
 
 
