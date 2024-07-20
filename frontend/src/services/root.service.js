@@ -30,11 +30,5 @@ instance.interceptors.response.use(
   }
 );
 
-export const generarPDF = async () => {
-  const response = await instance.post('/generar-pdf', {}, {
-    responseType: 'blob',
-  });
-  return response;
-};
 
 export default instance;

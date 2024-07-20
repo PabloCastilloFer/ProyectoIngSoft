@@ -1,12 +1,12 @@
 // frontend/src/components/GenerarPDF.jsx
 import React from 'react';
 import { generarPDF } from '../services/pdf.service';
-//import '../styles/PDF.css';  // Importa los estilos globalmente sin `?inline`
+import '../styles/PDF.css';  // Importa los estilos
 
 const GenerarPDF = () => {
   const handleGeneratePDF = async () => {
     try {
-      const response = await generarPDF();
+      const response = await generarPDF({ data: 'Tu contenido aquí' });
       if (response.status === 200) {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');

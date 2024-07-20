@@ -1,9 +1,9 @@
 // frontend/src/services/pdf.service.js
-import axios from './root.service';
+import instance from './root.service';
 
-export const generarPDF = async () => {
+export const generarPDF = async (data) => {
   try {
-    const response = await axios.get('/', {
+    const response = await instance.post('/generatePDF', { data }, {
       responseType: 'blob',
     });
     return response;
@@ -19,4 +19,8 @@ export const generarPDF = async () => {
       return { status: 500, data: null, error: error.message };
     }
   }
+};
+
+export default {
+  generarPDF,
 };
