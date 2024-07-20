@@ -22,6 +22,9 @@ router.post("/", isAdmin, usuarioController.createUser);
 router.get("/:id", usuarioController.getUserById);
 router.put("/:id", isAdmin, usuarioController.updateUser);
 router.delete("/:id", isAdmin, usuarioController.deleteUser);
+router.get("/rut/:rut", usuarioController.findUserByRut);
+router.get("/email/:email", usuarioController.findUsersByFaculty);
+router.get("/rol/:rol", usuarioController.findUsersByRole);
 
 // Exporta el enrutador
 export default router;
