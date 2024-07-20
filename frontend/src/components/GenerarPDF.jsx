@@ -1,7 +1,7 @@
 // frontend/src/components/GenerarPDF.jsx
 import React from 'react';
 import { generarPDF } from '../services/pdf.service';
-import '../styles/PDF.css';  // Importa los estilos
+import '../styles/Generico.css';  // Importa los estilos
 import {showPDFGeneratedSuccess, showPDFGeneratedError} from '../helpers/pdfHelper';
 import { v4 as uuidv4 } from 'uuid';
 import Navbar from '../components/navbar.jsx';
@@ -41,7 +41,7 @@ const GenerarPDF = () => {
 const BoxStyle = {
     alignItems: 'center',
     paddingTop: '64px', // Ajustar para la altura de la navbar
-    width: '700px',
+    width: '7000px',
     padding: '2rem',
     borderRadius: '8px',
     textAlign: 'center',
