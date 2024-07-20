@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getTareasAsignadas } from '../services/tareaRealizada.service.js';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar'; // Importa la Navbar
+import Navbar from '../Navbar'; // Importa la Navbar
 import '../styles/TareasAsignadas.css';  // Importa los estilos específicos
 
 const TareasAsignadas = () => {
