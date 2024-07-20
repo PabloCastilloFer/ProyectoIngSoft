@@ -7,6 +7,8 @@ import ErrorPage from './routes/ErrorPage.jsx';
 import Login from './routes/Login.jsx';
 import Tarea from './routes/Tarea.jsx';
 import Tareas from './routes/verTareas.jsx';
+import TareasAsignadasRoute from './routes/TareasAsignadasRoute.jsx';
+import FormTareaRealizadaRoute from './routes/FormTareaRealizadaRoute.jsx';
 
 const router = createBrowserRouter([
   {
@@ -31,6 +33,14 @@ const router = createBrowserRouter([
   {
     path: '/Tareas',
     element: <Tareas/>,
+  },
+  {
+    path: '/tareas-asignadas',
+    element: <TareasAsignadasRoute />,
+  },
+  {
+    path: '/responder-tarea/:id',
+    element: <FormTareaRealizadaRoute />,
   }
 ]);
 
