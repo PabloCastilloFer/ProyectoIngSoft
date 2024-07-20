@@ -4,6 +4,7 @@ import { generarPDF } from '../services/pdf.service';
 import '../styles/PDF.css';  // Importa los estilos
 import {showPDFGeneratedSuccess, showPDFGeneratedError} from '../helpers/pdfHelper';
 import { v4 as uuidv4 } from 'uuid';
+import Navbar from '../components/navbar.jsx';
 
 const GenerarPDF = () => {
   const handleGeneratePDF = async () => {
@@ -30,14 +31,36 @@ const GenerarPDF = () => {
     }
   };
 
+  const containerStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight:'250px',
+    width: '700px', // Ajustar el margen según el estado de la barra lateral
+};
+
+const BoxStyle = {
+    alignItems: 'center',
+    paddingTop: '64px', // Ajustar para la altura de la navbar
+    width: '700px',
+    padding: '2rem',
+    borderRadius: '8px',
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#fff',
+    textAlign: 'center',
+};
+
   return (
-    <div className="pdf-section">
-      <h2>INFORMES EMPLEADOS</h2>
-      <div className="add-comment">
-        <button onClick={handleGeneratePDF}>Descargar PDF</button>
+    <div style={containerStyle}>
+            <Navbar />
+            
+      <div className="pdf-section">
+        <h2>INFORMES EMPLEADOS</h2>
+        <div className="add-comment">
+          <button onClick={handleGeneratePDF}>Descargar PDF</button>
+        </div>
       </div>
     </div>
   );
 };
-
 export default GenerarPDF;
