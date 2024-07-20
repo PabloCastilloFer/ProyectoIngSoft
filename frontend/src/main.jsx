@@ -5,6 +5,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Root from './routes/Root.jsx';
 import ErrorPage from './routes/ErrorPage.jsx';
 import Login from './routes/Login.jsx';
+import Tarea from './routes/Tarea.jsx';
+import Tareas from './routes/verTareas.jsx';
 
 const router = createBrowserRouter([
   {
@@ -13,7 +15,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: '/',
+        path: '/home',
         element: <App />,
       },
     ],
@@ -22,6 +24,14 @@ const router = createBrowserRouter([
     path: '/auth',
     element: <Login />,
   },
+  {
+    path: '/Tarea',
+    element: <Tarea/>,
+  },
+  {
+    path: '/Tareas',
+    element: <Tareas/>,
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(

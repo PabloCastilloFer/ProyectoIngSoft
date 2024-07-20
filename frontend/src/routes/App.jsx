@@ -1,6 +1,9 @@
-// src/routes/App.jsx
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes  } from 'react-router-dom';
-
+function App() {
+  return (
+    <>
+      <h1>Pagina principal</h1>
+    </>
+  );
+}
 
 export default App;

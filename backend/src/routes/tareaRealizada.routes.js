@@ -1,6 +1,6 @@
 import { Router } from "express";
 import multer from 'multer';
-import { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId, obtenerTareasAsignadas, obtenerTareasCompletas, obtenerTareasIncompletas, obtenerTareasNoRealizadas } from "../controllers/tareaRealizada.controller.js";
+import { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareasAsignadas, obtenerTareasCompletas, obtenerTareasIncompletas, obtenerTareasNoRealizadas } from "../controllers/tareaRealizada.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 import { isEmpleado } from "../middlewares/authorization.middleware.js";
 
@@ -34,22 +34,20 @@ const handleFileSizeLimit = (err, req, res, next) => {
 // Crear una nueva tarea realizada
 router.post('/:rutUsuario', upload.single("archivoAdjunto"), isEmpleado, crearTareaRealizada);
 
-// Obtener todas las tareas realizadas
-router.get('/', isEmpleado, obtenerTareasRealizadas);
+// Obtener todas las tareas realizadas de un empleado
+router.get('/:rutUsuario', isEmpleado, obtenerTareasRealizadas);
 
-// Obtener una tarea realizada por su ID
-router.get('/:id', isEmpleado, obtenerTareaRealizadaPorId);
 
-// Obtener todas las tareas asignadas a un usuario
+// Obtener todas las tareas asignadas a un empleado
 router.get('/asignadas/:rutUsuario', isEmpleado, obtenerTareasAsignadas);
 
-// Obtener todas la tareas completadas por un usuario
+// Obtener todas la tareas completadas por un empleado
 router.get('/completadas/:rutUsuario', isEmpleado, obtenerTareasCompletas);
 
-// Obtener todas las tareas incompletas por un usuario
+// Obtener todas las tareas incompletas por un empleado
 router.get('/incompletas/:rutUsuario', isEmpleado, obtenerTareasIncompletas);
 
-// Obtener todas las tareas no realizadas por un usuario
+// Obtener todas las tareas no realizadas por un empleado
 router.get('/noRealizadas/:rutUsuario', isEmpleado, obtenerTareasNoRealizadas);
 
 export default router;
