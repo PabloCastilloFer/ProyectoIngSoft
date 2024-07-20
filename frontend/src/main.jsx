@@ -42,6 +42,8 @@ const router = createBrowserRouter([
   {
     path: '/responder-tarea/:id',
     element: <FormTareaRealizadaRoute />,
+  },
+  {
     path: '/generarpdf',
     element: <GenerarPDF/>,
   }

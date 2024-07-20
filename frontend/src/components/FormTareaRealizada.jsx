@@ -1,16 +1,17 @@
 import 'bulma/css/bulma.min.css';
 import { useState } from 'react';
-import { showError, showConfirmFormTarea } from '../helpers/swaHelper.js';
-import { useForm } from 'react-hook-form'; 
+import { showError, showConfirmFormTareaRealizada, showErrorFormTareaRealizada } from '../helpers/swaHelper.js';
+import { useForm } from 'react-hook-form';
 import { createTareaRealizada } from '../services/tareaRealizada.service.js';
 import { useAuth } from '../context/AuthContext'; // Importa el contexto de autenticación
 import { useParams } from 'react-router-dom';
+import '../styles/FormTareaRealizada.css'; // Importa el archivo CSS
 
 export default function FormTareaRealizada() {
-    
+
     const { id: tareaId } = useParams(); // Obtiene el ID de la tarea desde los parámetros de la URL
     const rutUsuario = '20829012-6'; // Ajusta esto según tu contexto
-
+   
 
     const [archivo, setArchivo] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +31,7 @@ export default function FormTareaRealizada() {
                 formData.append("archivoAdjunto", archivo, archivo.name); // Asegúrate de pasar el nombre del archivo
             }
 
-            const response = await createTareaRealizada(formData, rutUsuario, jwt);
+            const response = await createTareaRealizada(formData, rutUsuario);
             if (response.status === 201) {
                 await showConfirmFormTareaRealizada();
                 setArchivo(null);
@@ -50,9 +51,9 @@ export default function FormTareaRealizada() {
     };
 
     return (
-        <div className="container is-max-desktop">
+        <div className="container">
             <div className="box">
-                <h2 className="title is-4">Responder a la Tarea</h2>
+                <h2 className="title">Responder a la Tarea</h2>
                 <div className="columns is-centered">
                     <div className="column is-two-thirds">
                         <form onSubmit={handleSubmit(onSubmit)}>
