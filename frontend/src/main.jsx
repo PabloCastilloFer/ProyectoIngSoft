@@ -9,6 +9,7 @@ import Tarea from './routes/Tarea.jsx';
 import Tareas from './routes/verTareas.jsx';
 import TareasAsignadasRoute from './routes/TareasAsignadasRoute.jsx';
 import FormTareaRealizadaRoute from './routes/FormTareaRealizadaRoute.jsx';
+import GenerarPDF from './routes/PDF.jsx';
 
 const router = createBrowserRouter([
   {
@@ -41,7 +42,10 @@ const router = createBrowserRouter([
   {
     path: '/responder-tarea/:id',
     element: <FormTareaRealizadaRoute />,
+    path: '/generarpdf',
+    element: <GenerarPDF/>,
   }
+
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(

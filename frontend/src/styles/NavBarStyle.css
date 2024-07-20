@@ -1,48 +1,67 @@
 .sidebar {
-    width: 250px;
-    background-color: #333a73;
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    height: 100%;
-    position: fixed;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    padding-top: 20px;
-  }
-  
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 20px 0 0 0;
-    text-align: right;
-  }
-  
-  .sidebar li {
-    padding: 10px;
-    cursor: pointer;
-  }
-  
-  .sidebar .footer {
-    text-align: right;
-    padding: 10px;
-    margin: 0;
-    width: 100%;
-    position: absolute;
-    bottom: 15px;
-    right: 0;
-  }
-  
-  .sidebar .logo-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px 0;
-  }
-  
-  .sidebar .logo-container img {
-    max-width: 50%;
-    height: auto;
-  }
+  width: 250px;
+  background-color: #387ADF;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+  position: fixed;
+  right: 0; /* Posiciona la barra lateral a la derecha */
+  top: 0;
+  bottom: 0;
+  padding-top: 20px;
+  border-left: 1px solid #e0e0e0;
+  transition: width 0.5s; /* Transición suave al colapsar */
+}
+
+.sidebar.collapsed {
+  width: 80px; /* Ajusta el ancho al colapsar */
+  transition: width 1s; /* Transición suave al colapsar */
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0 0;
+}
+
+.sidebar li {
+  padding: 10px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar li:hover {
+  background-color: #50c4ed;
+}
+
+.sidebar li::before {
+  content: attr(data-icon);
+  margin-right: 10px;
+}
+
+.sidebar.collapsed li span {
+  display: none; /* Oculta el texto al colapsar */
+}
+
+.sidebar .logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.sidebar.collapsed .logo-container {
+  justify-content: flex-start; /* Alinea el logo al inicio al colapsar */
+}
+
+.sidebar .logo-container img {
+  max-width: 50%;
+  height: auto;
+}
+
+.sidebar.collapsed .logo-container img {
+  max-width: 80px; /* Ajusta el tamaño del logo al colapsar */
+}

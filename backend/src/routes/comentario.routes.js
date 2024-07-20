@@ -9,7 +9,7 @@ const router = express.Router();
 router.post("/", isSupervisor, crearComentario);
 
 // Ruta para obtener comentarios por el rut del usuario asignado
-router.get("/:rut", obtenerComentariosPorRut);
+router.get("/:RutAsignado", obtenerComentariosPorRut);
 
 // Ruta para actualizar un comentario por su ID
 router.put("/:id", isSupervisor, actualizarComentario);
