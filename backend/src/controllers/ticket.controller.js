@@ -63,6 +63,9 @@ export const createTicket = async (req, res) => {
     const savedTicket = await newTicket.save();
     res.status(201).json(savedTicket);
 
+    tarea.estado = "asignada";
+    await tarea.save();
+
     const usuario = await Usuario.findOne({ rut: req.body.RutAsignado });
 
       sgMail.setApiKey(API_KEY);
@@ -144,6 +147,9 @@ export const updateTicket = async (req, res) => {
     const updatedTicket = await ticket.save();
     res.status(200).json(updatedTicket);
 
+    tarea.estado = "asignada";
+    await tarea.save();
+    
     const usuario = await Usuario.findOne({ rut: req.body.RutAsignado });
 
       sgMail.setApiKey(API_KEY);
