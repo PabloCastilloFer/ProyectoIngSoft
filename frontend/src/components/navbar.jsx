@@ -48,9 +48,9 @@ const Navbar = () => {
         <li data-icon="📄" onClick={() => handleNavigation('/tareas')}>
           <span>Ver Tareas</span>
         </li>
-        <li data-icon="⚙" onClick={() => handleNavigation('/prueba-1')}>
-          <span>prueba 1</span>
-        </li>
+        <li data-icon="" onClick={() => handleNavigation('/generarPDF')}>
+            <span>Informe Empleados</span>
+          </li>
         <li data-icon="⚙" onClick={() => handleNavigation('/prueba-2')}>
           <span>prueba 2</span>
         </li>
