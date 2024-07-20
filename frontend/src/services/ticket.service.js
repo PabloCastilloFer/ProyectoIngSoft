@@ -60,9 +60,9 @@ export const deleteTicket = async (IDTarea) => {
     }
 };
 
-export const getAllTicket = async () => {
+export const getEmptyTicket = async () => {
     try {
-        const response = await axios.get('/ticket');
+        const response = await axios.get('/ticket/tasks/empty');
         return response.data;
     } catch (error) {
         console.error('Error en la solicitud:', error);

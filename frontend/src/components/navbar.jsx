@@ -48,6 +48,9 @@ const Navbar = () => {
         <li data-icon="📄" onClick={() => handleNavigation('/tareas')}>
           <span>Ver Tareas</span>
         </li>
+        <li data-icon="📥" onClick={() => handleNavigation('/ticket')}>
+          <span>Tareas Asignadas</span>
+        </li>
         <li data-icon="📤" onClick={() => handleNavigation('/ticket')}>
           <span>Asignar Tareas</span>
         </li>

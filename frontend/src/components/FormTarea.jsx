@@ -72,7 +72,6 @@ const BoxStyle = {
     padding: '2rem',
     borderRadius: '8px',
     textAlign: 'left',
-    width: '50%',
 };
 
     return (
@@ -83,7 +82,7 @@ const BoxStyle = {
             <h2 className="title is-4">Formulario para crear tarea</h2>
             <p className="subtitle is-6">Ingresa los detalles de tu nueva tarea</p>
             <div className="columns is-lefted">
-                <div className="column is-one">
+                <div className="column is">
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="field">
                             <label className="label" htmlFor="nombreTarea">Nombre de la tarea:</label>
