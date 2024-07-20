@@ -1,6 +1,7 @@
 // frontend/src/components/GenerarPDF.jsx
 import React from 'react';
 import { generarPDF } from '../services/pdf.service';
+//import '../styles/PDF.css';  // Importa los estilos globalmente sin `?inline`
 
 const GenerarPDF = () => {
   const handleGeneratePDF = async () => {
@@ -10,7 +11,7 @@ const GenerarPDF = () => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'reporte.pdf');
+        link.setAttribute('download', 'informe_empleados.pdf');
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -24,7 +25,7 @@ const GenerarPDF = () => {
 
   return (
     <div className="pdf-section">
-      <h2>Generar PDF</h2>
+      <h2>INFORMES EMPLEADOS</h2>
       <div className="add-comment">
         <button onClick={handleGeneratePDF}>Descargar PDF</button>
       </div>
