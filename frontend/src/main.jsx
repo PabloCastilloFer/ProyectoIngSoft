@@ -10,6 +10,7 @@ import Tareas from './routes/verTareas.jsx';
 import TareasAsignadasRoute from './routes/TareasAsignadasRoute.jsx';
 import FormTareaRealizadaRoute from './routes/FormTareaRealizadaRoute.jsx';
 import GenerarPDF from './routes/PDF.jsx';
+import UpdateTarea  from './routes/UpdateTareaRoute.jsx';
 import VerTicket from './routes/verTicket.jsx';
 
 const router = createBrowserRouter([
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
   {
     path: '/generarpdf',
     element: <GenerarPDF/>,
+  },
+  {
+    path: '/tarea/modificar',
+    element: <UpdateTarea />,
   },
   {
     path: '/verTicket',
