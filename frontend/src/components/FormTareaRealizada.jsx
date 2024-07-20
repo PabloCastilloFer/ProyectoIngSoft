@@ -12,7 +12,8 @@ export default function FormTareaRealizada() {
 
     const { id: tareaId } = useParams(); // Obtiene el ID de la tarea desde los parámetros de la URL
     const rutUsuario = '20829012-6'; // Ajusta esto según tu contexto
-    
+    const jwt = useAuth();
+
 
     const [archivo, setArchivo] = useState(null);
     const [isLoading, setIsLoading] = useState(false);

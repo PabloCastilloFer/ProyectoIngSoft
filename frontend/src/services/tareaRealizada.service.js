@@ -1,6 +1,6 @@
 import axios from './root.service'; // Asegúrate de tener configurado root.service.js correctamente
 
-export const createTareaRealizada = async (formData, rutUsuario, jwt) => {
+export const createTareaRealizada = async (formData, rutUsuario) => {
     try {
         const config = {
             headers: {
