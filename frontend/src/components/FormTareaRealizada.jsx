@@ -6,12 +6,13 @@ import { createTareaRealizada } from '../services/tareaRealizada.service.js';
 import { useAuth } from '../context/AuthContext'; // Importa el contexto de autenticación
 import { useParams } from 'react-router-dom';
 import '../styles/FormTareaRealizada.css'; // Importa el archivo CSS
+import Navbar from '../components/navbar'; // Importa la Navbar
 
 export default function FormTareaRealizada() {
 
     const { id: tareaId } = useParams(); // Obtiene el ID de la tarea desde los parámetros de la URL
     const rutUsuario = '20829012-6'; // Ajusta esto según tu contexto
-   
+    
 
     const [archivo, setArchivo] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -51,66 +52,64 @@ export default function FormTareaRealizada() {
     };
 
     return (
-        <div className="container">
-            <div className="box">
-                <h2 className="title">Responder a la Tarea</h2>
-                <div className="columns is-centered">
-                    <div className="column is-two-thirds">
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className="field">
-                                <label className="label" htmlFor="comentario">Comentario:</label>
-                                <div className="control">
-                                    <textarea
-                                        id="comentario"
-                                        placeholder="Escribe tu comentario..."
-                                        className={`textarea ${errors.comentario ? 'is-danger' : ''}`}
-                                        {...register('comentario', { required: true })}
-                                    />
-                                </div>
-                                {errors.comentario && <p className="help is-danger">Este campo es obligatorio</p>}
+        <>
+           
+            <div className="container">
+            <Navbar /> {/* Incluye la Navbar */}
+                <div className="box">
+                    <h2 className="title">Responde tarea</h2>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <div className="field">
+                            <label className="label" htmlFor="comentario">Comentario:</label>
+                            <div className="control">
+                                <textarea
+                                    id="comentario"
+                                    placeholder="Escribe tu comentario..."
+                                    className={`textarea ${errors.comentario ? 'is-danger' : ''}`}
+                                    {...register('comentario', { required: true })}
+                                />
                             </div>
-                            <div className="field">
-                                <label className="label" htmlFor="estado">Estado:</label>
-                                <div className="control">
-                                    <div className={`select ${errors.estado ? 'is-danger' : ''}`}>
-                                        <select
-                                            id="estado"
-                                            {...register('estado', { required: true })}
-                                            onChange={(e) => setEstado(e.target.value)}
-                                        >
-                                            <option value="incompleta">Incompleta</option>
-                                            <option value="completa">Completa</option>
-                                            <option value="no realizada">No realizada</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                {errors.estado && <p className="help is-danger">Este campo es obligatorio</p>}
+                            {errors.comentario && <p className="help is-danger">Este campo es obligatorio</p>}
+                        </div>
+                        <div className="field margin-bottom-30">
+                            <label className="label" htmlFor="estado">Estado:</label>
+                            <div className="control select">
+                                <select
+                                    id="estado"
+                                    {...register('estado', { required: true })}
+                                    onChange={(e) => setEstado(e.target.value)}
+                                >
+                                    <option value="incompleta">Incompleta</option>
+                                    <option value="completa">Completa</option>
+                                    <option value="no realizada">No realizada</option>
+                                </select>
                             </div>
-                            <div className="field">
-                                <label className="label" htmlFor="archivoAdjunto">Archivo Adjunto:</label>
-                                <div className="control">
-                                    <input
-                                        id="archivoAdjunto"
-                                        type="file"
-                                        className="input"
-                                        onChange={handleArchivoChange}
-                                    />
-                                </div>
+                            {errors.estado && <p className="help is-danger">Este campo es obligatorio</p>}
+                        </div>
+                        <div className="field">
+                            <label className="label" htmlFor="archivoAdjunto">Archivo Adjunto:</label>
+                            <div className="control">
+                                <input
+                                    id="archivoAdjunto"
+                                    type="file"
+                                    className="input"
+                                    onChange={handleArchivoChange}
+                                />
                             </div>
-                            <div className="field is-grouped">
-                                <div className="control">
-                                    <button
-                                        className={`button is-link ${isLoading ? 'is-loading' : ''}`}
-                                        type="submit"
-                                    >
-                                        Enviar Respuesta
-                                    </button>
-                                </div>
+                        </div>
+                        <div className="field is-grouped">
+                            <div className="control">
+                                <button
+                                    className={`button is-link ${isLoading ? 'is-loading' : ''}`}
+                                    type="submit"
+                                >
+                                    Enviar Respuesta
+                                </button>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
+        </>
     );
 }

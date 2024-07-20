@@ -8,7 +8,7 @@ export const createTareaRealizada = async (formData, rutUsuario, jwt) => {
                  // Agregar el token JWT al encabezado Authorization
             },
         };
-        const response = await axios.post(`/tareaRealizada/20829012-6`, formData);
+        const response = await axios.post(`/tareaRealizada/20829012-6`,formData);
         return response;
     } catch (error) {
         if (error.response) {
