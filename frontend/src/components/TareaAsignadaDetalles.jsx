@@ -1,11 +1,11 @@
 // src/components/TareaAsignadaDetail.jsx
 import React, { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import tareaRealizadaService from '../services/tareaRealizadaService';
+import { useParams, useNavigate} from 'react-router-dom';
+import tareaRealizadaService from '../services/TareaRealizada.service';
 
 const TareaAsignadaDetail = ({ rutUsuario }) => {
     const { id } = useParams();
-    const history = useHistory();
+    const navigate = useNavigate(); // Reemplazamos useHistory con useNavigate
     const [tarea, setTarea] = useState(null);
     const [comentario, setComentario] = useState('');
     const [estado, setEstado] = useState('completa'); // Estado por defecto a completa
@@ -17,7 +17,7 @@ const TareaAsignadaDetail = ({ rutUsuario }) => {
                 setTarea(tareaEncontrada);
             })
             .catch(error => {
-                console.error("Error al obtener la tarea asignada:", error);
+                console.error('Error al obtener la tarea asignada:', error);
             });
     }, [id, rutUsuario]);
 
@@ -39,10 +39,10 @@ const TareaAsignadaDetail = ({ rutUsuario }) => {
 
         tareaRealizadaService.crearTareaRealizada(tareaRealizadaData)
             .then(() => {
-                history.push('/tareas-asignadas');
+                navigate('/tareas-asignadas'); // Reemplazamos history.push con navigate
             })
             .catch(error => {
-                console.error("Error al completar la tarea:", error);
+                console.error('Error al completar la tarea:', error);
             });
     };
 

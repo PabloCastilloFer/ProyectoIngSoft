@@ -1,12 +1,12 @@
-// src/components/TareaAsignadaList.jsx
 import React, { useEffect, useState } from 'react';
-import tareaRealizadaService from '../services/tareaRealizadaService';
+import tareaRealizadaService from '../services/TareaRealizada.service';
 
 const TareaAsignadaList = ({ rutUsuario }) => {
     const [tareas, setTareas] = useState([]);
     const [estado, setEstado] = useState('');
 
     useEffect(() => {
+        console.log('Fetching tareas asignadas...');
         fetchTareasAsignadas();
     }, [rutUsuario, estado]);
 
@@ -23,10 +23,11 @@ const TareaAsignadaList = ({ rutUsuario }) => {
 
         fetchFunction(rutUsuario)
             .then(response => {
+                console.log('Tareas asignadas recibidas:', response.data);
                 setTareas(response.data);
             })
             .catch(error => {
-                console.error("Error al obtener las tareas asignadas:", error);
+                console.error('Error al obtener las tareas asignadas:', error);
             });
     };
 
