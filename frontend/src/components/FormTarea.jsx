@@ -1,16 +1,19 @@
 import 'bulma/css/bulma.min.css';
 import { useState } from 'react';
-import { showError , showConfirmFormTarea } from '../helpers/swaHelper.js';
+import { useNavigate } from 'react-router-dom';
+import { showError , showConfirmFormTarea , CreateQuestion , VolverQuestion } from '../helpers/swaHelper.js';
 import { useForm } from 'react-hook-form'; 
 import { createTarea } from '../services/tarea.service.js';
-import { useAuth } from '../context/AuthContext'; // Importa el contexto de autenticación
+import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/navbar.jsx';
 
 export default function FormSupervisor() {
+    const navigate = useNavigate(); 
+
     const jwt = useAuth();
 
     const userStorage = localStorage.getItem('user');
-    const userDat = JSON.parse(userStorage); // Corregido
+    const userDat = JSON.parse(userStorage); 
 
     const [archivo, setArchivo] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +24,11 @@ export default function FormSupervisor() {
 
     const onSubmit = async (data) => {
         try {
+            const isConfirmed = await CreateQuestion();
+        
+        if (!isConfirmed) {
+            return;
+        }
             setIsLoading(true);
             const formData = new FormData();
             formData.append("nombreTarea", data.nombreTarea);
@@ -34,7 +42,7 @@ export default function FormSupervisor() {
             if (response.status === 201) {
                 await showConfirmFormTarea();
                 setArchivo(null);
-                reset(); // Resetea los campos del formulario
+                reset();
             } else if (response.status === 400) {
                 await showError(response.data[0].response.data.message);
             } else if (response.status === 500) {
@@ -52,34 +60,68 @@ export default function FormSupervisor() {
         setArchivo(e.target.files[0]);
     };
 
-    const handleGuardarTarea = () => {
-        // Enviar formulario con handleSubmit
-        handleSubmit(onSubmit)();
+    const handleVolver = () => {
+        VolverQuestion();
+        navigate(-1); 
     };
+
+    function ArrowLeftIcon(props) {
+        return (
+            <svg
+                {...props}
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <line x1="19" y1="12" x2="5" y2="12" />
+                <polyline points="12 19 5 12 12 5" />
+            </svg>
+        );
+    }
 
     const containerStyle = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight:'250px', // Ajustar el margen según el estado de la barra lateral
+        marginRight:'250px', 
     };
 
     const BoxStyle = {
         alignItems: 'center',
-        paddingTop: '64px', // Ajustar para la altura de la navbar
+        paddingTop: '64px', 
         width: '700px',
         padding: '2rem',
         borderRadius: '8px',
         boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
         backgroundColor: '#fff',
         textAlign: 'center',
+        position: 'relative', 
     };
 
+    const volverButtonStyle = {
+        position: 'absolute',
+        top: '1rem',
+        left: '1rem',
+    };
 
     return (
         <div style={containerStyle}>
-            <Navbar/>
+            <Navbar />
             <div style={BoxStyle}>
+                <div style={volverButtonStyle}>
+                    <button className="button is-light" onClick={handleVolver}>
+                    <span className="icon is-small">
+                                            <ArrowLeftIcon />
+                                        </span>
+                                        <span>Volver</span>
+                    </button>
+                </div>
                 <div>
                     <h2 className="title is-4">Formulario para crear tarea</h2>
                     <p className="subtitle is-6">Ingresa los detalles de tu nueva tarea</p>

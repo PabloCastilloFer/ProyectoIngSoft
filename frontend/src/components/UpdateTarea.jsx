@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Navbar from '../components/navbar.jsx';
 import { updateTarea } from '../services/tarea.service.js';
-import { useLocation } from 'react-router-dom';
+import { useLocation , useNavigate } from 'react-router-dom';
 import { UpdateQuestion } from '../helpers/swaHelper.js'; // Asegúrate de importar UpdateQuestion
 
 const EditarTarea = ({ initialData }) => {
+    const navigate = useNavigate(); 
     const location = useLocation();
     const { tarea } = location.state;
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({
@@ -50,10 +51,67 @@ const EditarTarea = ({ initialData }) => {
         }
     };
 
+    const handleVolver = () => {
+        navigate(-1); 
+    };
+
+    function ArrowLeftIcon(props) {
+        return (
+            <svg
+                {...props}
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <line x1="19" y1="12" x2="5" y2="12" />
+                <polyline points="12 19 5 12 12 5" />
+            </svg>
+        );
+    }
+
+    const containerStyle = {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight:'250px', 
+    };
+
+    const BoxStyle = {
+        alignItems: 'center',
+        paddingTop: '64px', 
+        width: '700px',
+        padding: '2rem',
+        borderRadius: '8px',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+        backgroundColor: '#fff',
+        textAlign: 'center',
+        position: 'relative', 
+    };
+
+    const volverButtonStyle = {
+        position: 'absolute',
+        top: '1rem',
+        left: '1rem',
+    };
+
     return (
         <div style={containerStyle}>
             <Navbar />
             <div style={BoxStyle}>
+            <div style={volverButtonStyle}>
+                    <button className="button is-light" onClick={handleVolver}>
+                    <span className="icon is-small">
+                                            <ArrowLeftIcon />
+                                        </span>
+                                        <span>Volver</span>
+                    </button>
+                </div>
                 <div>
                     <h2 className="title is-4">Formulario de edición de tarea</h2>
                     <p className="subtitle is-6">Ingresa las modificaciones a la tarea</p>
