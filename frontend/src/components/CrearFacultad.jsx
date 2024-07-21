@@ -1,13 +1,27 @@
 import React, { useState } from 'react';
-import { crearFacultad } from '../services/facultad.service';
 import '../styles/Generico.css'; // Asegúrate de tener estilos para los formularios
-import Navbar from '../components/navbar.jsx';
+import Navbar from '../components/Navbar.jsx';
+
+const containerStyle = {
+  display: 'flex',
+};
+
+const boxStyle = {
+  margin: 'auto',
+  padding: '20px',
+  width: '100%',
+  maxWidth: '600px',
+  backgroundColor: '#fff',
+  boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+  borderRadius: '8px',
+};
 
 const CrearFacultad = () => {
   const [nombre, setNombre] = useState('');
   const [error, setError] = useState(null);
+  const [facultades, setFacultades] = useState(JSON.parse(localStorage.getItem('facultades')) || []);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     setError(null);
 
@@ -16,18 +30,22 @@ const CrearFacultad = () => {
       return;
     }
 
-    console.log("Datos enviados al backend:", { nombre }); // Verificar datos enviados
+    const nuevaFacultad = { nombre };
+    console.log("Datos enviados al backend:", nuevaFacultad); // Verificar datos enviados
 
-    const response = await crearFacultad({ nombre });
+    // Simular la creación de la facultad almacenándola en localStorage
+    const facultadesActualizadas = [...facultades, nuevaFacultad];
+    localStorage.setItem('facultades', JSON.stringify(facultadesActualizadas));
+    setFacultades(facultadesActualizadas);
 
-    console.log("Respuesta del backend:", response); // Verificar respuesta del backend
+    alert('Facultad creada con éxito');
+    setNombre('');
+  };
 
-    if (response.status === 201) {
-      alert('Facultad creada con éxito');
-      setNombre('');
-    } else {
-      setError('Error al crear la facultad: ' + response.data?.message || response.error);
-    }
+  const handleDelete = (index) => {
+    const facultadesActualizadas = facultades.filter((_, i) => i !== index);
+    localStorage.setItem('facultades', JSON.stringify(facultadesActualizadas));
+    setFacultades(facultadesActualizadas);
   };
 
   return (
@@ -49,6 +67,15 @@ const CrearFacultad = () => {
             </div>
             <button type="submit" className="btn btn-primary">Crear Facultad</button>
           </form>
+          <h3>Facultades Creadas</h3>
+          <ul className="facultades-list">
+            {facultades.map((facultad, index) => (
+              <li key={index} className="facultad-item">
+                <span>{facultad.nombre}</span>
+                <button className="btn btn-danger" onClick={() => handleDelete(index)}>Eliminar</button>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>

@@ -5,14 +5,14 @@ const getToken = () => {
   return localStorage.getItem('token'); // O cookies.get('token') si estás usando cookies
 };
 
-export const crearUsuario = async (data) => {
+export const crearUsuario = async (data,jwt) => {
   try {
-    const token = getToken();
-    const response = await axios.post('/users', data, {
+    const config = {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
+          'Authorization': `Bearer ${jwt}`
+        }
+    };
+    const response = await axios.post('/users', data, config);
     return response;
   } catch (error) {
     if (error.response) {

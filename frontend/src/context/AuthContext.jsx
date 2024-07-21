@@ -14,13 +14,13 @@ export function AuthProvider({ children }) {
   const isAuthenticated = user ? true : false;
 
   useEffect(() => {
-    // Obtener el token JWT de las cookies
-    // const token = cookies.get('jwt-auth');
-    // if (token) {
-    //   setJwt(token);
-    // } else {
-    //   navigate('/auth');
-    // }
+    //Obtener el token JWT de las cookies
+     const token = cookies.get('jwt-auth');
+     if (token) {
+       setJwt(token);
+     } else {
+       navigate('/auth');
+    }
     
     if(!isAuthenticated) {
   
