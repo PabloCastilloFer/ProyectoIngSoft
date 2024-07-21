@@ -1,9 +1,9 @@
-import Ticket from '../components/Ticket.jsx';
+import Tickets from '../components/Tickets.jsx';
 export default function verTicket() {
 
     return (
     <div>
-        <Ticket/>
+        <Tickets/>
     </div>
     )
 }

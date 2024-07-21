@@ -9,7 +9,7 @@ export const createTicket = async (formData, jwt) => {
                 'Authorization': `Bearer ${jwt}` // Agregar el token JWT al encabezado Authorization
             },
         };
-        const response = await axios.post('/tarea', formData, config);
+        const response = await axios.post('/ticket', formData, config);
         return response;
     } catch (error) {
         if (error.response) {
@@ -25,16 +25,18 @@ export const createTicket = async (formData, jwt) => {
     }
 };
 
-export const updateTicket = async (formData, IDTarea) => {
+export const updateTicket = async (data, TareaID) => {
     try {
         const config = {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'application/json',
             },
         };
-        const response = await axios.put(`/ticket/${IDTarea}`, formData, config);
+        const response = await axios.put(`/ticket/task/${TareaID}`, data, config);
+        console.log("Response from server: ", response);
         return response;
     } catch (error) {
+        console.error("Error in updateTicket: ", error);
         return { status: 500, data: [error], error: error.message };
     }
 };
@@ -60,9 +62,9 @@ export const deleteTicket = async (IDTarea) => {
     }
 };
 
-export const getAllTicket = async () => {
+export const getEmptyTicket = async () => {
     try {
-        const response = await axios.get('/ticket');
+        const response = await axios.get('/ticket/tasks/empty');
         return response.data;
     } catch (error) {
         console.error('Error en la solicitud:', error);

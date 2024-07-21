@@ -33,23 +33,23 @@ const Navbar = () => {
   };
 
   return (
-    <div style={navbarStyle}>
-      <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
-        <div className="logo-container" onClick={() => handleNavigation('/home')}>
-          <img src={logo} alt="Logo" />
-        </div>
-        <button onClick={handleToggleSidebar}>
-          {isCollapsed ? '🡸' : '🡺'}
-        </button>
-        <ul>
-          <li data-icon="📁" onClick={() => handleNavigation('/tarea')}>
+  <div  style={navbarStyle}>
+    <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+      <div className="logo-container" onClick={() => handleNavigation('/home')}>
+      <img src={logo} alt="Logo" />
+      </div>
+      <button onClick={handleToggleSidebar}>
+        {isCollapsed ? '🡸' : '🡺'}
+      </button>
+      <ul>
+      <li data-icon="📁" onClick={() => handleNavigation('/tarea')}>
             <span>Crear Tarea</span>
           </li>
           <li data-icon="📄" onClick={() => handleNavigation('/tareas')}>
             <span>Ver Tareas</span>
           </li>
-          <li data-icon="📤" onClick={() => handleNavigation('/ticket')}>
-            <span>Asignar Tareas</span>
+          <li data-icon="📤" onClick={() => handleNavigation('/verticket')}>
+            <span>Tareas asignadas</span>
           </li>
           <li data-icon="📋" onClick={() => handleNavigation('/generarPDF')}>
             <span>Informe Empleados</span>

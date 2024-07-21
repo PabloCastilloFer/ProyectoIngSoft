@@ -12,6 +12,9 @@ import FormTareaRealizadaRoute from './routes/FormTareaRealizadaRoute.jsx';
 import GenerarPDF from './routes/PDF.jsx';
 import VerTicket from './routes/verTicket.jsx';
 import TareasRealizadas from './routes/TareasRealizadasRoute.jsx';
+import UpdateTicket from './routes/UpdateTicketRoute.jsx';
+import UpdateTarea  from './routes/UpdateTareaRoute.jsx';
+import FromTicket from './routes/FormTicketRoutes.jsx';
 import CrearFacultad from './routes/CrearFacultad.jsx';
 import CrearUsuario from './routes/CrearUsuario.jsx';
 
@@ -60,6 +63,18 @@ const router = createBrowserRouter([
     element: <TareasRealizadas />,
   },
   {
+    path: '/ticket/modificar',
+    element: <UpdateTicket />,
+  },
+  {
+    path: '/tarea/modificar',
+    element: <UpdateTarea />,
+  },
+  {
+    path: '/ticket',
+    element: <FromTicket />,
+  },
+  {
     path: '/facultades',
     element: <CrearFacultad />,
   },
@@ -67,6 +82,8 @@ const router = createBrowserRouter([
     path: '/usuarios',
     element: <CrearUsuario />,
   }
+
+
 
 ]);
 

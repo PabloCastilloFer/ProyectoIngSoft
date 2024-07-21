@@ -1,6 +1,6 @@
 import 'bulma/css/bulma.min.css';
 import { useState, useEffect } from 'react';
-import { showError, showConfirmFormTareaRealizada, showErrorFormTareaRealizada } from '../helpers/swaHelper.js';
+import { showError, showConfirmFormTarea, showErrorFormTarea } from '../helpers/swaHelper.js';
 import { useForm } from 'react-hook-form';
 import { createTareaRealizada, getTareasAsignadas } from '../services/tareaRealizada.service.js'; // Importa el servicio para obtener las tareas asignadas
 import { useAuth } from '../context/AuthContext'; // Importa el contexto de autenticación
@@ -53,11 +53,11 @@ export default function FormTareaRealizada() {
 
             const response = await createTareaRealizada(formData, rutUsuario); // Pasa el token JWT
             if (response.status === 201) {
-                await showConfirmFormTareaRealizada();
+                await showConfirmFormTarea();
                 setArchivo(null);
                 reset(); // Resetea los campos del formulario
             } else {
-                await showErrorFormTareaRealizada();
+                await showErrorFormTarea();
             }
         } catch (error) {
             await showError(error.message || "Error al enviar la respuesta");
