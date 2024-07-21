@@ -21,6 +21,7 @@ export function AuthProvider({ children }) {
     // } else {
     //   navigate('/auth');
     // }
+    
     if(!isAuthenticated) {
   
       navigate('/auth')

@@ -56,6 +56,9 @@ const Navbar = () => {
           </li>
         <li data-icon="📃" onClick={() => handleNavigation('/tareas-asignadas')}>
           <span>Ver Tareas Asignadas</span>
+          </li>
+        <li data-icon="📍" onClick={() => handleNavigation('/tareas-realizadas')}>
+          <span>Tareas Realizadas</span>
         </li>
       </ul>
     </div>

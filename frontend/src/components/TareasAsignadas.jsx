@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { getTareasAsignadas } from '../services/tareaRealizada.service.js';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../Navbar'; // Importa la Navbar
-import '../styles/TareasAsignadas.css';  // Importa los estilos específicos
+import Navbar from './Navbar'; // Corrige la ruta de importación
+import '../styles/TareasAsignadas.css';  // Importa los estilos
 
 const TareasAsignadas = () => {
   const navigate = useNavigate();
   const [tareas, setTareas] = useState([]);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(''); // Estado para el campo de búsqueda
   const rutUsuario = '20829012-6'; // Ajusta esto según tu contexto
 
   const fetchTareas = async () => {
@@ -37,6 +38,15 @@ const TareasAsignadas = () => {
   const handleResponderTarea = (tareaId) => {
     navigate(`/responder-tarea/${tareaId}`);
   };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Filtrar tareas según el término de búsqueda
+  const filteredTareas = tareas.filter(tarea => 
+    tarea.nombreTarea.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -79,10 +89,23 @@ const TareasAsignadas = () => {
         <div className="has-text-centered">
           <h1 className="title is-2">Tareas Asignadas</h1>
         </div>
-        {tareas.length === 0 ? (
+        <div className="field">
+          <label className="label" htmlFor="search">Buscar Tareas:</label>
+          <div className="control">
+            <input
+              id="search"
+              type="text"
+              className="input"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Buscar por nombre de tarea..."
+            />
+          </div>
+        </div>
+        {filteredTareas.length === 0 ? (
           <p>No hay tareas asignadas.</p>
         ) : (
-          tareas.map((tarea) => (
+          filteredTareas.map((tarea) => (
             <div key={tarea.idTarea} style={BoxStyle2}>
               <h2 className="title is-4">{tarea.nombreTarea}</h2>
               <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
