@@ -1,8 +1,18 @@
-import instance from './root.service';
+import axios from './root.service';
 
-export const crearFacultad = async (facultadData) => {
+// Función para obtener el token del almacenamiento local o cookies
+const getToken = () => {
+  return localStorage.getItem('token'); // O cookies.get('token') si estás usando cookies
+};
+
+export const crearFacultad = async (data) => {
   try {
-    const response = await instance.post('/facultades', facultadData);
+    const token = getToken();
+    const response = await axios.post('/facultades', data, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
     return response;
   } catch (error) {
     if (error.response) {
