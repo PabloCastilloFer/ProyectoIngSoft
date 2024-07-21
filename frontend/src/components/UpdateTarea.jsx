@@ -56,7 +56,7 @@ const EditarTarea = ({ initialData }) => {
         if (isConfirmed) {
             navigate(-1);
         } 
-    };
+    };;
 
     function ArrowLeftIcon(props) {
         return (
@@ -88,7 +88,7 @@ const EditarTarea = ({ initialData }) => {
     const BoxStyle = {
         alignItems: 'center',
         paddingTop: '64px', 
-        width: '700px',
+        width: '800px',
         padding: '2rem',
         borderRadius: '8px',
         boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',

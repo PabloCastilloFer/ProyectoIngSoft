@@ -21,19 +21,19 @@ export function AuthProvider({ children }) {
     } else {
       navigate('/auth');
     }
-  }, [isAuthenticated, navigate]);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/auth');
+    
+    if(!isAuthenticated) {
+  
+      navigate('/auth')
     }
-  }, [isAuthenticated, navigate]);
+    }, [isAuthenticated, navigate]);
+
+
+  
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, jwt }}>
+    <AuthContext.Provider value={{ isAuthenticated, user }}>
       {children}
     </AuthContext.Provider>
   );
 }
-
-export const user1 = JSON.parse(localStorage.getItem('user')) || '';

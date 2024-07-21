@@ -6,13 +6,13 @@ import { isSupervisor, isAdmin} from "../middlewares/authorization.middleware.js
 const router = Router();
 router.use(authenticationMiddleware);
 
-router.post('/', createTicket , isSupervisor);
-router.get('/', getTickets , isSupervisor);
-router.put('/task/:id', updateTicket, isSupervisor);
-router.delete('/:id', deleteTicket, isAdmin);
-router.get('/user/:rut', getTicketporRut , isSupervisor);
-router.get('/task/:id', getTicketporTareaID , isSupervisor);
-router.get('/tasks', getTareaConTicket , isSupervisor);
-router.get('/tasks/empty', getTareaSinTicket , isSupervisor);
+router.post('/',isSupervisor, createTicket);
+router.get('/',isSupervisor, getTickets);
+router.put('/task/:id',isSupervisor, updateTicket);
+router.delete('/:id', isAdmin, deleteTicket);
+router.get('/user/:rut',isSupervisor, getTicketporRut);
+router.get('/task/:id',isSupervisor, getTicketporTareaID);
+router.get('/tasks',isSupervisor, getTareaConTicket);
+router.get('/tasks/empty',isSupervisor, getTareaSinTicket );
 
 export default router;

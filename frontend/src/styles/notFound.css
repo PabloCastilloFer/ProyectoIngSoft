@@ -44,7 +44,7 @@
   /* Margin and padding utilities */
   .mx-auto {
     margin-left: auto;
-    margin-right: auto;
+    margin-right: 350px;
   }
   
   .mb-6 {

@@ -1,9 +1,10 @@
 // frontend/src/components/GenerarPDF.jsx
 import React from 'react';
 import { generarPDF } from '../services/pdf.service';
-import '../styles/PDF.css';  // Importa los estilos
+import '../styles/Generico.css';  // Importa los estilos
 import {showPDFGeneratedSuccess, showPDFGeneratedError} from '../helpers/pdfHelper';
 import { v4 as uuidv4 } from 'uuid';
+import Navbar from '../components/navbar.jsx';
 
 const GenerarPDF = () => {
   const handleGeneratePDF = async () => {
@@ -30,14 +31,42 @@ const GenerarPDF = () => {
     }
   };
 
+  const containerStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight:'250px',
+};
+
+const BoxStyle = {
+    alignItems: 'center',
+    paddingTop: '64px', // Ajustar para la altura de la navbar
+    width: '7000px',
+    padding: '2rem',
+    borderRadius: '8px',
+    textAlign: 'center',
+};
+
   return (
-    <div className="pdf-section">
-      <h2>INFORMES EMPLEADOS</h2>
-      <div className="add-comment">
-        <button onClick={handleGeneratePDF}>Descargar PDF</button>
+    <div style={containerStyle}>
+            <Navbar />
+            <div style={BoxStyle}>
+      <div className="pdf-section">
+        <h2>INFORMES EMPLEADOS</h2>
+        <div className="add-comment">
+          <button onClick={handleGeneratePDF}>Descargar PDF</button>
+        </div>
+        <div className="field">
+            <label className="label" htmlFor="comentario">Comentario:</label>
+              <div className="control">
+                <textarea //cambiar
+                  placeholder="Comentario..."
+                />
+                </div>
+            </div>
+      </div>
       </div>
     </div>
   );
 };
-
 export default GenerarPDF;

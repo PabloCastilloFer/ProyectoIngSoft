@@ -1,13 +1,12 @@
-import React, { useState , useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/NavBarStyle.css';
-import logo from '../assets/Logo.png'; // Importa la imagen del logo
+import logo from '../assets/Logo.png';
 
 const Navbar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const navigate = useNavigate();
 
-  // Recuperar el estado de la barra lateral desde localStorage al cargar el componente
   useEffect(() => {
     const savedState = localStorage.getItem('isSidebarCollapsed');
     if (savedState !== null) {
@@ -20,6 +19,7 @@ const Navbar = () => {
     setIsCollapsed(newState);
     localStorage.setItem('isSidebarCollapsed', JSON.stringify(newState));
   };
+
   const handleNavigation = (path) => {
     navigate(path);
   };
@@ -30,7 +30,7 @@ const Navbar = () => {
     top: '0',
     height: '100vh',
     width: '250px',
-};
+  };
 
   return (
   <div  style={navbarStyle}>
@@ -42,21 +42,24 @@ const Navbar = () => {
         {isCollapsed ? '🡸' : '🡺'}
       </button>
       <ul>
-        <li data-icon="📁" onClick={() => handleNavigation('/tarea')}>
-          <span>Crear Tarea</span>
-        </li>
-        <li data-icon="📄" onClick={() => handleNavigation('/tareas')}>
-          <span>Ver Tareas</span>
-        </li>
-        <li data-icon="" onClick={() => handleNavigation('/generarPDF')}>
+      <li data-icon="📁" onClick={() => handleNavigation('/tarea')}>
+            <span>Crear Tarea</span>
+          </li>
+          <li data-icon="📄" onClick={() => handleNavigation('/tareas')}>
+            <span>Ver Tareas</span>
+          </li>
+          <li data-icon="📤" onClick={() => handleNavigation('/verticket')}>
+            <span>Tareas asignadas</span>
+          </li>
+          <li data-icon="📋" onClick={() => handleNavigation('/generarPDF')}>
             <span>Informe Empleados</span>
           </li>
-        <li data-icon="⚙" onClick={() => handleNavigation('/prueba-2')}>
-          <span>prueba 2</span>
-        </li>
-        <li data-icon="⚙" onClick={() => handleNavigation('/prueba-3')}>
-          <span>prueba 3</span>
-        </li>
+          <li data-icon="📃" onClick={() => handleNavigation('/tareas-asignadas')}>
+            <span>Ver Tareas Asignadas</span>
+          </li>
+          <li data-icon="📍" onClick={() => handleNavigation('/tareas-realizadas')}>
+            <span>Tareas Realizadas</span>
+          </li>
       </ul>
     </div>
   </div>

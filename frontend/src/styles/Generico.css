@@ -1,0 +1,90 @@
+/* frontend/src/styles/PDF.css */
+.pdf-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+}
+
+.pdf-section h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.add-comment button {
+  padding: 10px 20px;
+  background-color: #387ADF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-comment button:hover {
+  background-color: #50C4ED;
+}
+
+.add-comment button:active {
+  background-color: #387ADF;
+}
+
+.user-details-container {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background-color: #FBA834;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-details-container p {
+  margin: 0;
+  margin-top: 5px;
+}
+
+.user-details-container button {
+  background-color: #fff;
+  color: #FBA834;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.user-details-container button:hover {
+  background-color: #f5f5f5;
+}
+
+.user-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.user-info p {
+  margin: 0;
+  text-align: center;
+}

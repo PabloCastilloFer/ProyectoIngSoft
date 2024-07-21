@@ -1,0 +1,219 @@
+import React, { useState } from 'react';
+
+const NuevaTarea = () => {
+  const [nombreTarea, setNombreTarea] = useState('');
+  const [tipoTarea, setTipoTarea] = useState('');
+  const [descripcionTarea, setDescripcionTarea] = useState('');
+  const [archivoAdjunto, setArchivoAdjunto] = useState(null);
+
+  const handleArchivoChange = (e) => {
+    setArchivoAdjunto(e.target.files[0]);
+  };
+
+  const handleGuardarTarea = () => {
+    console.log({
+      nombreTarea,
+      tipoTarea,
+      descripcionTarea,
+      archivoAdjunto
+    });
+  };
+
+  return (
+    <div className="max-w-md mx-auto bg-white shadow-md rounded-lg p-6">
+      <h2 className="text-2xl font-semibold mb-4">Nueva Tarea</h2>
+      <p className="text-gray-600 mb-6">Ingresa los detalles de tu nueva tarea.</p>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nombreTarea">
+          Nombre de Tarea
+        </label>
+        <input
+          id="nombreTarea"
+          type="text"
+          placeholder="Ej. Diseñar logotipo"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          value={nombreTarea}
+          onChange={(e) => setNombreTarea(e.target.value)}
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="tipoTarea">
+          Tipo de Tarea
+        </label>
+        <select
+          id="tipoTarea"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          value={tipoTarea}
+          onChange={(e) => setTipoTarea(e.target.value)}
+        >
+          <option value="">Selecciona un tipo</option>
+          <option value="tipo1">Tipo 1</option>
+          <option value="tipo2">Tipo 2</option>
+        </select>
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="descripcionTarea">
+          Descripción de Tarea
+        </label>
+        <textarea
+          id="descripcionTarea"
+          placeholder="Describe la tarea..."
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          value={descripcionTarea}
+          onChange={(e) => setDescripcionTarea(e.target.value)}
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="archivoAdjunto">
+          Archivo Adjunto
+        </label>
+        <input
+          id="archivoAdjunto"
+          type="file"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          onChange={handleArchivoChange}
+        />
+      </div>
+      <div className="flex items-center justify-between">
+        <button
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          type="button"
+        >
+          Cancelar
+        </button>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          type="button"
+          onClick={handleGuardarTarea}
+        >
+          Guardar Tarea
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default NuevaTarea;
+
+-------------------
+
+HELPERSS
+
+------------------
+import Swal from 'sweetalert2';
+const Toast = Swal.mixin({
+    toast: true,
+    position: "top end",
+    showConfirButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+    }
+});
+
+export const showConfirmFormTarea = async () => {
+    await Toast.fire({
+        icon: "success",
+        title: "Tarea creada exitosamente!"
+    });
+};
+
+export const showErrorFormTarea = async () => {
+    await Toast.fire({
+        icon: "error",
+        title: "Error al crear la tarea"
+    });
+};
+
+export const showError = async () => {
+    await Toast.fire({
+        icon: "info",
+        title: error
+    });
+};
+
+export const showDeleteTarea = async () => {
+    await Toast.fire({
+        icon: "success",
+        title: "Tarea eliminada exitosamente!"
+    });
+};
+
+export const showUpdateTarea = async () => {
+    await Toast.fire({
+        icon: "success",
+        title: "Tarea actualizada exitosamente!"
+    })
+};
+
+export const showNotFoundTarea = async () => {
+    await Toast.fire({
+        icon: "info",
+        title: "Tarea no encontrada"
+    })
+};
+
+export const showFoundTarea = async () => {
+    await Toast.fire({
+        icon: "info",
+        title: "Tarea encontrada"
+    })
+};
+
+------------------------
+SERVICES
+-----------------------
+import axios from './root.service';
+
+export const createTarea = async (formData) => {
+    try {
+        const config = {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        };
+        const response = await axios.post('/tarea', formData, config);
+
+        return response;
+    }catch (error) {
+        return { status: 500, data: [error], error: error.message };
+    }
+};
+
+export const updateTarea = async (formaData, idTarea) => {
+    try {
+        const config = {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        };
+        const response = await axios.put(`/tarea/${idTarea}`, formData, config);
+
+        return response;
+        } catch (error) {
+            return { status: 500, data: [error], error: error.message };
+    }
+};
+
+export const getTarea = async (searchValue) => {
+    try {
+        const response = await axios.get(`/tarea/${searchValue}`);
+        const data = response.data;
+        return [data];
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        return { status: 500, data: [error], error: error.message };
+    }
+};
+
+export const deleteTarea = async (idTarea) => {
+    try {
+        const response = await axios.delete(`/tarea/${idTarea}`);
+        return response;
+    } catch {
+        console.error('Error en al solicitud:', error);
+        return { status: 500, data: [error], error: error.message };
+    }
+};

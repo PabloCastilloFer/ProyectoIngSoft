@@ -1,0 +1,17 @@
+.centered-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    color: #007bff; /* Cambia el color según sea necesario */
+  }
+  
+  .page-container {
+    padding: 20px;
+  }
+  
+  .welcome-message {
+    font-size: 2rem;
+    font-weight: bold;
+  }
