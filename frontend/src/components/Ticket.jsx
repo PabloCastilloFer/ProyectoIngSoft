@@ -3,8 +3,10 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/navbar.jsx';
 import axios from '../services/root.service.js';
 import '../styles/Generico.css';  
+import { useNavigate } from 'react-router-dom';
 
 export default function VerTicket() {
+    const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [tickets, setTickets] = useState([]);
     const [filteredTickets, setFilteredTickets] = useState([]);
@@ -21,8 +23,10 @@ export default function VerTicket() {
             });
     };
 
-    const handleEdit = (TareaID) => {
-        history.push(`/editar-ticket/${TareaID}`);
+    const handleEditClick = (ticket) => {
+        navigate(`/ticket/modificar`, {
+            state: { ticket },
+        });
     };
 
     useEffect(() => {
@@ -110,7 +114,7 @@ const BoxStyle2 = {
                 <p><strong>Usuario Asignado:</strong> {ticket.RutAsignado}</p>
                 <p><strong>Inicio:</strong> {new Date(ticket.Inicio).toLocaleString()}</p>
                 <p><strong>Fin:</strong> {new Date(ticket.Fin).toLocaleString()}</p>
-                <button className="button is-primary is-outlined" onClick={() => handleEdit(ticket.TareaID)} >
+                <button className="button is-primary is-outlined" onClick={() => handleEditClick(ticket)} >
                     <span className="icon is-small">
                     </span>
                     <span>Reasignar</span>
