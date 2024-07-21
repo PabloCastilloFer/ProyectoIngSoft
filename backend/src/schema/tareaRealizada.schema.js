@@ -15,12 +15,6 @@ export const crearTareaRealizadaSchema = Joi.object({
         "string.empty": "El estado no puede estar vacío.",
         "any.required": "El estado es obligatorio.",
         "string.base": "El estado debe ser de tipo string.",
-        "any.only": "El estado debe ser 'completada', 'incompleta' o 'no realizada'."
-    }),
-    adjuntarArchivo: Joi.string().optional().allow('').messages({
-        "string.empty": "El archivo adjunto debe ser una cadena.",
+        "any.only": "El estado debe ser 'completa', 'incompleta' o 'no realizada'."
     }),
 });
-
-
-

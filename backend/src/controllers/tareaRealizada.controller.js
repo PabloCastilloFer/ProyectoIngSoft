@@ -11,26 +11,33 @@ import { API_KEY } from "../config/configEnv.js";
 const crearTareaRealizada = async (req, res) => {
     try {
         console.log("Body de la solicitud:", req.body);
+        console.log("Archivo adjunto:", req.file);
 
         // Validar los datos de entrada utilizando el esquema Joi
         const { error, value } = crearTareaRealizadaSchema.validate(req.body);
+        console.log("Resultado de la validación:", { error, value });
 
         if (error) {
+            console.log("Error de validación:", error.details[0].message);
             return res.status(400).json({ message: error.details[0].message });
         }
 
         // Extraer información de la solicitud validada
         const { TareaID, comentario, estado } = value;
+        console.log("Datos extraídos:", { TareaID, comentario, estado });
 
         // Verificar que todos los campos requeridos estén presentes
         if (!TareaID || !comentario || !estado) {
+            console.log("Campos faltantes:", { TareaID, comentario, estado });
             return res.status(400).json({ message: 'Todos los campos son obligatorios: TareaID, comentario, estado' });
         }
 
         // Verificar si la tarea está asignada al usuario
         const ticket = await Ticket.findOne({ TareaID: TareaID, 'Historial.RutAsignado': req.params.rutUsuario });
+        console.log("Ticket encontrado:", ticket);
 
         if (!ticket) {
+            console.log("Tarea no asignada al usuario");
             return res.status(404).json({ message: 'Tarea no asignada al usuario' });
         }
 
@@ -38,41 +45,52 @@ const crearTareaRealizada = async (req, res) => {
         const tareaAsignada = ticket.Historial.find(historial => 
             historial.RutAsignado === req.params.rutUsuario && ticket.TareaID === TareaID
         );
+        console.log("Tarea asignada encontrada en el historial:", tareaAsignada);
 
         if (!tareaAsignada) {
+            console.log("Tarea no asignada en el historial del usuario");
             return res.status(404).json({ message: 'Tarea no asignada en el historial del usuario' });
         }
 
         // Buscar la tarea
         const tarea = await Tarea.findOne({ idTarea: TareaID });
+        console.log("Tarea encontrada:", tarea);
+
         if (!tarea) {
+            console.log("Tarea no encontrada");
             return res.status(404).json({ message: 'Tarea no encontrada' });
         }
+
         // Verificar si se está dentro del plazo
         const now = new Date();
         const inicio = new Date(ticket.Inicio);
         const fin = new Date(ticket.Fin);
+        console.log("Fechas:", { now, inicio, fin });
 
         if (now < inicio) {
+            console.log("Aun no comienza la tarea");
             return res.status(400).json({ message: 'Aun no comienza la tarea' });
         }
         if (now > fin) {
-            return res.status(400).json({ message: 'Tarea después del plazo valido' });
+            console.log("Tarea después del plazo válido");
+            return res.status(400).json({ message: 'Tarea después del plazo válido' });
         }
 
-        
-       
         // Verificar si el estado es válido
         const estadosPermitidos = ['completa', 'incompleta', 'no realizada'];
+        console.log("Estados permitidos:", estadosPermitidos);
 
         if (!estadosPermitidos.includes(estado)) {
+            console.log("Estado no válido:", estado);
             return res.status(400).json({ message: 'Estado no válido' });
         }
 
         // Verificar si la tarea ya fue realizada
         const tareaRealizadaExistente = await TareaRealizada.findOne({ tarea: TareaID, ticket: ticket.RutAsignado });
+        console.log("Tarea realizada existente:", tareaRealizadaExistente);
 
         if (tareaRealizadaExistente) {
+            console.log("Ya se ha respondido a esta tarea");
             return res.status(400).json({ message: 'Ya se ha respondido a esta tarea' });
         }
 
@@ -85,9 +103,11 @@ const crearTareaRealizada = async (req, res) => {
             estado: estado,
             comentario: comentario
         });
+        console.log("Nueva tarea realizada a guardar:", nuevaTareaRealizada);
 
         // Guardar la tarea realizada en la base de datos
         const tareaRealizada = await nuevaTareaRealizada.save();
+        console.log("Tarea realizada guardada:", tareaRealizada);
 
         // Construir la respuesta
         const response = {
@@ -106,6 +126,7 @@ const crearTareaRealizada = async (req, res) => {
             archivoAdjunto: tareaRealizada.archivoAdjunto,
             fechaCreacion: tareaRealizada.createdAt,
         };
+        console.log("Respuesta a enviar:", response);
 
         // Enviar un correo electrónico al supervisor para notificarle que se ha completado una tarea
         sgMail.setApiKey(API_KEY);
@@ -113,7 +134,7 @@ const crearTareaRealizada = async (req, res) => {
             to: "luis.acuna2101@alumnos.ubiobio.cl",
             from: "repondernttareas@gmail.com",
             subject: "Tarea Realizada",
-            text: `Aviso de tarea realizada:'\nnombre tarea: ${tarea.nombreTarea}\nEstado: ${tareaRealizada.estado}\nComentario: ${tareaRealizada.comentario}`,
+            text: `Aviso de tarea realizada:\nnombre tarea: ${tarea.nombreTarea}\nEstado: ${tareaRealizada.estado}\nComentario: ${tareaRealizada.comentario}`,
         };
 
         sgMail
@@ -137,6 +158,8 @@ const crearTareaRealizada = async (req, res) => {
         res.status(500).json({ message: 'Hubo un error al procesar la solicitud' });
     }
 };
+
+
 
 
 
