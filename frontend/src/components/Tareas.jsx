@@ -4,12 +4,8 @@ import { deleteTarea } from '../services/tarea.service.js';
 import { showDeleteTarea , DeleteQuestion } from '../helpers/swaHelper.js';
 import Navbar from '../components/navbar.jsx';
 import axios from '../services/root.service.js';
-<<<<<<< HEAD
-import '../styles/Generico.css';  // Importa los estilos
-=======
 import { useNavigate } from 'react-router-dom';
 import { getArchive } from '../services/archive.service.js';
->>>>>>> main
 
 export default function VerTareas() {
     const navigate = useNavigate();
@@ -166,45 +162,6 @@ export default function VerTareas() {
                     {/* Aquí iría el contenido del formulario */}
                 </form>
                 {tareas.map((tarea, index) => (
-<<<<<<< HEAD
-                    <div key={tarea.idTarea} style={BoxStyle2}>
-                        <h2 className="title is-4">{tarea.nombreTarea}</h2>
-                        <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
-                        <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
-                        <p><strong>Estado:</strong> {tarea.estado}</p>
-                        <p><strong>ID:</strong> {tarea.idTarea}</p>
-                        <p>
-                            <strong>Archivo adjunto:</strong> {tarea.archivo ? tarea.archivo : 'No hay archivo adjunto'}
-                            {tarea.archivo && (
-                                <a 
-                                    href={tarea.archivo} 
-                                    className="button is-link is-small ml-2" 
-                                    download
-                                >
-                                    Descargar
-                                </a>
-                            )}
-                        </p>
-                        <div className="buttons">
-                            <button 
-                                className="button is-danger is-outlined mr-2" 
-                                onClick={() => handleDeleted(tarea.idTarea)}
-                            >
-                                <span className="icon is-small">
-                                    <TrashIcon />
-                                </span>
-                                <span>Eliminar</span>
-                            </button>
-                            <button 
-                                className="button is-primary is-outlined" 
-                                onClick={() => handleEdit(tarea.idTarea)}
-                            >
-                                <span className="icon is-small">
-                                    <PencilIcon />
-                                </span>
-                                <span>Editar Tarea</span>
-                            </button>
-=======
                     <div key={index} className="box">
                         <div className="content">
                             <h2 className="title is-4">{tarea.nombreTarea}</h2>
@@ -246,7 +203,6 @@ export default function VerTareas() {
                                     <span>Editar Tarea</span>
                                 </button>
                             </div>
->>>>>>> main
                         </div>
                     </div>
                 ))}

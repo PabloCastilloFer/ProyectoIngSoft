@@ -124,7 +124,6 @@ export const DeleteQuestion = async () => {
     }
   
     return result.isConfirmed;
-<<<<<<< HEAD
   };
 
   export const UpdatedTicket = async () => {
@@ -158,6 +157,4 @@ export const DeleteQuestion = async () => {
     }
   
     return result.isConfirmed;
-=======
->>>>>>> main
   };

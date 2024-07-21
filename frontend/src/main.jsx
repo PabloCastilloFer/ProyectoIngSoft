@@ -10,13 +10,10 @@ import Tareas from './routes/verTareas.jsx';
 import TareasAsignadasRoute from './routes/TareasAsignadasRoute.jsx';
 import FormTareaRealizadaRoute from './routes/FormTareaRealizadaRoute.jsx';
 import GenerarPDF from './routes/PDF.jsx';
-<<<<<<< HEAD
 import VerTicket from './routes/verTicket.jsx';
 import TareasRealizadas from './routes/TareasRealizadasRoute.jsx';
-import UpdateTicket from './routes/UpdateTicket.jsx';
-=======
+import UpdateTicket from './routes/UpdateTicketRoute.jsx';
 import UpdateTarea  from './routes/UpdateTareaRoute.jsx';
->>>>>>> main
 
 const router = createBrowserRouter([
   {
@@ -55,7 +52,6 @@ const router = createBrowserRouter([
     element: <GenerarPDF/>,
   },
   {
-<<<<<<< HEAD
     path: '/verTicket',
     element: <VerTicket/>,
   },
@@ -66,10 +62,10 @@ const router = createBrowserRouter([
   {
     path: '/ticket/modificar',
     element: <UpdateTicket />,
-=======
+  },
+  {
     path: '/tarea/modificar',
     element: <UpdateTarea />,
->>>>>>> main
   }
 
 ]);

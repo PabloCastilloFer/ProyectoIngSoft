@@ -1,4 +1,4 @@
-import UpdateTicket from '../components/FromUpdateTicket.jsx'
+import UpdateTicket from '../components/UpdateTicket.jsx'
 export default function modificarTicket() {
 
     return (
