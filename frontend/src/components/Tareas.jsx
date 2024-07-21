@@ -244,19 +244,19 @@ export default function VerTareas() {
                                 <div className="content">
                                     <h2 className="title is-4">{tarea.nombreTarea}</h2>
                                     <div className="contenedor-texto">
-                                    <strong>Tipo:</strong> &nbsp;
-                                    <p className="texto"> {` ${tarea.tipoTarea}`}</p>
+                                        <strong>Tipo:</strong>&nbsp;
+                                        <span>{tarea.tipoTarea}</span>
                                     </div>
                                     <div className="contenedor-texto">
-                                    <strong>Estado:</strong>
-                                    <p className="texto"> {tarea.estado}</p>
+                                        <strong>Estado:</strong>&nbsp;
+                                        <span>{tarea.estado}</span>
                                     </div>
                                     <div className="contenedor-texto">
-                                    <strong>Descripción:</strong> &nbsp;
-                                    <p className="texto"> {tarea.descripcionTarea}</p>
+                                        <strong>Descripción:</strong>&nbsp;
+                                        <span>{tarea.descripcionTarea}</span>
                                     </div>
                                     <p className="is-flex is-align-items-center">
-                                        <strong>Archivo adjunto:</strong>
+                                        <strong>Archivo adjunto:</strong>&nbsp;
                                         {tarea.archivo ? (
                                             <>
                                                 <button
