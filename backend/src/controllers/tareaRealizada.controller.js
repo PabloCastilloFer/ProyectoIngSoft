@@ -345,20 +345,26 @@ const obtenerTareasNoRealizadas = async (req, res) => {
 };
 
 const obtenerTareasAsignadas = async (req, res) => {
-    const rutUsuario = req.params.rutUsuario;
+   
     try {
+        const rutUsuario = req.params.rutUsuario;
         // Encontrar todos los tickets asignados al usuario
         const ticketsAsignados = await Ticket.find({ RutAsignado: rutUsuario });
-
+        console.log("Tickets asignados:", ticketsAsignados);
         // Verificar si se encontraron tickets asignados
         if (ticketsAsignados.length === 0) {
             return res.status(404).json({ message: 'No se encontraron tareas asignadas para este usuario' });
         }
-
+        console.log("Tickets asignados:", ticketsAsignados);
         // Crear una lista de promesas para obtener detalles de las tareas asignadas
         const tareasPromises = ticketsAsignados.map(async ticket => {
             // Obtener la tarea asociada al ticket
+            console.log("Ticket:", ticket.TareaID);
             const tarea = await Tarea.findOne({ idTarea: ticket.TareaID });
+            if (!tarea) {
+                console.log("No se encontró la tarea con idTarea:", ticket.TareaID);
+                return null;
+            }            
             return {
                 idTarea: tarea.idTarea,
                 nombreTarea: tarea.nombreTarea,
@@ -366,13 +372,13 @@ const obtenerTareasAsignadas = async (req, res) => {
                 tipoTarea: tarea.tipoTarea,
                 estadoTarea: tarea.estado,
                 archivo: tarea.archivo,
-                fechaCreacionTarea: tarea.createdAt,
+                fechaCreacionTarea: tarea.created_at,
             };
         });
 
         // Esperar a que todas las promesas se resuelvan
         const tareasAsignadas = await Promise.all(tareasPromises);
-
+        console.log("Tareas asignadas:", tareasAsignadas);
         // Enviar la respuesta con las tareas asignadas y sus detalles
         res.status(200).json(tareasAsignadas);
     } catch (error) {

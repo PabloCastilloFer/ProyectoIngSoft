@@ -1,13 +1,12 @@
-import React, { useState , useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/NavBarStyle.css';
-import logo from '../assets/Logo.png'; // Importa la imagen del logo
+import logo from '../assets/Logo.png';
 
 const Navbar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const navigate = useNavigate();
 
-  // Recuperar el estado de la barra lateral desde localStorage al cargar el componente
   useEffect(() => {
     const savedState = localStorage.getItem('isSidebarCollapsed');
     if (savedState !== null) {
@@ -20,6 +19,7 @@ const Navbar = () => {
     setIsCollapsed(newState);
     localStorage.setItem('isSidebarCollapsed', JSON.stringify(newState));
   };
+
   const handleNavigation = (path) => {
     navigate(path);
   };
@@ -30,7 +30,7 @@ const Navbar = () => {
     top: '0',
     height: '100vh',
     width: '250px',
-};
+  };
 
   return (
   <div  style={navbarStyle}>
