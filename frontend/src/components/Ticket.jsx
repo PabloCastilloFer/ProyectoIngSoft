@@ -21,6 +21,10 @@ export default function VerTicket() {
             });
     };
 
+    const handleEdit = (TareaID) => {
+        history.push(`/editar-ticket/${TareaID}`);
+    };
+
     useEffect(() => {
     // Obtener todos los tickets al cargar el componente
     const fetchTickets = async () => {
@@ -78,7 +82,7 @@ const BoxStyle2 = {
     <Navbar />
     <div style={BoxStyle}>
     <div className="has-text-centered">
-        <h1 className="title is-2">Buscar Ticket</h1>
+        <h1 className="title is-2">Tareas asignadas</h1>
         </div>
         <form onSubmit={handleSearch} className="mb-4">
                     <div className="field has-addons">
@@ -86,7 +90,7 @@ const BoxStyle2 = {
                             <input
                                 className="input"
                                 type="text"
-                                placeholder="Buscar tarea por nombre..."
+                                placeholder="Buscar tarea por ID..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
@@ -98,12 +102,19 @@ const BoxStyle2 = {
                         </div>
                     </div>
                 </form>
-        {tickets.map((ticket, index) => (
+        {tickets
+            .filter(ticket => new Date(ticket.Inicio) > new Date())
+            .map((ticket, index) => (
             <div key={ticket._id} style={BoxStyle2}>
-            <p><strong>Tarea ID:</strong> {ticket.TareaID}</p>
-            <p><strong>Usuario Asignado:</strong> {ticket.RutAsignado}</p>
-            <p><strong>Inicio:</strong> {new Date(ticket.Inicio).toLocaleString()}</p>
-            <p><strong>Fin:</strong> {new Date(ticket.Fin).toLocaleString()}</p>
+                <p><strong>Tarea ID:</strong> {ticket.TareaID}</p>
+                <p><strong>Usuario Asignado:</strong> {ticket.RutAsignado}</p>
+                <p><strong>Inicio:</strong> {new Date(ticket.Inicio).toLocaleString()}</p>
+                <p><strong>Fin:</strong> {new Date(ticket.Fin).toLocaleString()}</p>
+                <button className="button is-primary is-outlined" onClick={() => handleEdit(ticket.TareaID)} >
+                    <span className="icon is-small">
+                    </span>
+                    <span>Reasignar</span>
+                </button>
             </div>
         ))}
         </div>

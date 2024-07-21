@@ -1,4 +1,4 @@
-import Ticket from '../components/Ticket.jsx';
+import Ticket from '../components/ticket.jsx';
 export default function verTicket() {
 
     return (
