@@ -40,7 +40,7 @@ const EditarTarea = ({ initialData }) => {
         try {
             const response = await updateTarea(formData, tarea.idTarea);
             if (response.status === 200) {
-                window.location.reload();
+                navigate('/tareas');
             } else {
                 alert('Error al actualizar la tarea');
             }
