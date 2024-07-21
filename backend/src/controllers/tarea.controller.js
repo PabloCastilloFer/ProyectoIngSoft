@@ -1,7 +1,14 @@
 import tarea from '../models/tarea.model.js';
 import { HOST, PORT } from '../config/configEnv.js';
-import { crearTareaSchema } from '../schema/tarea.schema.js';
+import { crearTareaSchema , fileParamsSchema } from '../schema/tarea.schema.js';
 import { v4 as uuidv4 } from 'uuid';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path';
+import fs from 'fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export const createTarea = async (req, res) => {
     try {
@@ -72,10 +79,8 @@ export const deleteTareaById = async (req, res) => {
 
 export const updateTarea = async (req, res) => {
     try {
-        const idTarea = uuidv4();
-        const tareaActual = req.params.idTarea;
+        const tareaActual = req.params.idTarea; 
         const tareaModificada = await tarea.findOne({ idTarea: tareaActual });
-
         if (!tareaModificada) {
             return res.status(404).json({ message: "Tarea no encontrada" });
         }
@@ -89,7 +94,7 @@ export const updateTarea = async (req, res) => {
             tipoTarea: req.body.tipoTarea || tareaModificada.tipoTarea,
             estado: 'nueva',
             archivo: req.file ? URL + archivo : tareaModificada.archivo,
-            idTarea: req.body.idTarea || idTarea
+            idTarea: tareaActual
         };
 
         const { error } = crearTareaSchema.validate(updatedTarea);
@@ -162,19 +167,20 @@ export const getArchives = async (req, res) => {
         }
 
         const filename = value.filename;
-        const file = path.join(__dirname, '..', 'src', 'upload', filename);
+        const filePath = path.join(__dirname, '..', 'upload', filename);
 
-        if (!fs.existsSync(file)) {
+        if (!fs.existsSync(filePath)) {
             return res.status(404).json({ message: 'Archivo no encontrado' });
         }
 
-        res.download(file, (err) => {
+        res.download(filePath, (err) => {
             if (err) {
                 console.error('Error al descargar el archivo:', err);
                 res.status(500).send('Error interno al descargar el archivo');
             }
         });
     } catch (error) {
+        console.error('Error en el controlador:', error);
         res.status(500).json({ message: error.message });
     }
 };

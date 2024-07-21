@@ -1,12 +1,18 @@
 import 'bulma/css/bulma.min.css';
 import { useState, useEffect } from 'react';
-import { getAllTareas, deleteTarea } from '../services/tarea.service.js';
+import { deleteTarea } from '../services/tarea.service.js';
 import { showDeleteTarea , DeleteQuestion } from '../helpers/swaHelper.js';
 import Navbar from '../components/navbar.jsx';
 import axios from '../services/root.service.js';
+<<<<<<< HEAD
 import '../styles/Generico.css';  // Importa los estilos
+=======
+import { useNavigate } from 'react-router-dom';
+import { getArchive } from '../services/archive.service.js';
+>>>>>>> main
 
 export default function VerTareas() {
+    const navigate = useNavigate();
     const [tareas, setTareas] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -28,7 +34,7 @@ export default function VerTareas() {
         e.preventDefault();
         axios.get(`/tarea?nombreTarea=${searchQuery}`)
             .then((response) => {
-                setTareas(response.data); 
+                setTareas(response.data);
             })
             .catch((error) => {
                 console.error('Error al obtener las tareas filtradas:', error);
@@ -39,34 +45,45 @@ export default function VerTareas() {
         const isConfirmed = await DeleteQuestion();
         console.log(isConfirmed)
         if (isConfirmed) {
-        const response = await deleteTarea(tareaToDelete);
-        if (response.status === 200) {
-            await showDeleteTarea();
+            const response = await deleteTarea(tareaToDelete);
+            if (response.status === 200) {
+                await showDeleteTarea();
+            }
+            window.location.reload();
         }
-        window.location.reload();
-        }
+    };
+
+    const handleEditClick = (tarea) => {
+        navigate(`/tarea/modificar`, {
+            state: { tarea },
+        });
     };
 
     const handleArchivo = async (url) => {
         try {
-        const prot = '';
-        const uniqueTimestamp = new Date().getTime();
-        const Url =  `${prot}${url}?timestamp=${uniqueTimestamp}`;
-
-        const fileContent = await getArchive(Url);
-
-        const blob = new Blob([fileContent], { type: 'application/pdf' });
-
-        const fileUrl = URL.createObjectURL(blob);
-
-        window.open(fileUrl, '_blank');
+            // Llamar al servicio para obtener el archivo
+            const data = await getArchive(url);
+    
+            // Extraer la extensión del archivo de la URL
+            const extension = url.split('.').pop().split(/\#|\?/)[0]; // Extrae la extensión antes de posibles parámetros
+    
+            // Crear un blob con los datos obtenidos
+            const blob = new Blob([data], { type: 'application/octet-stream' });
+    
+            // Crear un enlace de descarga
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `archivo.${extension}`; // Usar la extensión extraída para el nombre del archivo
+    
+            // Simular clic en el enlace para iniciar la descarga
+            document.body.appendChild(link);
+            link.click();
+    
+            // Limpiar el enlace después de la descarga
+            document.body.removeChild(link);
         } catch (error) {
-        console.error('Error al hacer la solicitud:', error.message);
+            console.error('Error al manejar el archivo:', error.message);
         }
-    };
-
-    const handleEdit = (tareaId) => {
-        history.push(`/editar-tarea/${tareaId}`);
     };
 
     const TrashIcon = (props) => (
@@ -90,21 +107,21 @@ export default function VerTareas() {
 
     function PencilIcon(props) {
         return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-            <path d="m15 5 4 4" />
-        </svg>
+            <svg
+                {...props}
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                <path d="m15 5 4 4" />
+            </svg>
         )
     }
 
@@ -146,24 +163,10 @@ export default function VerTareas() {
                     <h1 className="title is-2">Lista de Tareas</h1>
                 </div>
                 <form onSubmit={handleSearch} className="mb-4">
-                    <div className="field has-addons">
-                        <div className="control is-expanded">
-                            <input
-                                className="input"
-                                type="text"
-                                placeholder="Buscar tarea por nombre..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                        </div>
-                        <div className="control">
-                            <button type="submit" className="button is-info">
-                                Buscar
-                            </button>
-                        </div>
-                    </div>
+                    {/* Aquí iría el contenido del formulario */}
                 </form>
                 {tareas.map((tarea, index) => (
+<<<<<<< HEAD
                     <div key={tarea.idTarea} style={BoxStyle2}>
                         <h2 className="title is-4">{tarea.nombreTarea}</h2>
                         <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
@@ -201,10 +204,54 @@ export default function VerTareas() {
                                 </span>
                                 <span>Editar Tarea</span>
                             </button>
+=======
+                    <div key={index} className="box">
+                        <div className="content">
+                            <h2 className="title is-4">{tarea.nombreTarea}</h2>
+                            <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
+                            <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
+                            <p><strong>Estado:</strong> {tarea.estado}</p>
+                            <p className="is-flex is-align-items-center">
+                                <strong>Archivo adjunto:</strong> 
+                                {tarea.archivo ? (
+                                    <>
+                                        <button 
+                                            className="button is-info is-small ml-2"
+                                            onClick={() => handleArchivo(tarea.archivo)}
+                                        >
+                                            Descargar Archivo
+                                        </button>
+                                    </>
+                                ) : (
+                                    <span className="ml-2">No hay archivo adjunto</span>
+                                )}
+                            </p>
+                            <div className="buttons">
+                                <button 
+                                    className="button is-danger is-outlined mr-2" 
+                                    onClick={() => handleDeleted(tarea.idTarea)}
+                                >
+                                    <span className="icon is-small">
+                                        <TrashIcon />
+                                    </span>
+                                    <span>Eliminar</span>
+                                </button>
+                                <button 
+                                    className="button is-primary is-outlined" 
+                                    onClick={() => handleEditClick(tarea)}
+                                >
+                                    <span className="icon is-small">
+                                        <PencilIcon />
+                                    </span>
+                                    <span>Editar Tarea</span>
+                                </button>
+                            </div>
+>>>>>>> main
                         </div>
                     </div>
                 ))}
             </div>
         </div>
     );
+    
 }

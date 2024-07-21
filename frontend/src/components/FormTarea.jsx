@@ -1,5 +1,5 @@
 import 'bulma/css/bulma.min.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { showError , showConfirmFormTarea } from '../helpers/swaHelper.js';
 import { useForm } from 'react-hook-form'; 
 import { createTarea } from '../services/tarea.service.js';
@@ -30,7 +30,7 @@ export default function FormSupervisor() {
             formData.append("archivo", archivo);
             console.log(formData)
 
-            const response = await createTarea(formData); // Pasa el token JWT a la función createTarea
+            const response = await createTarea(formData);
             console.log(response)
             if (response.status === 201) {
                 await showConfirmFormTarea();
