@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import Navbar from '../components/navbar.jsx';
 import { updateTarea } from '../services/tarea.service.js';
 import { useLocation , useNavigate } from 'react-router-dom';
-import { UpdateQuestion } from '../helpers/swaHelper.js'; // Asegúrate de importar UpdateQuestion
+import { UpdateQuestion , VolverQuestion } from '../helpers/swaHelper.js'; // Asegúrate de importar UpdateQuestion
 
 const EditarTarea = ({ initialData }) => {
     const navigate = useNavigate(); 
@@ -51,8 +51,11 @@ const EditarTarea = ({ initialData }) => {
         }
     };
 
-    const handleVolver = () => {
-        navigate(-1); 
+    const handleVolver = async (tareaToVolver) => {
+        const isConfirmed = await VolverQuestion();
+        if (isConfirmed) {
+            navigate(-1);
+        } 
     };
 
     function ArrowLeftIcon(props) {

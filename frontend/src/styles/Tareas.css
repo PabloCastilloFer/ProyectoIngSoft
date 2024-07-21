@@ -71,3 +71,20 @@
     justify-content: space-between;
     margin-top: 10px;
 }
+.box-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  margin-right: 250px;
+}
+
+.search-input {
+  width: 400px;
+  margin-right: 250px;
+}
+
+.tarea-box {
+  margin-top: 1rem;
+}
+
+
+
