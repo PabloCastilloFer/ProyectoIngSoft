@@ -4,22 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { showError , showConfirmFormTarea , CreateQuestion , VolverQuestion } from '../helpers/swaHelper.js';
 import { useForm } from 'react-hook-form'; 
 import { createTarea } from '../services/tarea.service.js';
-import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/navbar.jsx';
 
 export default function FormSupervisor() {
     const navigate = useNavigate(); 
 
-    const jwt = useAuth();
-
-    const userStorage = localStorage.getItem('user');
-    const userDat = JSON.parse(userStorage); 
-
     const [archivo, setArchivo] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [nombreTarea, setNombreTarea] = useState('');
-    const [descripcionTarea, setDescripcionTarea] = useState('');
-    const [tipoTarea, setTipoTarea] = useState('');
+    
     const { register, formState: { errors }, handleSubmit, reset } = useForm();
 
     const onSubmit = async (data) => {
@@ -60,9 +52,11 @@ export default function FormSupervisor() {
         setArchivo(e.target.files[0]);
     };
 
-    const handleVolver = () => {
-        VolverQuestion();
-        navigate(-1); 
+    const handleVolver = async (tareaToVolver) => {
+        const isConfirmed = await VolverQuestion();
+        if (isConfirmed) {
+            navigate(-1);
+        } 
     };
 
     function ArrowLeftIcon(props) {

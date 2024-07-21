@@ -1,7 +1,7 @@
 import Swal from 'sweetalert2';
 const Toast = Swal.mixin({
     toast: true,
-    position: "center",
+    position: "bottom-start",
     showConfirmButton: false,
     timer: 2000,
     timerProgressBar: true,
@@ -52,11 +52,32 @@ export const showNotFoundTarea = async () => {
     })
 };
 
-export const showNoSePuedeEditar = async () => {
+export const showNoAsignada = async () => {
     await Toast.fire({
         icon: "info",
-        title: "No se puede editar la tarea con ese estado"
+        title: "No se puede editar una tarea asignada"
     })
+};
+
+export const showNoEntregada = async () => {
+  await Toast.fire({
+      icon: "info",
+      title: "No se puede editar una tarea entregada"
+  })
+};
+
+export const showNoRevisada = async () => {
+  await Toast.fire({
+      icon: "info",
+      title: "No se puede editar una tarea revisada"
+  })
+};
+
+export const showNoEnRevision = async () => {
+  await Toast.fire({
+      icon: "info",
+      title: "No se puede editar una tarea en revisión"
+  })
 };
 
 export const showFoundTarea = async () => {
@@ -168,7 +189,7 @@ export const DeleteQuestion = async () => {
   export const VolverQuestion = async () => {
     const result = await Swal.fire({
       title: "¿Estas seguro de regresar de página?",
-      text: "Se borrara la información ingresada.",
+      text: "Se borrará toda la información no guardada.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí, volver",

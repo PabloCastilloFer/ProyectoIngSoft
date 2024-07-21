@@ -1,7 +1,7 @@
 import 'bulma/css/bulma.min.css';
 import { useState, useEffect } from 'react';
 import { deleteTarea } from '../services/tarea.service.js';
-import { showDeleteTarea, DeleteQuestion , showNoSePuedeEditar} from '../helpers/swaHelper.js';
+import { showDeleteTarea, DeleteQuestion , showNoAsignada , showNoEntregada, showNoRevisada , showNoEnRevision } from '../helpers/swaHelper.js';
 import Navbar from '../components/navbar.jsx';
 import axios from '../services/root.service.js';
 import { useNavigate } from 'react-router-dom';
@@ -46,14 +46,20 @@ export default function VerTareas() {
             window.location.reload();
         }
     };
-
+    
     const handleEditClick = (tarea) => {
-        if(tarea.estado === 'asignada'|| tarea.estado === 'finalizada'|| tarea.estado === 'revisada'|| tarea.estado === 'en revision'){
-            showNoSePuedeEditar();
+        if(tarea.estado === 'asignada'){
+            showNoAsignada();
+        }else if(tarea.estado === 'finalizada'){
+            showNoEntregada();
+        }else if(tarea.estado === 'revisada'){
+            showNoRevisada();
+        }else if(tarea.estado === 'en revision'){
+            showNoEnRevision();
         }else {
-        navigate(`/tarea/modificar`, {
-            state: { tarea },
-        });
+            navigate(`/tarea/modificar`, {
+                state: { tarea },
+            });
         }
     };
 

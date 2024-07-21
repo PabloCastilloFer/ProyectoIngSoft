@@ -56,12 +56,14 @@
 }
 
 .box-wrapper {
-  max-width: 900px; /* Ajusta este valor según tus necesidades */
+  max-width: 900px;
   margin: 0 auto;
+  margin-right: 250px;
 }
 
 .search-input {
-  width: 400px; /* Asegúrate de que el input ocupe todo el ancho del contenedor */
+  width: 400px;
+  margin-right: 250px;
 }
 
 .tarea-box {
