@@ -5,6 +5,7 @@ import { showDeleteTarea , DeleteQuestion } from '../helpers/swaHelper.js';
 import Navbar from '../components/navbar.jsx';
 import axios from '../services/root.service.js';
 import { useNavigate } from 'react-router-dom';
+import { getArchive } from '../services/archive.service.js';
 
 export default function VerTareas() {
     const navigate = useNavigate();
@@ -56,19 +57,28 @@ export default function VerTareas() {
 
     const handleArchivo = async (url) => {
         try {
-            const prot = '';
-            const uniqueTimestamp = new Date().getTime();
-            const Url =  `${prot}${url}?timestamp=${uniqueTimestamp}`;
-
-            const fileContent = await getArchive(Url);
-
-            const blob = new Blob([fileContent], { type: 'application/pdf' });
-
-            const fileUrl = URL.createObjectURL(blob);
-
-            window.open(fileUrl, '_blank');
+            // Llamar al servicio para obtener el archivo
+            const data = await getArchive(url);
+    
+            // Extraer la extensión del archivo de la URL
+            const extension = url.split('.').pop().split(/\#|\?/)[0]; // Extrae la extensión antes de posibles parámetros
+    
+            // Crear un blob con los datos obtenidos
+            const blob = new Blob([data], { type: 'application/octet-stream' });
+    
+            // Crear un enlace de descarga
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `archivo.${extension}`; // Usar la extensión extraída para el nombre del archivo
+    
+            // Simular clic en el enlace para iniciar la descarga
+            document.body.appendChild(link);
+            link.click();
+    
+            // Limpiar el enlace después de la descarga
+            document.body.removeChild(link);
         } catch (error) {
-            console.error('Error al hacer la solicitud:', error.message);
+            console.error('Error al manejar el archivo:', error.message);
         }
     };
 
@@ -119,7 +129,7 @@ export default function VerTareas() {
                     <h1 className="title is-2">Lista de Tareas</h1>
                 </div>
                 <form onSubmit={handleSearch} className="mb-4">
-                
+                    {/* Aquí iría el contenido del formulario */}
                 </form>
                 {tareas.map((tarea, index) => (
                     <div key={index} className="box">
@@ -128,16 +138,19 @@ export default function VerTareas() {
                             <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
                             <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
                             <p><strong>Estado:</strong> {tarea.estado}</p>
-                            <p>
-                                <strong>Archivo adjunto:</strong> {tarea.archivo ? tarea.archivo : 'No hay archivo adjunto'}
-                                {tarea.archivo && (
-                                    <a 
-                                        href={tarea.archivo} 
-                                        className="button is-link is-small ml-2" 
-                                        download
-                                    >
-                                        Descargar
-                                    </a>
+                            <p className="is-flex is-align-items-center">
+                                <strong>Archivo adjunto:</strong> 
+                                {tarea.archivo ? (
+                                    <>
+                                        <button 
+                                            className="button is-info is-small ml-2"
+                                            onClick={() => handleArchivo(tarea.archivo)}
+                                        >
+                                            Descargar Archivo
+                                        </button>
+                                    </>
+                                ) : (
+                                    <span className="ml-2">No hay archivo adjunto</span>
                                 )}
                             </p>
                             <div className="buttons">
@@ -166,4 +179,5 @@ export default function VerTareas() {
             </div>
         </div>
     );
+    
 }
