@@ -47,6 +47,12 @@ export default function VerTareas() {
         }
     };
     
+    const handleAsignarClick = (ticket) => {
+        navigate(`/ticket`, {
+            state: { ticket },
+        });
+    };
+
     const handleEditClick = (tarea) => {
         if(tarea.estado === 'asignada'){
             showNoAsignada();
@@ -61,12 +67,6 @@ export default function VerTareas() {
                 state: { tarea },
             });
         }
-    };
-
-    const handleAsignarClick = (ticket) => {
-        navigate(`/ticket`, {
-            state: { ticket },
-        });
     };
 
     const handleArchivo = async (url) => {
@@ -103,6 +103,26 @@ export default function VerTareas() {
             <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
         </svg>
     );
+
+    function UserIcon(props) {
+        return (
+            <svg
+                {...props}
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M6 20c0-4 4-6 6-6s6 2 6 6" />
+            </svg>
+        );
+    }
 
     function PencilIcon(props) {
         return (
@@ -143,26 +163,6 @@ export default function VerTareas() {
             </svg>
         );
     }
-
-    function UserIcon(props) {
-        return (
-            <svg
-                {...props}
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            >
-                <circle cx="12" cy="8" r="4" />
-                <path d="M6 20c0-4 4-6 6-6s6 2 6 6" />
-            </svg>
-        );
-    }
  
       function DownloadIcon(props) {
         return (
@@ -187,22 +187,23 @@ export default function VerTareas() {
 
     const containerStyle = {
         display: 'flex',
-        marginRight:'300px',
+        marginRight:'250px',
         marginTop: '64px', // Ajustar para la altura de la navbar
         justifyContent: 'center',
         alignItems: 'center',
-};
-
+    };
+    
     const BoxStyle = {
         alignItems: 'center',
         paddingTop: '64px', // Ajustar para la altura de la navbar
+        width: '800px',
         padding: '1rem',
         borderRadius: '8px',
         textAlign: 'left',
         boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)',
         backgroundColor: '#fff',
     };
-
+    
     const BoxStyle2 = {
         alignItems: 'center',
         paddingTop: '10px', // Ajustar para la altura de la navbar
@@ -216,12 +217,12 @@ export default function VerTareas() {
 
     return (
         <div style={containerStyle}>
-            <Navbar />
-            <div style={BoxStyle}>
+        <Navbar />
+        <div style={BoxStyle}>
                 <div className="has-text-centered">
                     <h1 className="title is-2">Lista de tareas</h1>
                 </div>
-                <div className="box-wrapper">
+                <div>
                     <div className="field">
                         <label className="label" htmlFor="search">Filtrar por nombre:</label>
                         <div className="control">
@@ -239,7 +240,7 @@ export default function VerTareas() {
                         <p>No hay tareas existentes con ese nombre.</p>
                     ) : (
                         filteredTareas.map((tarea, index) => (
-                            <div key={index}  style={BoxStyle2}>
+                            <div key={index} style={BoxStyle2}>
                                 <div className="content">
                                     <h2 className="title is-4">{tarea.nombreTarea}</h2>
                                     <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
@@ -263,7 +264,7 @@ export default function VerTareas() {
                                             <span className="ml-2">No hay archivo adjunto</span>
                                         )}
                                     </p>
-                                    <div className="buttons">
+                                    <div className="button-container">
                                     {tarea.estado === 'nueva' && (
                                         <button
                                             className="button is-primary is-outlined is-asignar"
@@ -286,6 +287,7 @@ export default function VerTareas() {
                                         </button>
                                         <button
                                             className="button is-primary is-outlined is-actualizar"
+                                            
                                         >
                                             <span className="icon is-small">
                                                 <CopyIcon />

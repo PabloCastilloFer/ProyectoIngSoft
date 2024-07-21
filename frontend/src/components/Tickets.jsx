@@ -53,7 +53,7 @@ export default function VerTicket() {
 
 const containerStyle = {
     display: 'flex',
-    marginRight:'300px',
+    marginRight:'250px',
     marginTop: '64px', // Ajustar para la altura de la navbar
     justifyContent: 'center',
     alignItems: 'center',
@@ -110,7 +110,6 @@ const BoxStyle2 = {
             .filter(ticket => new Date(ticket.Inicio) > new Date())
             .map((ticket, index) => (
             <div key={ticket._id} style={BoxStyle2}>
-                <p><strong>Tarea ID:</strong> {ticket.TareaID}</p>
                 <p><strong>Usuario Asignado:</strong> {ticket.RutAsignado}</p>
                 <p><strong>Inicio:</strong> {new Date(ticket.Inicio).toLocaleString()}</p>
                 <p><strong>Fin:</strong> {new Date(ticket.Fin).toLocaleString()}</p>

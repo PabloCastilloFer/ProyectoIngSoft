@@ -81,6 +81,7 @@ export default function FormSupervisor() {
 
     const containerStyle = {
         display: 'flex',
+        marginTop: '64px', // Ajustar para la altura de la navbar
         justifyContent: 'center',
         alignItems: 'center',
         marginRight:'250px', 

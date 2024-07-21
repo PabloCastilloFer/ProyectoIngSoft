@@ -50,9 +50,11 @@ export default function FormTicket() {
         }
     };
 
-    const handleVolver = () => {
-        VolverQuestion();
-        navigate(-1); 
+    const handleVolver = async (tareaToVolver) => {
+        const isConfirmed = await VolverQuestion();
+        if (isConfirmed) {
+            navigate(-1);
+        } 
     };
 
     function ArrowLeftIcon(props) {
@@ -80,6 +82,7 @@ export default function FormTicket() {
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: '250px', 
+        marginTop: '64px', // Ajustar para la altura de la navbar
     };
 
     const BoxStyle = {

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import Navbar from '../components/navbar.jsx';
 import { updateTicket } from '../services/ticket.service.js';
 import { useLocation , useNavigate} from 'react-router-dom';
-import { UpdatedTicket } from '../helpers/swaHelper.js'; // Asegúrate de importar UpdateQuestion
+import { UpdatedTicket , VolverQuestion} from '../helpers/swaHelper.js'; // Asegúrate de importar UpdateQuestion
 
 const EditarTicket = ({ initialData }) => {
     const navigate = useNavigate();
@@ -66,8 +66,11 @@ const EditarTicket = ({ initialData }) => {
         );
     }
     
-    const handleVolver = () => {
-        navigate(-1); 
+    const handleVolver = async (tareaToVolver) => {
+        const isConfirmed = await VolverQuestion();
+        if (isConfirmed) {
+            navigate(-1);
+        } 
     };
 
     return (
@@ -75,7 +78,7 @@ const EditarTicket = ({ initialData }) => {
             <Navbar />
             <div style={BoxStyle}>
             <div style={volverButtonStyle}>
-                    <button className="button is-light" onClick={handleVolver}>
+            <button className="button is-light" onClick={handleVolver}>
                     <span className="icon is-small">
                                             <ArrowLeftIcon />
                                         </span>
