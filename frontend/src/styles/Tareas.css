@@ -62,7 +62,7 @@
 }
 
 .search-input {
-  width: 400px;
+  width: 900px;
   margin-right: 250px;
 }
 
@@ -70,5 +70,12 @@
   margin-top: 1rem;
 }
 
+.contenedor-texto{
+display: flex;
+}
+
+.texto {
+text-transform: capitalize;
+}
 
 

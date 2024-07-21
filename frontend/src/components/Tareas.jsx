@@ -46,7 +46,7 @@ export default function VerTareas() {
             window.location.reload();
         }
     };
-    
+
     const handleEditClick = (tarea) => {
         if(tarea.estado === 'asignada'){
             showNoAsignada();
@@ -187,11 +187,20 @@ export default function VerTareas() {
                             <div key={index} className="box tarea-box">
                                 <div className="content">
                                     <h2 className="title is-4">{tarea.nombreTarea}</h2>
-                                    <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
-                                    <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
-                                    <p><strong>Estado:</strong> {tarea.estado}</p>
+                                    <div className="contenedor-texto">
+                                    <strong>Tipo:</strong> &nbsp;
+                                    <p className="texto"> {` ${tarea.tipoTarea}`}</p>
+                                    </div>
+                                    <div className="contenedor-texto">
+                                    <strong>Estado:</strong>
+                                    <p className="texto"> {tarea.estado}</p>
+                                    </div>
+                                    <div className="contenedor-texto">
+                                    <strong>Descripción:</strong> &nbsp;
+                                    <p className="texto"> {tarea.descripcionTarea}</p>
+                                    </div>
                                     <p className="is-flex is-align-items-center">
-                                        <strong>Archivo adjunto</strong>
+                                        <strong>Archivo adjunto:</strong>
                                         {tarea.archivo ? (
                                             <>
                                                 <button
