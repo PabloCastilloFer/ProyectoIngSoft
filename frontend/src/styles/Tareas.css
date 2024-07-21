@@ -54,3 +54,19 @@
     margin-right: 2px;
     fill: #FFFFFF;
 }
+
+.box-wrapper {
+  max-width: 900px; /* Ajusta este valor según tus necesidades */
+  margin: 0 auto;
+}
+
+.search-input {
+  width: 400px; /* Asegúrate de que el input ocupe todo el ancho del contenedor */
+}
+
+.tarea-box {
+  margin-top: 1rem;
+}
+
+
+

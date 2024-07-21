@@ -160,80 +160,82 @@ export default function VerTareas() {
                 <div className="has-text-centered">
                     <h1 className="title is-2">Lista de tareas</h1>
                 </div>
-                <div className="field">
-                    <label className="label" htmlFor="search">Filtrar por nombre:</label>
-                    <div className="control">
-                        <input
-                            id="search"
-                            type="text"
-                            className="input"
-                            value={searchQuery}
-                            onChange={handleSearchChange}
-                            placeholder="Buscar por nombre de tarea..."
-                        />
+                <div className="box-wrapper">
+                    <div className="field">
+                        <label className="label" htmlFor="search">Filtrar por nombre:</label>
+                        <div className="control">
+                            <input
+                                id="search"
+                                type="text"
+                                className="input search-input"
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                placeholder="Buscar por nombre de tarea..."
+                            />
+                        </div>
                     </div>
-                </div>
-                {filteredTareas.length === 0 ? (
-                    <p>No hay tareas existentes con ese nombre.</p>
-                ) : (
-                    filteredTareas.map((tarea, index) => (
-                        <div key={index} className="box">
-                            <div className="content">
-                                <h2 className="title is-4">{tarea.nombreTarea}</h2>
-                                <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
-                                <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
-                                <p><strong>Estado:</strong> {tarea.estado}</p>
-                                <p className="is-flex is-align-items-center">
-                                    <strong>Archivo adjunto</strong>
-                                    {tarea.archivo ? (
-                                        <>
-                                            <button
-                                                className="button-download"
-                                                onClick={() => handleArchivo(tarea.archivo)}
-                                            >
-                                                <span className="icon is-small">
-                                            <DownloadIcon />
-                                        </span>
-                                        <span>Descargar archivo</span>
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <span className="ml-2">No hay archivo adjunto</span>
-                                    )}
-                                </p>
-                                <div className="buttons">
-                                    <button
-                                        className="button is-primary is-outlined is-actualizar"
-                                        onClick={() => handleEditClick(tarea)}
-                                    >
-                                        <span className="icon is-small">
-                                            <PencilIcon />
-                                        </span>
-                                        <span>Editar tarea</span>
-                                    </button>
-                                    <button
-                                        className="button is-primary is-outlined is-actualizar"
-                                        
-                                    >
-                                        <span className="icon is-small">
-                                            <CopyIcon />
-                                        </span>
-                                        <span>Duplicar</span>
-                                    </button>
-                                    <button
-                                        className="button is-danger is-outlined mr-2 is-eliminar"
-                                        onClick={() => handleDeleted(tarea.idTarea)}
-                                    >
-                                        <span className="icon is-small">
-                                            <TrashIcon />
-                                        </span>
-                                        <span>Eliminar</span>
-                                    </button>
+                    {filteredTareas.length === 0 ? (
+                        <p>No hay tareas existentes con ese nombre.</p>
+                    ) : (
+                        filteredTareas.map((tarea, index) => (
+                            <div key={index} className="box tarea-box">
+                                <div className="content">
+                                    <h2 className="title is-4">{tarea.nombreTarea}</h2>
+                                    <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
+                                    <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
+                                    <p><strong>Estado:</strong> {tarea.estado}</p>
+                                    <p className="is-flex is-align-items-center">
+                                        <strong>Archivo adjunto</strong>
+                                        {tarea.archivo ? (
+                                            <>
+                                                <button
+                                                    className="button-download"
+                                                    onClick={() => handleArchivo(tarea.archivo)}
+                                                >
+                                                    <span className="icon is-small">
+                                                <DownloadIcon />
+                                            </span>
+                                            <span>Descargar archivo</span>
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <span className="ml-2">No hay archivo adjunto</span>
+                                        )}
+                                    </p>
+                                    <div className="buttons">
+                                        <button
+                                            className="button is-primary is-outlined is-actualizar"
+                                            onClick={() => handleEditClick(tarea)}
+                                        >
+                                            <span className="icon is-small">
+                                                <PencilIcon />
+                                            </span>
+                                            <span>Editar tarea</span>
+                                        </button>
+                                        <button
+                                            className="button is-primary is-outlined is-actualizar"
+                                            
+                                        >
+                                            <span className="icon is-small">
+                                                <CopyIcon />
+                                            </span>
+                                            <span>Duplicar</span>
+                                        </button>
+                                        <button
+                                            className="button is-danger is-outlined mr-2 is-eliminar"
+                                            onClick={() => handleDeleted(tarea.idTarea)}
+                                        >
+                                            <span className="icon is-small">
+                                                <TrashIcon />
+                                            </span>
+                                            <span>Eliminar</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))
-                )}
+                        ))
+                    )}
+                </div>
             </div>
         </div>
     );
