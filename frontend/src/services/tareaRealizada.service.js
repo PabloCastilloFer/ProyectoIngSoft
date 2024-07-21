@@ -1,6 +1,6 @@
 import axios from './root.service'; // Asegúrate de tener configurado root.service.js correctamente
 
-export const createTareaRealizada = async (formData, rutUsuario, jwt) => {
+export const createTareaRealizada = async (formData, rutUsuario) => {
     try {
         const config = {
             headers: {
@@ -36,4 +36,42 @@ export const getTareasAsignadas = async (rutUsuario, jwt) => {
     }
 };
 
-// Otros métodos según sea necesario...
+export const getTareasRealizadas = async (rutUsuario) => {
+    try {
+      const response = await axios.get(`/tareaRealizada/20829012-6`);
+      return response.data;
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+      throw error;
+    }
+  };
+  
+  export const getTareasCompletadas = async (rutUsuario) => {
+    try {
+      const response = await axios.get(`/tareaRealizada/completadas/20829012-6`);
+      return response.data;
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+      throw error;
+    }
+  };
+  
+  export const getTareasIncompletas = async (rutUsuario) => {
+    try {
+      const response = await axios.get(`/tareaRealizada/incompletas/20829012-6`);
+      return response.data;
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+      throw error;
+    }
+  };
+  
+  export const getTareasNoRealizadas = async (rutUsuario) => {
+    try {
+      const response = await axios.get(`/tareaRealizada/noRealizadas/20829012-6`);
+      return response.data;
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+      throw error;
+    }
+  };

@@ -21,6 +21,7 @@ export function AuthProvider({ children }) {
     // } else {
     //   navigate('/auth');
     // }
+    
     if(!isAuthenticated) {
   
       navigate('/auth')
@@ -36,3 +37,4 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+//

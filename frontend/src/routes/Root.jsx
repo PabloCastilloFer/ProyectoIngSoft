@@ -3,14 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { logout } from '../services/auth.service';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import Navbar from '../components/navbar.jsx';
-import { BrowserRouter } from 'react-router-dom';
+import '../styles/Generico.css'; // Asegúrate de importar tu archivo de estilos
+import iuser from '../assets/user.png'; // Asegúrate de importar tu ícono de usuario
 
 function Root() {
   return (
     <AuthProvider>
-
       <PageRoot />
-     
     </AuthProvider>
   );
 }
@@ -29,12 +28,14 @@ function PageRoot() {
     <div>
       <Navbar />
       <div className="user-details-container">
-      <h2>Datos del Usuario</h2>
-      <p>Nombre: {user?.username}</p>
-      <p>RUT: {user?.rut}</p>
-      <p>Correo electrónico: {user?.email}</p>
-      <p>Facultad: {user?.facultades}</p>
-      <button onClick={handleLogout}>Cerrar sesión</button>
+        <div className="user-info">
+          <div className="user-icon">
+            <img src={iuser} alt="User Icon" style={{ width: '20px', height: '20px' }} />
+          </div>
+          <p>Bienvenido/a</p>
+          <p>{user?.email}</p>
+        </div>
+        <button onClick={handleLogout}>Cerrar sesión</button>
       </div>
       <Outlet />
     </div>

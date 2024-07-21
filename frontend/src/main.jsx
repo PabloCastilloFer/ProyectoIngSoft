@@ -10,7 +10,8 @@ import Tareas from './routes/verTareas.jsx';
 import TareasAsignadasRoute from './routes/TareasAsignadasRoute.jsx';
 import FormTareaRealizadaRoute from './routes/FormTareaRealizadaRoute.jsx';
 import GenerarPDF from './routes/PDF.jsx';
-import Ticket from './routes/verTicket.jsx';
+import VerTicket from './routes/verTicket.jsx';
+import TareasRealizadas from './routes/TareasRealizadasRoute.jsx';
 
 const router = createBrowserRouter([
   {
@@ -49,9 +50,14 @@ const router = createBrowserRouter([
     element: <GenerarPDF/>,
   },
   {
-    path: '/Ticket',
-    element: <Ticket/>,
+    path: '/verTicket',
+    element: <VerTicket/>,
+  },
+  {
+    path: '/tareas-realizadas',
+    element: <TareasRealizadas />,
   }
+
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
