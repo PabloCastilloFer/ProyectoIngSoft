@@ -42,24 +42,24 @@ const Navbar = () => {
         {isCollapsed ? '🡸' : '🡺'}
       </button>
       <ul>
-        <li data-icon="📁" onClick={() => handleNavigation('/tarea')}>
-          <span>Crear Tarea</span>
-        </li>
-        <li data-icon="📄" onClick={() => handleNavigation('/tareas')}>
-          <span>Ver Tareas</span>
-        </li>
-        <li data-icon="📥" onClick={() => handleNavigation('/ticket')}>
-          <span>Tareas Asignadas</span>
-        </li>
-        <li data-icon="📤" onClick={() => handleNavigation('/ticket')}>
-          <span>Asignar Tareas</span>
-        </li>
-        <li data-icon="📋" onClick={() => handleNavigation('/generarPDF')}>
+      <li data-icon="📁" onClick={() => handleNavigation('/tarea')}>
+            <span>Crear Tarea</span>
+          </li>
+          <li data-icon="📄" onClick={() => handleNavigation('/tareas')}>
+            <span>Ver Tareas</span>
+          </li>
+          <li data-icon="📤" onClick={() => handleNavigation('/ticket')}>
+            <span>Asignar Tareas</span>
+          </li>
+          <li data-icon="📋" onClick={() => handleNavigation('/generarPDF')}>
             <span>Informe Empleados</span>
           </li>
-        <li data-icon="⚙" onClick={() => handleNavigation('/prueba-3')}>
-          <span>prueba 3</span>
-        </li>
+          <li data-icon="📃" onClick={() => handleNavigation('/tareas-asignadas')}>
+            <span>Ver Tareas Asignadas</span>
+          </li>
+          <li data-icon="📍" onClick={() => handleNavigation('/tareas-realizadas')}>
+            <span>Tareas Realizadas</span>
+          </li>
       </ul>
     </div>
   </div>
