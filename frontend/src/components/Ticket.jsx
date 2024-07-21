@@ -14,7 +14,7 @@ export default function VerTicket() {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        axios.get(`/tarea?nombreTarea=${searchQuery}`)
+        axios.get(`/ticket/task/${searchQuery}`)
             .then((response) => {
                 setTareas(response.data); 
             })

@@ -57,6 +57,12 @@ export default function VerTareas() {
         }
     };
 
+    const handleAsignarClick = (ticket) => {
+        navigate(`/ticket`, {
+            state: { ticket },
+        });
+    };
+
     const handleArchivo = async (url) => {
         try {
             const data = await getArchive(url);
@@ -128,6 +134,26 @@ export default function VerTareas() {
             >
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+        );
+    }
+
+    function UserIcon(props) {
+        return (
+            <svg
+                {...props}
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M6 20c0-4 4-6 6-6s6 2 6 6" />
             </svg>
         );
     }
@@ -207,7 +233,7 @@ export default function VerTareas() {
                     <p>No hay tareas existentes con ese nombre.</p>
                 ) : (
                     filteredTareas.map((tarea, index) => (
-                        <div key={index} className="box">
+                        <div key={index} style={BoxStyle2}>
                             <div className="content">
                                 <h2 className="title is-4">{tarea.nombreTarea}</h2>
                                 <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
@@ -233,7 +259,7 @@ export default function VerTareas() {
                                 </p>
                                 <div className="buttons">
                                     <button
-                                        className="button is-primary is-outlined is-actualizar"
+                                        className="button is-actualizar is-primary is-outlined "
                                         onClick={() => handleEditClick(tarea)}
                                     >
                                         <span className="icon is-small">
@@ -241,9 +267,19 @@ export default function VerTareas() {
                                         </span>
                                         <span>Editar tarea</span>
                                     </button>
+                                    {tarea.estado === 'nueva' && (
+                                        <button
+                                            className="button is-primary is-outlined is-asignar"
+                                            onClick={() => handleAsignarClick(tarea)}
+                                        >
+                                            <span className="icon is-small">
+                                                <UserIcon />
+                                            </span>
+                                            <span>Asignar</span>
+                                        </button>
+                                    )}
                                     <button
                                         className="button is-primary is-outlined is-actualizar"
-                                        
                                     >
                                         <span className="icon is-small">
                                             <CopyIcon />

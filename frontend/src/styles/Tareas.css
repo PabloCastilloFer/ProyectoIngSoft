@@ -54,3 +54,20 @@
     margin-right: 2px;
     fill: #FFFFFF;
 }
+
+.button.is-asignar {
+  background-color: #387adf;
+  border-color: #2c63b4;
+  color: white;
+}
+
+.button.is-asignar:hover {
+  background-color: #1e57ac;
+  border-color: #1e57ac;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}

@@ -14,6 +14,7 @@ import VerTicket from './routes/verTicket.jsx';
 import TareasRealizadas from './routes/TareasRealizadasRoute.jsx';
 import UpdateTicket from './routes/UpdateTicketRoute.jsx';
 import UpdateTarea  from './routes/UpdateTareaRoute.jsx';
+import FromTicket from './routes/FormTicketRoutes.jsx';
 
 const router = createBrowserRouter([
   {
@@ -66,7 +67,12 @@ const router = createBrowserRouter([
   {
     path: '/tarea/modificar',
     element: <UpdateTarea />,
+  },
+  {
+    path: '/ticket',
+    element: <FromTicket />,
   }
+
 
 ]);
 
