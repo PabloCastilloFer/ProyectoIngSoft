@@ -6,7 +6,6 @@ const Toast = Swal.mixin({
     timer: 2000,
     timerProgressBar: true,
     didOpen: (toast) => {
-        toast.onmouseenter = Swal.stopTimer;
         toast.onmouseleave = Swal.resumeTimer;
     }
 });
@@ -53,11 +52,18 @@ export const showNotFoundTarea = async () => {
     })
 };
 
-export const showFoundTarea = async () => {
+export const showNoSePuedeEditar = async () => {
     await Toast.fire({
         icon: "info",
-        title: "Tarea encontrada"
+        title: "No se puede editar la tarea con ese estado"
     })
+};
+
+export const showFoundTarea = async () => {
+  await Toast.fire({
+      icon: "info",
+      title: "Tarea encontrada"
+  })
 };
 
 export const DeleteQuestion = async () => {
