@@ -1,10 +1,9 @@
 import Swal from 'sweetalert2';
-
 const Toast = Swal.mixin({
     toast: true,
     position: "center",
     showConfirmButton: false,
-    timer: 1000,
+    timer: 2000,
     timerProgressBar: true,
     didOpen: (toast) => {
         toast.onmouseenter = Swal.stopTimer;
@@ -12,7 +11,6 @@ const Toast = Swal.mixin({
     }
 });
 
-// Funciones existentes para crear tareas (sin cambios)
 export const showConfirmFormTarea = async () => {
     await Toast.fire({
         icon: "success",
@@ -27,30 +25,13 @@ export const showErrorFormTarea = async () => {
     });
 };
 
-// Corregida la función `showError` para aceptar un mensaje
-export const showError = async (message) => {
+export const showError = async () => {
     await Toast.fire({
-        icon: "error",
-        title: message
+        icon: "info",
+        title: error
     });
 };
 
-// Funciones específicas para manejar el éxito y el error al responder a una tarea realizada
-export const showConfirmFormTareaRealizada = async () => {
-    await Toast.fire({
-        icon: "success",
-        title: "Respuesta enviada exitosamente!"
-    });
-};
-
-export const showErrorFormTareaRealizada = async () => {
-    await Toast.fire({
-        icon: "error",
-        title: "Error al enviar la respuesta"
-    });
-};
-
-// Funciones adicionales existentes (sin cambios)
 export const showDeleteTarea = async () => {
     await Toast.fire({
         icon: "success",
@@ -61,53 +42,119 @@ export const showDeleteTarea = async () => {
 export const showUpdateTarea = async () => {
     await Toast.fire({
         icon: "success",
-        title: "Tarea actualizada exitosamente!"
-    });
+        title: "Tarea modificada exitosamente!"
+    })
 };
 
 export const showNotFoundTarea = async () => {
     await Toast.fire({
         icon: "info",
         title: "Tarea no encontrada"
-    });
+    })
 };
 
 export const showFoundTarea = async () => {
     await Toast.fire({
         icon: "info",
         title: "Tarea encontrada"
-    });
+    })
 };
 
 export const DeleteQuestion = async () => {
     const result = await Swal.fire({
-        title: "¿Estás seguro de eliminar la tarea?",
-        text: "Estos cambios son irreversibles.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí, eliminar",
-        cancelButtonText: "No, cancelar",
-        reverseButtons: true,
-        customClass: {
-            confirmButton: "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded",
-            cancelButton: "bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-        },
-        buttonsStyling: false,
+      title: "¿Estás seguro de eliminar la tarea?",
+      text: "Estos cambios son irreversibles.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "No, cancelar",
+      reverseButtons: true,
+      customClass: {
+        confirmButton: "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded",
+        cancelButton: "bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+      },
+      buttonsStyling: false,
     });
-
+  
     if (result.isConfirmed) {
-        await Swal.fire({
-            title: "Eliminado Correctamente!",
-            text: "La tarea ha sido eliminada",
-            icon: "success"
-        });
+      await Swal.fire({
+        title: "Eliminado Correctamente!",
+        text: "La tarea ha sido eliminada",
+        icon: "success"
+      });
     } else if (result.dismiss === Swal.DismissReason.cancel) {
-        await Swal.fire({
-            title: "Cancelado",
-            text: "Tu tarea está a salvo",
-            icon: "success"
-        });
+      await Swal.fire({
+        title: "Cancelado",
+        text: "Tu tarea está a salvo",
+        icon: "success"
+      });
     }
-
+  
     return result.isConfirmed;
-};
+  };
+
+  export const UpdateQuestion = async () => {
+    const result = await Swal.fire({
+      title: "¿Estás seguro de modificar la tarea?",
+      text: "Estos cambios son irreversibles.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, modificar",
+      cancelButtonText: "No, cancelar",
+      reverseButtons: true,
+      customClass: {
+        confirmButton: "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded",
+        cancelButton: "bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+      },
+      buttonsStyling: false,
+    });
+  
+    if (result.isConfirmed) {
+      await Swal.fire({
+        title: "Tarea modificada correctamente!",
+        text: "La tarea ha sido modificada",
+        icon: "success"
+      });
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      await Swal.fire({
+        title: "Cancelado",
+        text: "Tu tarea no ha sido modificada",
+        icon: "success"
+      });
+    }
+  
+    return result.isConfirmed;
+  };
+
+  export const UpdatedTicket = async () => {
+    const result = await Swal.fire({
+      title: "¿Estás seguro de modificar la tarea?",
+      text: "Estos cambios son irreversibles.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, modificar",
+      cancelButtonText: "No, cancelar",
+      reverseButtons: true,
+      customClass: {
+        confirmButton: "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded",
+        cancelButton: "bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+      },
+      buttonsStyling: false,
+    });
+  
+    if (result.isConfirmed) {
+      await Swal.fire({
+        title: "Tarea modificada correctamente!",
+        text: "La tarea ha sido modificada",
+        icon: "success"
+      });
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      await Swal.fire({
+        title: "Cancelado",
+        text: "Tu tarea no ha sido modificada",
+        icon: "success"
+      });
+    }
+  
+    return result.isConfirmed;
+  };

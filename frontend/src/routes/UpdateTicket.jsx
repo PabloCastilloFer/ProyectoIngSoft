@@ -1,9 +1,7 @@
-import UpdateTicket from '../components/UpdateTicket.jsx'
+import UpdateTicket from '../components/FromUpdateTicket.jsx'
 export default function modificarTicket() {
 
     return (
-        <>
         <UpdateTicket/>
-        </>
     )
 }

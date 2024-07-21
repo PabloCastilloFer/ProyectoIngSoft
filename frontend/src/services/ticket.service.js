@@ -25,16 +25,18 @@ export const createTicket = async (formData, jwt) => {
     }
 };
 
-export const updateTicket = async (formData, IDTarea) => {
+export const updateTicket = async (data, tareaID) => {
     try {
         const config = {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'application/json',
             },
         };
-        const response = await axios.put(`/ticket/${IDTarea}`, formData, config);
+        const response = await axios.put(`/ticket/task/${tareaID}`, data, config);
+        console.log("Response from server: ", response);
         return response;
     } catch (error) {
+        console.error("Error in updateTicket: ", error);
         return { status: 500, data: [error], error: error.message };
     }
 };

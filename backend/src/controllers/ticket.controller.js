@@ -3,6 +3,7 @@ import Tarea from '../models/tarea.model.js';
 import Usuario from '../models/user.model.js';
 import sgMail from "@sendgrid/mail";
 import { API_KEY } from "../config/configEnv.js";
+import User from "../models/user.model.js";
 
 // Función para validar si una fecha está dentro de los días laborables y el horario de trabajo
 function isValidDate(date) {
@@ -102,14 +103,14 @@ export const getTickets = async (req, res) => {
 export const updateTicket = async (req, res) => {
   try {
     // Buscar el ticket que se va a actualizar
-    const ticket = await Ticket.findOne({ 'TareaID': req.params.id });
-    if (!ticket) {
-      return res.status(400).json({ message: "Ticket no encontrado" });
-    }
-
     const tarea = await Tarea.findOne({ idTarea: req.body.TareaID });
     if (!tarea) {
       return res.status(400).json({ message: "Tarea no encontrada" });
+    }
+
+    const ticket = await Ticket.findOne({ TareaID: req.body.TareaID });
+    if (!ticket) {
+      return res.status(400).json({ message: "Ticket no encontrado" });
     }
 
     // Verificar si se ha cambiado la asignación o el horario

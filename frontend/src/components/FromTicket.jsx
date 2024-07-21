@@ -1,6 +1,6 @@
 import 'bulma/css/bulma.min.css';
 import React, { useState, useEffect } from 'react';
-import Navbar from '../components/navbar.jsx';
+import Navbar from './navbar.jsx';
 import axios from '../services/root.service.js';
 import '../styles/Generico.css';  
 import { useNavigate } from 'react-router-dom';
