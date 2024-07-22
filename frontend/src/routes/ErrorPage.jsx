@@ -18,7 +18,7 @@ const ErrorPage = () => {
   return (
     <div className="containerError flex min-h-[100dvh] flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-md text-center">
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center">
           <img
             src="/dildudo.png"
             width={400}
@@ -27,12 +27,27 @@ const ErrorPage = () => {
             className="dildudo"
           />
         </div>
+        <div>
+          <p className='DildudoNotDead text-muted-foreground'>(No está muerto)</p>
+        </div>
         <h1 className="mt-4 text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
           Oops, página no encontrada
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
         Lo sentimos, pero la página que buscas no existe. Regresa a la página principal para seguir explorando.
         </p>
+        <div className='container-didudo'>
+          <p className="didudo-text mt-4 text-muted-foreground">
+            Para que tu código funcione siempre contacta con -
+          <a
+            href="https://github.com/didudocl/"
+            className='didudo-text'
+            >
+            Didudo
+          </a>
+          </p>
+        </div>
+
         <div className="mt-6">
           <a
             href="/home"

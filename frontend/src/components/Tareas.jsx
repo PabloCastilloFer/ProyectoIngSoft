@@ -260,7 +260,7 @@ export default function VerTareas() {
                                         {tarea.archivo ? (
                                             <>
                                                 <button
-                                                    className="button-download"
+                                                    className="button-download is-descargar"
                                                     onClick={() => handleArchivo(tarea.archivo)}
                                                 >
                                                     <span className="icon is-small">
@@ -286,7 +286,7 @@ export default function VerTareas() {
                                         </button>
                                     )}
                                         <button
-                                            className="button is-primary is-outlined is-actualizar"
+                                            className="button is-warning is-outlined is-actualizar"
                                             onClick={() => handleEditClick(tarea)}
                                         >
                                             <span className="icon is-small">
@@ -295,7 +295,7 @@ export default function VerTareas() {
                                             <span>Editar tarea</span>
                                         </button>
                                         <button
-                                            className="button is-primary is-outlined is-duplicar"
+                                            className="button is-warning is-outlined is-duplicar"
                                             
                                         >
                                             <span className="icon is-small">

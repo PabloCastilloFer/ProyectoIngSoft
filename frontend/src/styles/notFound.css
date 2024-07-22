@@ -14,14 +14,36 @@ html{
   width: 100%;
   height: 100vh;
   text-align: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; 
 }
 
 .dildudo{
-  /* border-radius: 10px; */
+  border-radius: 20px;
   mask-image: linear-gradient(
     black 96%,
     transparent
   );
+  filter: grayscale(100%);
+}
+
+.DildudoNotDead{
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.container-didudo{
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.didudo-text{
+  font-size: 15px;
+  margin-bottom: 0;
 }
 
 .bg-background {

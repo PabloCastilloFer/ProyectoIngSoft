@@ -120,7 +120,7 @@ const EditarTarea = ({ initialData }) => {
                     <p className="subtitle is-6">Ingresa las modificaciones a la tarea</p>
                     <div className="columns is-centered">
                         <div className="column is-two-thirds">
-                            <form onSubmit={handleSubmit(onSubmit)}>
+                            <form onSubmit={handleSubmit(onSubmit)} autocomplete="off">
                                 <div className="field">
                                     <label className="label" htmlFor="nombreTarea">Nombre de la tarea:</label>
                                     <div className="control">
