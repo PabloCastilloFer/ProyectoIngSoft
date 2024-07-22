@@ -1,6 +1,29 @@
 /* styles.css */
-
+/* *, html{
+  height: 100vh;
+  width: 100%;
+} */
 /* Background */
+
+html{
+  width: 100%;
+  height: 100vh;
+}
+
+.containerError{
+  width: 100%;
+  height: 100vh;
+  text-align: center;
+}
+
+.dildudo{
+  /* border-radius: 10px; */
+  mask-image: linear-gradient(
+    black 96%,
+    transparent
+  );
+}
+
 .bg-background {
     background-color: #f8f9fa; /* Ajusta este color según sea necesario */
   }
