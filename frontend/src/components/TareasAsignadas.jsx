@@ -1,7 +1,6 @@
 import 'bulma/css/bulma.min.css';
 import React, { useEffect, useState } from 'react';
 import { getTareasAsignadas } from '../services/tareaRealizada.service.js';
-import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar'; // Corrige la ruta de importación
 import '../styles/TareasAsignadas.css';  // Importa los estilos
@@ -11,7 +10,9 @@ const TareasAsignadas = () => {
   const [tareas, setTareas] = useState([]);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState(''); // Estado para el campo de búsqueda
-  const rutUsuario = '20829012-6'; // Ajusta esto según tu contexto
+
+  const user = JSON.parse(localStorage.getItem('user'));
+  const rutUsuario = user.rut;
 
   const fetchTareas = async () => {
     try {
