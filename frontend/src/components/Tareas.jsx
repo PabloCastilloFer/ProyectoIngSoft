@@ -6,7 +6,7 @@ import Navbar from '../components/navbar.jsx';
 import axios from '../services/root.service.js';
 import { useNavigate } from 'react-router-dom';
 import { getArchive } from '../services/archive.service.js';
-import '../styles/tareas.css';
+import '../styles/Tareas.css';
 
 export default function VerTareas() {
     const navigate = useNavigate();
@@ -295,7 +295,7 @@ export default function VerTareas() {
                                             <span>Editar tarea</span>
                                         </button>
                                         <button
-                                            className="button is-primary is-outlined is-actualizar"
+                                            className="button is-primary is-outlined is-duplicar"
                                             
                                         >
                                             <span className="icon is-small">

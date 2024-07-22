@@ -31,6 +31,17 @@
   border-color: #1e57ac;
 }
 
+.button.is-duplicar {
+  background-color: #fba834;
+  border-color: #fba834;
+  color: white;
+}
+
+.button.is-duplicar:hover {
+  background-color: #fba834;
+  border-color: #fba834;
+}
+
 .button-download {
   background-color: #4A90E2;
   color: #FFFFFF;

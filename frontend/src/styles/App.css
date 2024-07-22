@@ -1,10 +1,13 @@
 /* App.css */
 
 .page-container {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
   height: 100vh; /* Ajusta la altura del contenedor a la altura de la ventana */
   width: 100%;
   overflow: hidden; /* Oculta el desbordamiento si la imagen es más grande que el contenedor */
+  z-index: -1; /* Asegura que el contenedor esté detrás de otros elementos */
 }
 
 .page-container img {
