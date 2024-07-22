@@ -26,7 +26,6 @@ function PageRoot() {
 
   return (
     <div>
-      <Navbar />
       <div className="user-details-container">
         <div className="user-info">
           <div className="user-icon">
