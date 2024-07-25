@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { crearUsuario } from '../services/user.service';
 import Navbar from '../components/Navbar.jsx';
-import '../styles/Generico.css'; // Asegúrate de tener estilos para los formularios
-
+import '../styles/Generico.css';
+import { showUsernameError, showEmailError, showPasswordError, showRutError, showRoleError, showFacultyError, showAuthError } from '../helpers/swaHelper.js';
 
 const containerStyle = {
   display: 'flex',
@@ -19,10 +19,11 @@ const boxStyle = {
 };
 
 const CrearUsuario = () => {
-  const [nombre, setNombre] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rol, setRol] = useState(''); // 'admin', 'supervisor', 'empleado'
+  const [rut, setRut] = useState('');
+  const [roles, setRoles] = useState([]);
   const [facultad, setFacultad] = useState('');
   const [facultades, setFacultades] = useState([]);
   const [error, setError] = useState(null);
@@ -36,27 +37,52 @@ const CrearUsuario = () => {
     event.preventDefault();
     setError(null);
 
-    // Verificar que todos los campos están completos
-    if (!nombre || !email || !password || !rol || !facultad) {
-      setError('Todos los campos son obligatorios');
+    if (!username) {
+      await showUsernameError();
       return;
     }
 
-    console.log("Datos enviados al backend:", { nombre, email, password, rol, facultad }); // Verificar datos enviados
+    if (!email) {
+      await showEmailError();
+      return;
+    }
 
-    const response = await crearUsuario({ nombre, email, password, rol, facultad });
+    if (!password) {
+      await showPasswordError();
+      return;
+    }
 
-    console.log("Respuesta del backend:", response); // Verificar respuesta del backend
+    if (!rut) {
+      await showRutError();
+      return;
+    }
+
+    if (!roles) {
+      await showRoleError();
+      return;
+    }
+
+    if (!facultad) {
+      await showFacultyError();
+      return;
+    }
+
+    console.log("Datos enviados al backend:", { username, email, password, rut, roles, facultad });
+
+    const response = await crearUsuario({ username, email, password, rut, roles, facultad });
+
+    console.log("Respuesta del backend:", response);
 
     if (response.status === 201) {
       alert('Usuario creado con éxito');
-      setNombre('');
+      setUsername('');
       setEmail('');
       setPassword('');
-      setRol('');
+      setRut('');
+      setRoles([]);
       setFacultad('');
     } else {
-      setError('Error al crear el usuario: ' + (response.data?.message || response.error));
+      await showAuthError();
     }
   };
 
@@ -72,8 +98,17 @@ const CrearUsuario = () => {
               <label>Nombre</label>
               <input
                 type="text"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>RUT</label>
+              <input
+                type="text"
+                value={rut}
+                onChange={(e) => setRut(e.target.value)}
                 required
               />
             </div>
@@ -98,8 +133,8 @@ const CrearUsuario = () => {
             <div className="form-group">
               <label>Rol</label>
               <select
-                value={rol}
-                onChange={(e) => setRol(e.target.value)}
+                value={roles}
+                onChange={(e) => setRoles(e.target.value)}
                 required
               >
                 <option value="">Seleccione un rol</option>
@@ -130,4 +165,3 @@ const CrearUsuario = () => {
 };
 
 export default CrearUsuario;
-

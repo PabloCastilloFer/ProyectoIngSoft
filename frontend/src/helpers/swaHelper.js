@@ -283,3 +283,52 @@ export const showErrorFormTicket = async () => {
         title: "Error al asignar la tarea"
     });
 };
+
+export const showUsernameError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "El nombre de usuario es obligatorio"
+  });
+};
+
+export const showEmailError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "El correo electrónico es obligatorio"
+  });
+};
+
+export const showPasswordError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "La contraseña es obligatoria"
+  });
+};
+
+export const showRutError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "El RUT es obligatorio"
+  });
+};
+
+export const showRoleError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "El rol es obligatorio"
+  });
+};
+
+export const showFacultyError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "La facultad es obligatoria"
+  });
+};
+
+export const showAuthError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "No autorizado"
+  });
+};
