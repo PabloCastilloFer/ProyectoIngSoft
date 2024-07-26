@@ -15,6 +15,7 @@ import TareasRealizadas from './routes/TareasRealizadasRoute.jsx';
 import UpdateTicket from './routes/UpdateTicketRoute.jsx';
 import UpdateTarea  from './routes/UpdateTareaRoute.jsx';
 import FromTicket from './routes/FormTicketRoutes.jsx';
+import DuplicarTarea from './routes/DuplicarTareaRoute.jsx';
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
   {
     path: '/ticket',
     element: <FromTicket />,
+  },
+  {
+    path: '/tarea/duplicar',
+    element: <DuplicarTarea />,
   }
 
 

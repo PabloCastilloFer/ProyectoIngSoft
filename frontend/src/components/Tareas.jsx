@@ -69,6 +69,12 @@ export default function VerTareas() {
         }
     };
 
+    const handleDuplicarClick = (tarea) => {
+        navigate(`/tarea/duplicar`, {
+            state: { tarea },
+        });
+    }
+
     const handleArchivo = async (url) => {
         try {
             const data = await getArchive(url);
@@ -83,6 +89,10 @@ export default function VerTareas() {
         } catch (error) {
             console.error('Error al manejar el archivo:', error.message);
         }
+    };
+
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     };
 
     const TrashIcon = (props) => (
@@ -242,18 +252,18 @@ export default function VerTareas() {
                         filteredTareas.map((tarea, index) => (
                             <div key={index} style={BoxStyle2}>
                                 <div className="content">
-                                    <h2 className="title is-4">{tarea.nombreTarea}</h2>
+                                    <h2 className="title is-4">{capitalizeFirstLetter(tarea.nombreTarea)}</h2>
                                     <div className="contenedor-texto">
                                         <strong>Tipo:</strong>&nbsp;
-                                        <span>{tarea.tipoTarea}</span>
+                                        <span>{capitalizeFirstLetter(tarea.tipoTarea)}</span>
                                     </div>
                                     <div className="contenedor-texto">
                                         <strong>Estado:</strong>&nbsp;
-                                        <span>{tarea.estado}</span>
+                                        <span>{capitalizeFirstLetter(tarea.estado)}</span>
                                     </div>
                                     <div className="contenedor-texto">
                                         <strong>Descripción:</strong>&nbsp;
-                                        <span>{tarea.descripcionTarea}</span>
+                                        <span>{capitalizeFirstLetter(tarea.descripcionTarea)}</span>
                                     </div>
                                     <p className="is-flex is-align-items-center">
                                         <strong>Archivo adjunto:</strong>&nbsp;
@@ -296,7 +306,7 @@ export default function VerTareas() {
                                         </button>
                                         <button
                                             className="button is-warning is-outlined is-duplicar"
-                                            
+                                            onClick={() => handleDuplicarClick(tarea)}
                                         >
                                             <span className="icon is-small">
                                                 <CopyIcon />

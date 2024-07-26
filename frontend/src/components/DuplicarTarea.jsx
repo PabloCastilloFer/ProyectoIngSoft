@@ -1,63 +1,58 @@
 import 'bulma/css/bulma.min.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import Navbar from '../components/navbar.jsx';
-import { updateTarea } from '../services/tarea.service.js';
-import { useLocation , useNavigate } from 'react-router-dom';
-import { UpdateQuestion , VolverQuestion } from '../helpers/swaHelper.js'; // Asegúrate de importar UpdateQuestion
+import Navbar from '../components/navbar.jsx'; // Asegúrate de que la ruta a Navbar sea correcta
+import { duplicarTarea } from '../services/tarea.service.js'; // Asegúrate de que la ruta al servicio sea correcta
+import { useLocation, useNavigate } from 'react-router-dom';
+import { VolverQuestion } from '../helpers/swaHelper.js';
 
-const EditarTarea = ({ initialData }) => {
-    const navigate = useNavigate(); 
+const DuplicarTarea = () => {
+    const navigate = useNavigate();
     const location = useLocation();
     const { tarea } = location.state;
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm({
-        defaultValues: initialData
-    });
     const [isLoading, setIsLoading] = useState(false);
     const [archivo, setArchivo] = useState(null);
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
-    const handleArchivoChange = (e) => {
-        setArchivo(e.target.files[0]);
+    useEffect(() => {
+        if (tarea) {
+            setValue('nombreTarea', tarea.nombreTarea);
+            setValue('tipoTarea', tarea.tipoTarea);
+            setValue('descripcionTarea', tarea.descripcionTarea);
+        }
+    }, [tarea, setValue]);
+
+    const handleArchivoChange = (event) => {
+        setArchivo(event.target.files[0]); // Guarda el archivo en el estado
     };
 
     const onSubmit = async (data) => {
-        // Solicita confirmación antes de continuar
-        const isConfirmed = await UpdateQuestion();
-        
-        if (!isConfirmed) {
-            // Si el usuario cancela, no hace nada
-            return;
-        }
-
         setIsLoading(true);
-        const formData = new FormData();
-        formData.append('nombreTarea', data.nombreTarea);
-        formData.append('tipoTarea', data.tipoTarea);
-        formData.append('descripcionTarea', data.descripcionTarea);
-        if (archivo) {
-            formData.append('archivo', archivo);
-        }
-
         try {
-            const response = await updateTarea(formData, tarea.idTarea);
-            if (response.status === 200) {
-                navigate('/tareas');
-            } else {
-                alert('Error al actualizar la tarea');
+            // Crear FormData y agregar los campos
+            const formData = new FormData();
+            formData.append('nombreTarea', data.nombreTarea);
+            formData.append('tipoTarea', data.tipoTarea);
+            formData.append('descripcionTarea', data.descripcionTarea);
+            if (archivo) {
+                formData.append('archivo', archivo);
             }
+
+            await duplicarTarea(formData, tarea.idTarea); // Pasa el formData y el idTarea
+            navigate('/tareas'); // Redirige a la lista de tareas o a donde sea apropiado
         } catch (error) {
-            alert('Ocurrió un error al actualizar la tarea');
+            console.error('Error duplicando tarea:', error);
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleVolver = async (tareaToVolver) => {
+    const handleVolver = async () => {
         const isConfirmed = await VolverQuestion();
         if (isConfirmed) {
             navigate(-1);
-        } 
-    };;
+        }
+    };
 
     function ArrowLeftIcon(props) {
         return (
@@ -78,6 +73,8 @@ const EditarTarea = ({ initialData }) => {
             </svg>
         );
     }
+
+    if (!tarea) return <p>Cargando tarea...</p>;
 
     const containerStyle = {
         display: 'flex',
@@ -108,27 +105,27 @@ const EditarTarea = ({ initialData }) => {
         <div style={containerStyle}>
             <Navbar />
             <div style={BoxStyle}>
-            <div style={volverButtonStyle}>
+                <div style={volverButtonStyle}>
                     <button className="button is-light" onClick={handleVolver}>
-                    <span className="icon is-small">
-                                            <ArrowLeftIcon />
-                                        </span>
-                                        <span>Volver</span>
+                        <span className="icon is-small">
+                            <ArrowLeftIcon />
+                        </span>
+                        <span>Volver</span>
                     </button>
                 </div>
                 <div>
-                    <h2 className="title is-4">Formulario de edición de tarea</h2>
+                    <h2 className="title is-4">Formulario de duplicación de tarea</h2>
                     <p className="subtitle is-6">Ingresa las modificaciones a la tarea</p>
                     <div className="columns is-centered">
                         <div className="column is-two-thirds">
-                            <form onSubmit={handleSubmit(onSubmit)} autocomplete="off">
+                            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                                 <div className="field">
                                     <label className="label" htmlFor="nombreTarea">Nombre de la tarea:</label>
                                     <div className="control">
                                         <input
                                             id="nombreTarea"
                                             type="text"
-                                            placeholder={tarea.nombreTarea}
+                                            placeholder="Nombre de la tarea"
                                             className={`input ${errors.nombreTarea ? 'is-danger' : ''}`}
                                             {...register('nombreTarea', { required: false })}
                                         />
@@ -156,7 +153,7 @@ const EditarTarea = ({ initialData }) => {
                                     <div className="control">
                                         <textarea
                                             id="descripcionTarea"
-                                            placeholder={tarea.descripcionTarea}
+                                            placeholder="Descripción de la tarea"
                                             className={`textarea ${errors.descripcionTarea ? 'is-danger' : ''}`}
                                             {...register('descripcionTarea', { required: false })}
                                         />
@@ -179,10 +176,10 @@ const EditarTarea = ({ initialData }) => {
                                             className={`button is-link ${isLoading ? 'is-loading' : ''}`}
                                             type="submit"
                                         >
-                                            Actualizar Tarea
+                                            Duplicar Tarea
                                         </button>
                                     </div>
-                                    {isLoading && <p className="help is-info">Guardando tarea...</p>}
+                                    {isLoading && <p className="help is-info">Duplicando tarea...</p>}
                                 </div>
                             </form>
                         </div>
@@ -193,18 +190,4 @@ const EditarTarea = ({ initialData }) => {
     );
 };
 
-export default EditarTarea;
-
-// Define tus estilos de contenedor y caja
-const containerStyle = {
-    padding: '20px'
-};
-
-const BoxStyle = {
-    margin: '20px auto',
-    padding: '20px',
-    maxWidth: '800px',
-    backgroundColor: '#f5f5f5',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-};
+export default DuplicarTarea;
