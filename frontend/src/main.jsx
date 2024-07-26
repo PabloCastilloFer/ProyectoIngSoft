@@ -17,6 +17,7 @@ import UpdateTarea  from './routes/UpdateTareaRoute.jsx';
 import FromTicket from './routes/FormTicketRoutes.jsx';
 import CrearFacultad from './routes/CrearFacultad.jsx';
 import CrearUsuario from './routes/CrearUsuario.jsx';
+import ComentarioRoute from './routes/ComentarioRoute.jsx';
 
 const router = createBrowserRouter([
   {
@@ -81,6 +82,10 @@ const router = createBrowserRouter([
   {
     path: '/usuarios',
     element: <CrearUsuario />,
+  },
+  {
+    path: '/comentarios',
+    element: <ComentarioRoute />, // Añade la nueva ruta
   },
 
 ]);

@@ -6,6 +6,7 @@ import logo from '../assets/Logo.png';
 const Navbar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isUsersMenuOpen, setIsUsersMenuOpen] = useState(false);
+  const [isInformeEmpleadosMenuOpen, setIsInformeEmpleadosMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,6 +28,10 @@ const Navbar = () => {
 
   const handleUsersMenuToggle = () => {
     setIsUsersMenuOpen(!isUsersMenuOpen);
+  };
+
+  const handleInformeEmpleadosMenuToggle = () => {
+    setIsInformeEmpleadosMenuOpen(!isInformeEmpleadosMenuOpen);
   };
 
   const navbarStyle = {
@@ -56,9 +61,19 @@ const Navbar = () => {
           <li data-icon="📤" onClick={() => handleNavigation('/verticket')}>
             <span>Tareas asignadas</span>
           </li>
-          <li data-icon="📋" onClick={() => handleNavigation('/generarPDF')}>
-            <span>Informe Empleados</span>
+          <li data-icon="📋" onClick={handleInformeEmpleadosMenuToggle}>
+            <span>Informe Empleados {isInformeEmpleadosMenuOpen ? '▲' : '▼'}</span>
           </li>
+          {isInformeEmpleadosMenuOpen && (
+            <ul className="submenu">
+              <li data-icon=">" onClick={() => handleNavigation('/generarPDF')}>
+                <span>Generar PDF</span>
+              </li>
+              <li data-icon=">" onClick={() => handleNavigation('/comentarios')}>
+                <span>Agregar Comentario</span>
+              </li>
+            </ul>
+          )}
           <li data-icon="📃" onClick={() => handleNavigation('/tareas-asignadas')}>
             <span>Ver Tareas Asignadas</span>
           </li>
