@@ -1,4 +1,5 @@
 import tarea from '../models/tarea.model.js';
+import user from '../models/user.model.js';
 import { HOST, PORT } from '../config/configEnv.js';
 import { crearTareaSchema , fileParamsSchema } from '../schema/tarea.schema.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -6,9 +7,6 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import path from 'path';
 import fs from 'fs';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 export const createTarea = async (req, res) => {
     try {
@@ -27,7 +25,8 @@ export const createTarea = async (req, res) => {
             tipoTarea: req.body.tipoTarea,
             estado: 'nueva',
             idTarea: idTarea,
-            archivo: archivoURL
+            archivo: archivoURL,
+            userEmail: req.email // Asegurarse de que el middleware de autenticación añade el email al request
         };
 
         const { error } = crearTareaSchema.validate(nuevaTarea);
@@ -93,8 +92,9 @@ export const updateTarea = async (req, res) => {
             descripcionTarea: req.body.descripcionTarea || tareaModificada.descripcionTarea,
             tipoTarea: req.body.tipoTarea || tareaModificada.tipoTarea,
             estado: 'nueva',
-            archivo: req.file ? URL + archivo : tareaModificada.archivo,
-            idTarea: tareaActual
+            archivo: req.file ? URL + archivo : tareaModificada.archivo || tareaModificada.archivo,
+            idTarea: tareaActual,
+            userEmail: req.email
         };
 
         const { error } = crearTareaSchema.validate(updatedTarea);
@@ -138,7 +138,8 @@ export const updateNewTarea = async (req, res) => {
             tipoTarea: req.body.tipoTarea || tareaOriginal.tipoTarea,
             estado: req.body.estado || tareaOriginal.estado,
             idTarea: idTareaa,
-            archivo: req.file ? URL + archivo : tareaOriginal.archivo
+            archivo: req.file ? URL + archivo : tareaOriginal.archivo,
+            userEmail: req.email
         };
 
         const { error } = crearTareaSchema.validate(nuevaTarea);
@@ -160,6 +161,8 @@ export const updateNewTarea = async (req, res) => {
 
 export const getArchives = async (req, res) => {
     try {
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = dirname(__filename);
         const { error, value } = fileParamsSchema.validate({ filename: req.params.filename });
 
         if (error) {
@@ -184,3 +187,18 @@ export const getArchives = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const getTareasUsuario = async (req, res) => {
+    try {
+        const { email } = req; // Asegúrate de que el middleware de autenticación añade el email al request
+        if (!email) {
+            return res.status(400).json({ message: 'Email no disponible en la solicitud' });
+        }
+
+        const tareas = await tarea.find({ userEmail: email });
+        res.status(200).json(tareas);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+};
+
