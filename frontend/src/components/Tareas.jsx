@@ -6,7 +6,7 @@ import Navbar from '../components/navbar.jsx';
 import axios from '../services/root.service.js';
 import { useNavigate } from 'react-router-dom';
 import { getArchive } from '../services/archive.service.js';
-import '../styles/tareas.css';
+import '../styles/Tareas.css';
 
 export default function VerTareas() {
     const navigate = useNavigate();
@@ -69,6 +69,12 @@ export default function VerTareas() {
         }
     };
 
+    const handleDuplicarClick = (tarea) => {
+        navigate(`/tarea/duplicar`, {
+            state: { tarea },
+        });
+    }
+
     const handleArchivo = async (url) => {
         try {
             const data = await getArchive(url);
@@ -83,6 +89,10 @@ export default function VerTareas() {
         } catch (error) {
             console.error('Error al manejar el archivo:', error.message);
         }
+    };
+
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     };
 
     const TrashIcon = (props) => (
@@ -242,25 +252,25 @@ export default function VerTareas() {
                         filteredTareas.map((tarea, index) => (
                             <div key={index} style={BoxStyle2}>
                                 <div className="content">
-                                    <h2 className="title is-4">{tarea.nombreTarea}</h2>
+                                    <h2 className="title is-4">{capitalizeFirstLetter(tarea.nombreTarea)}</h2>
                                     <div className="contenedor-texto">
-                                    <strong>Tipo:</strong> &nbsp;
-                                    <p className="texto"> {` ${tarea.tipoTarea}`}</p>
+                                        <strong>Tipo:</strong>&nbsp;
+                                        <span>{capitalizeFirstLetter(tarea.tipoTarea)}</span>
                                     </div>
                                     <div className="contenedor-texto">
-                                    <strong>Estado:</strong>
-                                    <p className="texto"> {tarea.estado}</p>
+                                        <strong>Estado:</strong>&nbsp;
+                                        <span>{capitalizeFirstLetter(tarea.estado)}</span>
                                     </div>
                                     <div className="contenedor-texto">
-                                    <strong>Descripción:</strong> &nbsp;
-                                    <p className="texto"> {tarea.descripcionTarea}</p>
+                                        <strong>Descripción:</strong>&nbsp;
+                                        <span>{capitalizeFirstLetter(tarea.descripcionTarea)}</span>
                                     </div>
                                     <p className="is-flex is-align-items-center">
-                                        <strong>Archivo adjunto:</strong>
+                                        <strong>Archivo adjunto:</strong>&nbsp;
                                         {tarea.archivo ? (
                                             <>
                                                 <button
-                                                    className="button-download"
+                                                    className="button-download is-descargar"
                                                     onClick={() => handleArchivo(tarea.archivo)}
                                                 >
                                                     <span className="icon is-small">
@@ -286,7 +296,7 @@ export default function VerTareas() {
                                         </button>
                                     )}
                                         <button
-                                            className="button is-primary is-outlined is-actualizar"
+                                            className="button is-warning is-outlined is-actualizar"
                                             onClick={() => handleEditClick(tarea)}
                                         >
                                             <span className="icon is-small">
@@ -295,8 +305,8 @@ export default function VerTareas() {
                                             <span>Editar tarea</span>
                                         </button>
                                         <button
-                                            className="button is-primary is-outlined is-actualizar"
-                                            
+                                            className="button is-warning is-outlined is-duplicar"
+                                            onClick={() => handleDuplicarClick(tarea)}
                                         >
                                             <span className="icon is-small">
                                                 <CopyIcon />

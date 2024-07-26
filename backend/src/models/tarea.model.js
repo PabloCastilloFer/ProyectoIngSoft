@@ -53,11 +53,14 @@ const tareaSchema = new Schema({
         type: String,
         required: false,
     },
-    
     idTarea: {
         type: String,
         required: true,
         unique: true
+    },
+    userEmail: {
+        type: String,
+        required: true,
     },
 },
     {
@@ -86,4 +89,3 @@ tareaSchema.pre('save', function (next) {
 });
 
 export default model('tarea', tareaSchema);
-

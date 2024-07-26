@@ -18,6 +18,7 @@ import FromTicket from './routes/FormTicketRoutes.jsx';
 import CrearFacultad from './routes/CrearFacultad.jsx';
 import CrearUsuario from './routes/CrearUsuario.jsx';
 import ComentarioRoute from './routes/ComentarioRoute.jsx';
+import DuplicarTarea from './routes/DuplicarTareaRoute.jsx';
 
 const router = createBrowserRouter([
   {
@@ -87,6 +88,11 @@ const router = createBrowserRouter([
     path: '/comentarios',
     element: <ComentarioRoute />, // Añade la nueva ruta
   },
+  {
+    path: '/tarea/duplicar',
+    element: <DuplicarTarea />,
+  }
+
 
 ]);
 

@@ -1,62 +1,57 @@
 import 'bulma/css/bulma.min.css';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { showError , showConfirmFormTarea , CreateQuestion , VolverQuestion } from '../helpers/swaHelper.js';
-import { useForm } from 'react-hook-form'; 
-import { createTarea } from '../services/tarea.service.js';
-import Navbar from '../components/navbar.jsx';
+import React, { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import Navbar from '../components/navbar.jsx'; // Asegúrate de que la ruta a Navbar sea correcta
+import { duplicarTarea } from '../services/tarea.service.js'; // Asegúrate de que la ruta al servicio sea correcta
+import { useLocation, useNavigate } from 'react-router-dom';
+import { VolverQuestion } from '../helpers/swaHelper.js';
 
-export default function FormSupervisor() {
-    const navigate = useNavigate(); 
-
-    const [archivo, setArchivo] = useState(null);
+const DuplicarTarea = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { tarea } = location.state;
     const [isLoading, setIsLoading] = useState(false);
-    
-    const { register, formState: { errors }, handleSubmit, reset } = useForm();
+    const [archivo, setArchivo] = useState(null);
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+
+    useEffect(() => {
+        if (tarea) {
+            setValue('nombreTarea', tarea.nombreTarea);
+            setValue('tipoTarea', tarea.tipoTarea);
+            setValue('descripcionTarea', tarea.descripcionTarea);
+        }
+    }, [tarea, setValue]);
+
+    const handleArchivoChange = (event) => {
+        setArchivo(event.target.files[0]); // Guarda el archivo en el estado
+    };
 
     const onSubmit = async (data) => {
+        setIsLoading(true);
         try {
-            const isConfirmed = await CreateQuestion();
-        
-        if (!isConfirmed) {
-            return;
-        }
-            setIsLoading(true);
+            // Crear FormData y agregar los campos
             const formData = new FormData();
-            formData.append("nombreTarea", data.nombreTarea);
-            formData.append("descripcionTarea", data.descripcionTarea);
-            formData.append("tipoTarea", data.tipoTarea);
-            formData.append("archivo", archivo);
-            console.log(formData)
-
-            const response = await createTarea(formData);
-            console.log(response)
-            if (response.status === 201) {
-                await showConfirmFormTarea();
-                setArchivo(null);
-                reset();
-            } else if (response.status === 400) {
-                await showError(response.data[0].response.data.message);
-            } else if (response.status === 500) {
-                await showError(response.data[0].response.data.message);
+            formData.append('nombreTarea', data.nombreTarea);
+            formData.append('tipoTarea', data.tipoTarea);
+            formData.append('descripcionTarea', data.descripcionTarea);
+            if (archivo) {
+                formData.append('archivo', archivo);
             }
-            console.log(response);
+
+            await duplicarTarea(formData, tarea.idTarea); // Pasa el formData y el idTarea
+            navigate('/tareas'); // Redirige a la lista de tareas o a donde sea apropiado
         } catch (error) {
-            console.log("Error:", error);
+            console.error('Error duplicando tarea:', error);
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleArchivoChange = (e) => {
-        setArchivo(e.target.files[0]);
-    };
-
-    const handleVolver = async (tareaToVolver) => {
+    const handleVolver = async () => {
         const isConfirmed = await VolverQuestion();
         if (isConfirmed) {
             navigate(-1);
-        } 
+        }
     };
 
     function ArrowLeftIcon(props) {
@@ -79,9 +74,10 @@ export default function FormSupervisor() {
         );
     }
 
+    if (!tarea) return <p>Cargando tarea...</p>;
+
     const containerStyle = {
         display: 'flex',
-        marginTop: '64px', // Ajustar para la altura de la navbar
         justifyContent: 'center',
         alignItems: 'center',
         marginRight:'250px', 
@@ -90,7 +86,7 @@ export default function FormSupervisor() {
     const BoxStyle = {
         alignItems: 'center',
         paddingTop: '64px', 
-        width: '700px',
+        width: '800px',
         padding: '2rem',
         borderRadius: '8px',
         boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
@@ -111,27 +107,27 @@ export default function FormSupervisor() {
             <div style={BoxStyle}>
                 <div style={volverButtonStyle}>
                     <button className="button is-light" onClick={handleVolver}>
-                    <span className="icon is-small">
-                                            <ArrowLeftIcon />
-                                        </span>
-                                        <span>Volver</span>
+                        <span className="icon is-small">
+                            <ArrowLeftIcon />
+                        </span>
+                        <span>Volver</span>
                     </button>
                 </div>
                 <div>
-                    <h2 className="title is-4">Formulario para crear tarea</h2>
-                    <p className="subtitle is-6">Ingresa los detalles de tu nueva tarea</p>
+                    <h2 className="title is-4">Formulario de duplicación de tarea</h2>
+                    <p className="subtitle is-6">Ingresa las modificaciones a la tarea</p>
                     <div className="columns is-centered">
                         <div className="column is-two-thirds">
-                            <form onSubmit={handleSubmit(onSubmit)} autocomplete="off">
+                            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                                 <div className="field">
                                     <label className="label" htmlFor="nombreTarea">Nombre de la tarea:</label>
                                     <div className="control">
                                         <input
                                             id="nombreTarea"
                                             type="text"
-                                            placeholder="Ej. Diseñar logotipo"
+                                            placeholder="Nombre de la tarea"
                                             className={`input ${errors.nombreTarea ? 'is-danger' : ''}`}
-                                            {...register('nombreTarea', { required: true })}
+                                            {...register('nombreTarea', { required: false })}
                                         />
                                     </div>
                                     {errors.nombreTarea && <p className="help is-danger">Este campo es obligatorio</p>}
@@ -157,18 +153,17 @@ export default function FormSupervisor() {
                                     <div className="control">
                                         <textarea
                                             id="descripcionTarea"
-                                            placeholder="Describe la tarea..."
+                                            placeholder="Descripción de la tarea"
                                             className={`textarea ${errors.descripcionTarea ? 'is-danger' : ''}`}
-                                            {...register('descripcionTarea', { required: true })}
+                                            {...register('descripcionTarea', { required: false })}
                                         />
                                     </div>
-                                    {errors.descripcionTarea && <p className="help is-danger">Este campo es obligatorio</p>}
                                 </div>
                                 <div className="field">
-                                    <label className="label" htmlFor="archivoAdjunto">Archivo Adjunto:</label>
+                                    <label className="label" htmlFor="archivo">Archivo Adjunto:</label>
                                     <div className="control">
                                         <input
-                                            id="archivoAdjunto"
+                                            id="archivo"
                                             type="file"
                                             className="input"
                                             onChange={handleArchivoChange}
@@ -181,10 +176,10 @@ export default function FormSupervisor() {
                                             className={`button is-link ${isLoading ? 'is-loading' : ''}`}
                                             type="submit"
                                         >
-                                            Guardar Tarea
+                                            Duplicar Tarea
                                         </button>
                                     </div>
-                                    {isLoading && <p className="help is-info">Guardando tarea...</p>}
+                                    {isLoading && <p className="help is-info">Duplicando tarea...</p>}
                                 </div>
                             </form>
                         </div>
@@ -193,4 +188,6 @@ export default function FormSupervisor() {
             </div>
         </div>
     );
-}
+};
+
+export default DuplicarTarea;

@@ -1,17 +1,21 @@
-.centered-text {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    text-align: center;
-    color: #007bff; /* Cambia el color según sea necesario */
-  }
-  
-  .page-container {
-    padding: 20px;
-  }
-  
-  .welcome-message {
-    font-size: 2rem;
-    font-weight: bold;
-  }
+/* App.css */
+
+.page-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh; /* Ajusta la altura del contenedor a la altura de la ventana */
+  width: 100%;
+  overflow: hidden; /* Oculta el desbordamiento si la imagen es más grande que el contenedor */
+  z-index: -1; /* Asegura que el contenedor esté detrás de otros elementos */
+}
+
+.page-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ajusta la imagen para cubrir todo el contenedor sin distorsión */
+  z-index: -1; /* Envía la imagen al fondo para que el contenido sea visible encima */
+}
