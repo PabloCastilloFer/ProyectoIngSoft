@@ -81,12 +81,11 @@ const router = createBrowserRouter([
   {
     path: '/usuarios',
     element: <CrearUsuario />,
-  }
-
-
+  },
 
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <RouterProvider router={router} />
 );
+

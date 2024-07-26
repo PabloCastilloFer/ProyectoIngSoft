@@ -304,11 +304,23 @@ export const showPasswordError = async () => {
       title: "La contraseña es obligatoria"
   });
 };
+export const showPasswordLengthError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "La contraseña debe tener al menos 5 caracteres."
+  });
+};
 
 export const showRutError = async () => {
   await Toast.fire({
       icon: "error",
       title: "El RUT es obligatorio"
+  });
+};
+export const showRutDuplicateError = async () => {
+  await Toast.fire({
+    icon: "error",
+    title: "El rut ingresado posee un usuario"
   });
 };
 
@@ -330,5 +342,51 @@ export const showAuthError = async () => {
   await Toast.fire({
       icon: "error",
       title: "No autorizado"
+  });
+};
+
+export const showConfirmUserCreated = async () => {
+  await Toast.fire({
+      icon: "success",
+      title: "Usuario creado con éxito"
+  });
+};
+
+
+export const DeleteFacultyQuestion = async () => {
+  const result = await Swal.fire({
+    title: "¿Estás seguro de eliminar esta facultad?",
+    text: "Estos cambios son irreversibles.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Sí, eliminar",
+    cancelButtonText: "No, cancelar",
+    reverseButtons: true,
+    customClass: {
+      confirmButton: "bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded",
+      cancelButton: "bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+    },
+    buttonsStyling: false,
+  });
+
+  if (result.isConfirmed) {
+    await Swal.fire({
+      title: "Eliminado Correctamente!",
+      text: "La facultad ha sido eliminada",
+      icon: "success"
+    });
+  } else if (result.dismiss === Swal.DismissReason.cancel) {
+    await Swal.fire({
+      title: "Cancelado",
+      icon: "success"
+    });
+  }
+
+  return result.isConfirmed;
+};
+export const showConfirmFacultyCreated = async () => {
+  await Toast.fire({
+      icon: "success",
+      title: "Facultad creada con éxito!"
   });
 };

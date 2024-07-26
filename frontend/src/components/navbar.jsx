@@ -5,6 +5,7 @@ import logo from '../assets/Logo.png';
 
 const Navbar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isUsersMenuOpen, setIsUsersMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,7 +14,7 @@ const Navbar = () => {
       setIsCollapsed(JSON.parse(savedState));
     }
   }, []);
-  
+
   const handleToggleSidebar = () => {
     const newState = !isCollapsed;
     setIsCollapsed(newState);
@@ -23,7 +24,11 @@ const Navbar = () => {
   const handleNavigation = (path) => {
     navigate(path);
   };
-  
+
+  const handleUsersMenuToggle = () => {
+    setIsUsersMenuOpen(!isUsersMenuOpen);
+  };
+
   const navbarStyle = {
     position: 'fixed',
     right: '0',
@@ -33,16 +38,16 @@ const Navbar = () => {
   };
 
   return (
-  <div  style={navbarStyle}>
-    <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
-      <div className="logo-container" onClick={() => handleNavigation('/home')}>
-      <img src={logo} alt="Logo" />
-      </div>
-      <button onClick={handleToggleSidebar}>
-        {isCollapsed ? '🡸' : '🡺'}
-      </button>
-      <ul>
-      <li data-icon="📁" onClick={() => handleNavigation('/tarea')}>
+    <div style={navbarStyle}>
+      <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+        <div className="logo-container" onClick={() => handleNavigation('/home')}>
+          <img src={logo} alt="Logo" />
+        </div>
+        <button onClick={handleToggleSidebar}>
+          {isCollapsed ? '🡸' : '🡺'}
+        </button>
+        <ul>
+          <li data-icon="📁" onClick={() => handleNavigation('/tarea')}>
             <span>Crear Tarea</span>
           </li>
           <li data-icon="📄" onClick={() => handleNavigation('/tareas')}>
@@ -63,9 +68,19 @@ const Navbar = () => {
           <li data-icon="🏢" onClick={() => handleNavigation('/facultades')}>
             <span>Facultades</span>
           </li>
-          <li data-icon="👤" onClick={() => handleNavigation('/usuarios')}>
-            <span>Usuarios</span>
+          <li data-icon="👤" onClick={handleUsersMenuToggle}>
+            <span>Usuarios {isUsersMenuOpen ? '▲' : '▼'}</span>
           </li>
+          {isUsersMenuOpen && (
+            <ul className="submenu">
+              <li data-icon=">" onClick={() => handleNavigation('/usuarios')}>
+                <span>Crear Usuario</span>
+              </li>
+              <li data-icon=">" onClick={() => handleNavigation('/usuarios/ver')}>
+                <span>Ver Usuarios</span>
+              </li>
+            </ul>
+          )}
         </ul>
       </div>
     </div>

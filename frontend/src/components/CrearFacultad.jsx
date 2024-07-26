@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import '../styles/Generico.css'; // Asegúrate de tener estilos para los formularios
 import Navbar from '../components/Navbar.jsx';
+import { showConfirmFacultyCreated,DeleteFacultyQuestion } from '../helpers/swaHelper.js';
+
 
 const containerStyle = {
   display: 'flex',
@@ -31,21 +33,24 @@ const CrearFacultad = () => {
     }
 
     const nuevaFacultad = { nombre };
-    console.log("Datos enviados al backend:", nuevaFacultad); // Verificar datos enviados
+    console.log("Datos enviados al backend:", nuevaFacultad); 
 
-    // Simular la creación de la facultad almacenándola en localStorage
+
     const facultadesActualizadas = [...facultades, nuevaFacultad];
     localStorage.setItem('facultades', JSON.stringify(facultadesActualizadas));
     setFacultades(facultadesActualizadas);
 
-    alert('Facultad creada con éxito');
+    showConfirmFacultyCreated(); //
     setNombre('');
   };
 
-  const handleDelete = (index) => {
-    const facultadesActualizadas = facultades.filter((_, i) => i !== index);
-    localStorage.setItem('facultades', JSON.stringify(facultadesActualizadas));
-    setFacultades(facultadesActualizadas);
+  const handleDelete = async (index) => {
+    const confirmed = await DeleteFacultyQuestion();
+    if (confirmed) {
+      const facultadesActualizadas = facultades.filter((_, i) => i !== index);
+      localStorage.setItem('facultades', JSON.stringify(facultadesActualizadas));
+      setFacultades(facultadesActualizadas);
+    }
   };
 
   return (

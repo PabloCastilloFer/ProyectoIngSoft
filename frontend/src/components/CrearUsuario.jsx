@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { crearUsuario } from '../services/user.service';
 import Navbar from '../components/Navbar.jsx';
 import '../styles/Generico.css';
-import { showUsernameError, showEmailError, showPasswordError, showRutError, showRoleError, showFacultyError, showAuthError } from '../helpers/swaHelper.js';
+import {showUsernameError,showEmailError,showPasswordError,showPasswordLengthError,showRutError,showRutDuplicateError,showRoleError,showFacultyError,showAuthError} from '../helpers/swaHelper.js';
 
 const containerStyle = {
   display: 'flex',
@@ -23,7 +23,7 @@ const CrearUsuario = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rut, setRut] = useState('');
-  const [roles, setRoles] = useState([]);
+  const [roles, setRoles] = useState('');
   const [facultad, setFacultad] = useState('');
   const [facultades, setFacultades] = useState([]);
   const [error, setError] = useState(null);
@@ -32,6 +32,11 @@ const CrearUsuario = () => {
     const facultadesFromStorage = JSON.parse(localStorage.getItem('facultades')) || [];
     setFacultades(facultadesFromStorage);
   }, []);
+
+  const validarRut = (rut) => {
+    const regex = /^[0-9]+[-|‐]{1}[0-9kK]{1}$/;
+    return regex.test(rut);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -52,8 +57,18 @@ const CrearUsuario = () => {
       return;
     }
 
+    if (password.length < 5) {
+      await showPasswordLengthError();
+      return;
+    }
+
     if (!rut) {
-      await showRutError();
+      await showRutError("El RUT es obligatorio");
+      return;
+    }
+
+    if (!validarRut(rut)) {
+      await showRutError("El RUT tiene el formato XXXXXXXX-X, ejemplo: 12345678-9.");
       return;
     }
 
@@ -69,19 +84,28 @@ const CrearUsuario = () => {
 
     console.log("Datos enviados al backend:", { username, email, password, rut, roles, facultad });
 
-    const response = await crearUsuario({ username, email, password, rut, roles, facultad });
+    try {
+      const response = await crearUsuario({ username, email, password, rut, roles, facultad });
 
-    console.log("Respuesta del backend:", response);
+      console.log("Respuesta del backend:", response);
 
-    if (response.status === 201) {
-      alert('Usuario creado con éxito');
-      setUsername('');
-      setEmail('');
-      setPassword('');
-      setRut('');
-      setRoles([]);
-      setFacultad('');
-    } else {
+      if (response.status === 201) {
+        await Swal.fire({
+          icon: "success",
+          title: "Usuario creado con éxito"
+        });
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        setRut('');
+        setRoles('');
+        setFacultad('');
+      } else if (response.status === 400 && response.data.message === "El rut ingresado posee un usuario") {
+        await showRutDuplicateError();
+      } else {
+        await showAuthError();
+      }
+    } catch (error) {
       await showAuthError();
     }
   };
@@ -109,6 +133,7 @@ const CrearUsuario = () => {
                 type="text"
                 value={rut}
                 onChange={(e) => setRut(e.target.value)}
+                placeholder="Ejemplo: 12345678-9"
                 required
               />
             </div>

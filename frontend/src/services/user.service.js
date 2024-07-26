@@ -1,30 +1,30 @@
 import axios from './root.service';
 
-// const getToken = () => {
-//   return localStorage.getItem('user'); 
-// };
-
 export const crearUsuario = async (data) => {
   try {
-    // const token = getToken();
-    // const config = {
-    //   headers: {
-    //     'Authorization': `Bearer ${token}`
-    //   }
-    // };
-    const dataUser= {
+    const dataUser = {
       username: data.username,
       email: data.email,
       password: data.password,
       rut: data.rut,
       roles: [data.roles],
       facultades: [data.facultad],
-    }
+    };
+
     const response = await axios.post('/users', dataUser);
     return response;
   } catch (error) {
     if (error.response) {
       console.log("Error de respuesta del backend:", error.response);
+
+      // Verifica si el error es debido a un RUT duplicado
+      if (error.response.data && error.response.data.message === "El rut ingresado posee un usuario") {
+        return {
+          status: error.response.status,
+          data: { message: "El rut ingresado posee un usuario" }
+        };
+      }
+
       return error.response;
     } else if (error.request) {
       console.log("Error de solicitud:", error.request);
@@ -35,3 +35,4 @@ export const crearUsuario = async (data) => {
     }
   }
 };
+
