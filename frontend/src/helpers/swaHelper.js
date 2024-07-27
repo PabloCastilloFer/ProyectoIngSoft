@@ -283,3 +283,10 @@ export const showErrorFormTicket = async () => {
         title: "Error al asignar la tarea"
     });
 };
+
+export const showDeleteTicket = async () => {
+  await Toast.fire({
+      icon: "success",
+      title: "Tarea desasignada exitosamente!"
+  });
+};

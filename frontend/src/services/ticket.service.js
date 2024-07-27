@@ -32,7 +32,7 @@ export const updateTicket = async (data, TareaID) => {
                 'Content-Type': 'application/json',
             },
         };
-        const response = await axios.put(`/ticket/task/${TareaID}`, data, config);
+        const response = await axios.put(`/ticket/tarea/${TareaID}`, data, config);
         console.log("Response from server: ", response);
         return response;
     } catch (error) {
@@ -52,9 +52,9 @@ export const getTicket = async (searchValue) => {
     }
 };
 
-export const deleteTicket = async (IDTarea) => {
+export const deleteTicket = async (ticketId) => {
     try {
-        const response = await axios.delete(`/ticket/${IDTarea}`);
+        const response = await axios.delete(`/ticket/${ticketId}`);
         return response;
     } catch (error) {
         console.error('Error en la solicitud:', error);
@@ -64,7 +64,7 @@ export const deleteTicket = async (IDTarea) => {
 
 export const getEmptyTicket = async () => {
     try {
-        const response = await axios.get('/ticket/tasks/empty');
+        const response = await axios.get('/ticket/tareas/NoAsignadas');
         return response.data;
     } catch (error) {
         console.error('Error en la solicitud:', error);
