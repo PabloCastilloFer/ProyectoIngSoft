@@ -6,7 +6,7 @@ import Joi from "joi";
  * @constant {Object}
  */
 export const crearTareaSchema = Joi.object({
-    nombreTarea: Joi.string().label('nombreTarea').required().regex(/^[A-Za-zÁ-Úá-ú\s]+$/u).messages ({
+    nombreTarea: Joi.string().label('nombreTarea').required().regex(/^[A-Za-zÁ-Úá-ú0-9\s]+$/u).messages ({
         "string.empty":"El nombre de la tarea no puede estar vacío.",
         "any.required":"El nombre de la tarea es obligatorio.",
         "string.base":"El nombre de la tarea debe ser de tipo string.",
@@ -43,7 +43,8 @@ export const crearTareaSchema = Joi.object({
     }),
     archivo: Joi.string().label('archivo').optional().allow(null).messages({
         "string.base": "El archivo debe ser de tipo string."
-    })
+    }),
+    userEmail: Joi.string().email().required()
 });
 
 export const fileParamsSchema = Joi.object({

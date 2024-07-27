@@ -2,7 +2,7 @@ import 'bulma/css/bulma.min.css';
 import React, { useEffect, useState } from 'react';
 import { getTareasAsignadas } from '../services/tareaRealizada.service.js';
 import { useNavigate } from 'react-router-dom';
-import Navbar from './Navbar'; // Corrige la ruta de importación
+import Navbar from './navbar.jsx';
 import '../styles/TareasAsignadas.css';  // Importa los estilos
 
 const TareasAsignadas = () => {

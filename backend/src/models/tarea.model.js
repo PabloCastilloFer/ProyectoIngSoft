@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import mongoose from 'mongoose';
 
 const tareaSchema = new Schema({
     nombreTarea: {
@@ -53,11 +54,14 @@ const tareaSchema = new Schema({
         type: String,
         required: false,
     },
-    
     idTarea: {
         type: String,
         required: true,
         unique: true
+    },
+    userEmail: {
+        type: String,
+        required: true,
     },
 },
     {
@@ -68,22 +72,23 @@ const tareaSchema = new Schema({
         }
     });
 
-const generateRandomID = () => {
-    const idLength = 5;
-    const characters = '0123456789';
-    let id = '';
-    for (let i = 0; i < idLength; i++) {
-        id += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return id;
-};
+    export const generateRandomID = () => {
+        const idLength = 10;
+        const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let id = '';
+        for (let i = 0; i < idLength; i++) {
+            id += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return id;
+    };
+    
+    tareaSchema.pre('save', function (next) {
+        if (!this.idTarea) {
+            this.idTarea = generateRandomID();
+        }
+        next();
+    });
 
-tareaSchema.pre('save', function (next) {
-    if (!this.idTarea) {
-        this.idTarea = generateRandomID();
-    }
-    next();
-});
+    const Tarea = mongoose.model('Tarea', tareaSchema);
 
 export default model('tarea', tareaSchema);
-

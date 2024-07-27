@@ -1,12 +1,15 @@
 import React from 'react';
 import '../styles/App.css'; // Asegúrate de importar el archivo CSS
+import Nabvar from '../components/navbar.jsx';
 
 function App() {
   return (
     <div className="page-container">
-      <div className="centered-text">
-        <p className="welcome-message">Aquí podrás completar tus tareas</p>
-      </div>
+      <img
+        src="/UB.jpg"
+        alt="Descripción de la imagen" // Añade un alt para accesibilidad
+      />
+
     </div>
   );
 }

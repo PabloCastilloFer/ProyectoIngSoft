@@ -1,6 +1,6 @@
 import { Router } from "express";
 import multer from 'multer';
-import { createTarea , getTareas , getTarea , updateTarea, updateNewTarea, deleteTareaById, getArchives } from "../controllers/tarea.controller.js";
+import { createTarea , getTareas , getTarea , updateTarea, updateNewTarea, deleteTareaById, getArchives, getTareasUsuario} from "../controllers/tarea.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 import { isSupervisor } from "../middlewares/authorization.middleware.js";
 
@@ -33,14 +33,15 @@ const handleFileSizeLimit = (err, req, res, next) => {
     }
 };
 
+router.use(handleFileSizeLimit); // Aplicar middleware para manejar el error de límite de tamaño de archivo
 router.post('/', isSupervisor,upload.single("archivo"), createTarea);
 router.get('/', isSupervisor, getTareas);
 router.get('/:nombreTarea', isSupervisor, getTarea);
-router.get('/src/upload/:filename', isSupervisor, getArchives);
+router.get('/miTarea', getTareasUsuario);
+router.get('/src/upload/:filename', isSupervisor, getArchives);  //RUTA PARA OBTENER ARCHIVOS
 router.put('/:idTarea', upload.single("archivo"),isSupervisor, updateTarea);
 router.post('/:idTarea', upload.single("archivo"), isSupervisor, updateNewTarea);
 router.delete('/:idTarea', isSupervisor, deleteTareaById);
-router.use(handleFileSizeLimit); // Aplicar middleware para manejar el error de límite de tamaño de archivo
 
 
 export default router;

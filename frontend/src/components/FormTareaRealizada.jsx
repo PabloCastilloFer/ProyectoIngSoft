@@ -1,6 +1,6 @@
 import 'bulma/css/bulma.min.css';
 import { useState, useEffect } from 'react';
-import { showError, showConfirmFormTareaRealizada, showErrorFormTareaRealizada } from '../helpers/swaHelper.js';
+import { showError, showConfirmFormTarea, showErrorFormTarea } from '../helpers/swaHelper.js';
 import { useForm } from 'react-hook-form';
 import { createTareaRealizada, getTareasAsignadas } from '../services/tareaRealizada.service.js';
 import { useParams } from 'react-router-dom';
@@ -52,11 +52,11 @@ export default function FormTareaRealizada() {
 
             const response = await createTareaRealizada(formData, rutUsuario);
             if (response.status === 201) {
-                await showConfirmFormTareaRealizada();
+                await showConfirmFormTarea();
                 setArchivo(null);
                 reset();
             } else {
-                await showErrorFormTareaRealizada();
+                await showErrorFormTarea();
             }
         } catch (error) {
             await showError(error.message || "Error al enviar la respuesta");

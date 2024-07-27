@@ -1,0 +1,206 @@
+/* styles.css */
+/* *, html{
+  height: 100vh;
+  width: 100%;
+} */
+/* Background */
+
+html{
+  width: 100%;
+  height: 100vh;
+}
+
+.containerError{
+  width: 100%;
+  height: 100vh;
+  text-align: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; 
+}
+
+.dildudo{
+  border-radius: 20px;
+  mask-image: linear-gradient(
+    black 96%,
+    transparent
+  );
+  filter: grayscale(100%);
+}
+
+.DildudoNotDead{
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.container-didudo{
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.didudo-text{
+  font-size: 15px;
+  margin-bottom: 0;
+}
+
+.bg-background {
+    background-color: #f8f9fa; /* Ajusta este color según sea necesario */
+  }
+  
+  /* Primary color */
+  .bg-primary {
+    background-color: #007bff; /* Ajusta este color según sea necesario */
+  }
+  
+  .text-primary-foreground {
+    color: #fff; /* Ajusta este color según sea necesario */
+  }
+  
+  /* Text colors */
+  .text-foreground {
+    color: #212529; /* Ajusta este color según sea necesario */
+  }
+  
+  .text-muted-foreground {
+    color: #6c757d; /* Ajusta este color según sea necesario */
+  }
+  
+  /* Flex utilities */
+  .flex {
+    display: flex;
+  }
+  
+  .flex-col {
+    flex-direction: column;
+  }
+  
+  .items-center {
+    align-items: center;
+  }
+  
+  .justify-center {
+    justify-content: center;
+  }
+  
+  
+  /* Margin and padding utilities */
+  .mx-auto {
+    margin-left: auto;
+    margin-right: 350px;
+  }
+  
+  .mb-6 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .mt-4 {
+    margin-top: 1rem;
+  }
+  
+  .px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .py-12 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  
+  .sm\:px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .lg\:px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  
+  /* Font and text utilities */
+  .text-5xl {
+    font-size: 3rem; /* Ajusta según sea necesario */
+  }
+  
+  .text-6xl {
+    font-size: 4rem; /* Ajusta según sea necesario */
+  }
+  
+  .font-bold {
+    font-weight: bold;
+  }
+  
+  .tracking-tight {
+    letter-spacing: -0.05em; /* Ajusta según sea necesario */
+  }
+  
+  .text-lg {
+    font-size: 1.125rem; /* Ajusta según sea necesario */
+  }
+  
+  /* Button styles */
+  .inline-flex {
+    display: inline-flex;
+  }
+  
+  .items-center {
+    align-items: center;
+  }
+  
+  .rounded-md {
+    border-radius: 0.375rem;
+  }
+  
+  .bg-primary {
+    background-color: #007bff;
+  }
+  
+  .px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem; /* Ajusta según sea necesario */
+  }
+  
+  .font-medium {
+    font-weight: 500;
+  }
+  
+  .shadow-sm {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .transition-colors {
+    transition: background-color 0.2s;
+  }
+  
+  .hover\:bg-primary\/90:hover {
+    background-color: rgba(0, 123, 255, 0.9);
+  }
+  
+  .focus\:outline-none:focus {
+    outline: none;
+  }
+  
+  .focus\:ring-2:focus {
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5);
+  }
+  
+  .focus\:ring-primary:focus {
+    box-shadow: 0 0 0 2px #007bff;
+  }
+  
+  .focus\:ring-offset-2:focus {
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5);
+  }
+  

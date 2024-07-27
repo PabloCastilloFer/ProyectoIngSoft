@@ -1,0 +1,105 @@
+.button.is-descargar {
+  background-color: #998f80;
+  border-color: #998f80;
+  color: white;
+}
+
+.button.is-descargar:hover {
+  background-color: darkgoldenrod;
+  border-color: darkgoldenrod;
+}
+
+.button.is-eliminar {
+  background-color: #d64444;
+  border-color: rgb(163, 50, 35);
+  color: white;
+}
+
+.button.is-eliminar:hover {
+  background-color: #a7321e;
+  border-color: #a7321e;
+}
+
+.button.is-actualizar {
+  background-color: #387adf;
+  border-color: #2c63b4;
+  color: white;
+}
+
+.button.is-actualizar:hover {
+  background-color: #1e57ac;
+  border-color: #1e57ac;
+}
+ 
+.button.is-duplicar {
+  background-color: #fba834;
+  border-color: #fba834;
+  color: white;
+}
+
+.button.is-duplicar:hover {
+  background-color: #F08E05;
+  border-color: #F08E05;
+}
+
+.button-download {
+  background-color: #4A90E2;
+  color: #FFFFFF;
+  border: 2px solid #357ABD;
+  padding: 2px 8px;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.button-download:hover {
+  background-color: #357ABD;
+  border-color: #2C6FA3;
+}
+
+.button-download svg {
+  margin-right: 2px;
+  fill: #FFFFFF;
+}
+
+.box-wrapper {
+max-width: 900px;
+margin: 0 auto;
+margin-right: 250px;
+}
+
+.search-input {
+width: 400px;
+margin-right: 250px;
+}
+
+.tarea-box {
+margin-top: 1rem;
+}
+
+.button.is-asignar {
+  background-color: #387adf;
+  border-color: #2c63b4;
+  color: white;
+}
+
+.button.is-asignar:hover {
+  background-color: #1e57ac;
+  border-color: #1e57ac;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.button-container .button {
+  flex: 1;
+  margin: 5px;
+  min-width: 150px; /* Ensure a minimum width for buttons */
+}

@@ -1,39 +1,41 @@
 import 'bulma/css/bulma.min.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { showError , showConfirmFormTarea , CreateQuestion , VolverQuestion } from '../helpers/swaHelper.js';
+import { showError, showConfirmFormTicket, CreatedTicket, VolverQuestion } from '../helpers/swaHelper.js';
 import { useForm } from 'react-hook-form'; 
-import { createTarea } from '../services/tarea.service.js';
-import Navbar from '../components/navbar.jsx';
+import { createTicket } from '../services/ticket.service.js';
+import { useAuth } from '../context/AuthContext.jsx';
+import Navbar from './navbar.jsx';
 
-export default function FormSupervisor() {
+export default function FormTicket() {
     const navigate = useNavigate(); 
 
-    const [archivo, setArchivo] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const jwt = useAuth();
+
+    const userStorage = localStorage.getItem('user');
+    const userDat = JSON.parse(userStorage); 
     
+    const [isLoading, setIsLoading] = useState(false);
     const { register, formState: { errors }, handleSubmit, reset } = useForm();
 
     const onSubmit = async (data) => {
         try {
-            const isConfirmed = await CreateQuestion();
-        
-        if (!isConfirmed) {
-            return;
-        }
+            const isConfirmed = await CreatedTicket();
+            if (!isConfirmed) {
+                return;
+            }
             setIsLoading(true);
             const formData = new FormData();
-            formData.append("nombreTarea", data.nombreTarea);
-            formData.append("descripcionTarea", data.descripcionTarea);
-            formData.append("tipoTarea", data.tipoTarea);
-            formData.append("archivo", archivo);
+            formData.append("TareaID", data.TareaID);
+            formData.append("RutAsignado", data.RutAsignado);
+            formData.append("Inicio", data.Inicio);
+            formData.append("Fin", data.Fin);
             console.log(formData)
 
-            const response = await createTarea(formData);
+            const response = await createTicket(formData);
             console.log(response)
             if (response.status === 201) {
-                await showConfirmFormTarea();
-                setArchivo(null);
+                await showConfirmFormTicket();
                 reset();
             } else if (response.status === 400) {
                 await showError(response.data[0].response.data.message);
@@ -46,10 +48,6 @@ export default function FormSupervisor() {
         } finally {
             setIsLoading(false);
         }
-    };
-
-    const handleArchivoChange = (e) => {
-        setArchivo(e.target.files[0]);
     };
 
     const handleVolver = async (tareaToVolver) => {
@@ -81,10 +79,10 @@ export default function FormSupervisor() {
 
     const containerStyle = {
         display: 'flex',
-        marginTop: '64px', // Ajustar para la altura de la navbar
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight:'250px', 
+        marginRight: '250px', 
+        marginTop: '64px', // Ajustar para la altura de la navbar
     };
 
     const BoxStyle = {
@@ -111,69 +109,67 @@ export default function FormSupervisor() {
             <div style={BoxStyle}>
                 <div style={volverButtonStyle}>
                     <button className="button is-light" onClick={handleVolver}>
-                    <span className="icon is-small">
-                                            <ArrowLeftIcon />
-                                        </span>
-                                        <span>Volver</span>
+                        <span className="icon is-small">
+                            <ArrowLeftIcon />
+                        </span>
+                        <span>Volver</span>
                     </button>
                 </div>
                 <div>
-                    <h2 className="title is-4">Formulario para crear tarea</h2>
-                    <p className="subtitle is-6">Ingresa los detalles de tu nueva tarea</p>
+                    <h2 className="title is-4">Formulario para asignar tarea</h2>
+                    <p className="subtitle is-6">Ingresa los detalles del horario</p>
                     <div className="columns is-centered">
                         <div className="column is-two-thirds">
-                            <form onSubmit={handleSubmit(onSubmit)} autocomplete="off">
+                            <form onSubmit={handleSubmit(onSubmit)}>
                                 <div className="field">
-                                    <label className="label" htmlFor="nombreTarea">Nombre de la tarea:</label>
+                                    <label className="label" htmlFor="TareaID">ID de la Tarea:</label>
                                     <div className="control">
                                         <input
-                                            id="nombreTarea"
+                                            id="TareaID"
                                             type="text"
-                                            placeholder="Ej. Diseñar logotipo"
-                                            className={`input ${errors.nombreTarea ? 'is-danger' : ''}`}
-                                            {...register('nombreTarea', { required: true })}
+                                            placeholder="Ej. 12345"
+                                            className={`input ${errors.TareaID ? 'is-danger' : ''}`}
+                                            {...register('TareaID', { required: true })}
                                         />
                                     </div>
-                                    {errors.nombreTarea && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.tareaID && <p className="help is-danger">Este campo es obligatorio</p>}
                                 </div>
                                 <div className="field">
-                                    <label className="label" htmlFor="tipoTarea">Tipo de tarea:</label>
-                                    <div className="control">
-                                        <div className={`select ${errors.tipoTarea ? 'is-danger' : ''}`}>
-                                            <select
-                                                id="tipoTarea"
-                                                {...register('tipoTarea', { required: true })}
-                                            >
-                                                <option value="">Selecciona un tipo</option>
-                                                <option value="simple">Simple</option>
-                                                <option value="extensa">Extensa</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    {errors.tipoTarea && <p className="help is-danger">Este campo es obligatorio</p>}
-                                </div>
-                                <div className="field">
-                                    <label className="label" htmlFor="descripcionTarea">Descripción de la Tarea:</label>
-                                    <div className="control">
-                                        <textarea
-                                            id="descripcionTarea"
-                                            placeholder="Describe la tarea..."
-                                            className={`textarea ${errors.descripcionTarea ? 'is-danger' : ''}`}
-                                            {...register('descripcionTarea', { required: true })}
-                                        />
-                                    </div>
-                                    {errors.descripcionTarea && <p className="help is-danger">Este campo es obligatorio</p>}
-                                </div>
-                                <div className="field">
-                                    <label className="label" htmlFor="archivoAdjunto">Archivo Adjunto:</label>
+                                    <label className="label" htmlFor="RutAsignado">RUT Asignado:</label>
                                     <div className="control">
                                         <input
-                                            id="archivoAdjunto"
-                                            type="file"
-                                            className="input"
-                                            onChange={handleArchivoChange}
+                                            id="RutAsignado"
+                                            type="text"
+                                            placeholder="Ej. 12345678-9"
+                                            className={`input ${errors.RutAsignado ? 'is-danger' : ''}`}
+                                            {...register('RutAsignado', { required: true })}
                                         />
                                     </div>
+                                    {errors.rutAsignado && <p className="help is-danger">Este campo es obligatorio</p>}
+                                </div>
+                                <div className="field">
+                                    <label className="label" htmlFor="Inicio">Fecha de Inicio:</label>
+                                    <div className="control">
+                                        <input
+                                            id="Inicio"
+                                            type="datetime-local"
+                                            className={`input ${errors.inicio ? 'is-danger' : ''}`}
+                                            {...register('Inicio', { required: true })}
+                                        />
+                                    </div>
+                                    {errors.inicio && <p className="help is-danger">Este campo es obligatorio</p>}
+                                </div>
+                                <div className="field">
+                                    <label className="label" htmlFor="Fin">Fecha de Fin:</label>
+                                    <div className="control">
+                                        <input
+                                            id="Fin"
+                                            type="datetime-local"
+                                            className={`input ${errors.fin ? 'is-danger' : ''}`}
+                                            {...register('Fin', { required: true })}
+                                        />
+                                    </div>
+                                    {errors.fin && <p className="help is-danger">Este campo es obligatorio</p>}
                                 </div>
                                 <div className="field is-grouped">
                                     <div className="control">
@@ -181,10 +177,10 @@ export default function FormSupervisor() {
                                             className={`button is-link ${isLoading ? 'is-loading' : ''}`}
                                             type="submit"
                                         >
-                                            Guardar Tarea
+                                            Guardar Ticket
                                         </button>
                                     </div>
-                                    {isLoading && <p className="help is-info">Guardando tarea...</p>}
+                                    {isLoading && <p className="help is-info">Guardando ticket...</p>}
                                 </div>
                             </form>
                         </div>

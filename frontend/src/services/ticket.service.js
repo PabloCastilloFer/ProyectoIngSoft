@@ -1,6 +1,6 @@
 import axios from './root.service';
 
-export const createTarea = async (formData, jwt) => {
+export const createTicket = async (formData, jwt) => {
     try {
         console.log("1", formData);
         const config = {
@@ -9,7 +9,7 @@ export const createTarea = async (formData, jwt) => {
                 'Authorization': `Bearer ${jwt}` // Agregar el token JWT al encabezado Authorization
             },
         };
-        const response = await axios.post('/tarea', formData, config);
+        const response = await axios.post('/ticket', formData, config);
         return response;
     } catch (error) {
         if (error.response) {
@@ -25,23 +25,25 @@ export const createTarea = async (formData, jwt) => {
     }
 };
 
-export const updateTarea = async (formData, idTarea) => {
+export const updateTicket = async (data, TareaID) => {
     try {
         const config = {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'application/json',
             },
         };
-        const response = await axios.put(`/tarea/${idTarea}`, formData, config);
+        const response = await axios.put(`/ticket/task/${TareaID}`, data, config);
+        console.log("Response from server: ", response);
         return response;
     } catch (error) {
+        console.error("Error in updateTicket: ", error);
         return { status: 500, data: [error], error: error.message };
     }
 };
 
-export const getTarea = async (searchValue) => {
+export const getTicket = async (searchValue) => {
     try {
-        const response = await axios.get(`/tarea/${searchValue}`);
+        const response = await axios.get(`/ticket/${searchValue}`);
         const data = response.data;
         return [data];
     } catch (error) {
@@ -50,9 +52,9 @@ export const getTarea = async (searchValue) => {
     }
 };
 
-export const deleteTarea = async (idTarea) => {
+export const deleteTicket = async (IDTarea) => {
     try {
-        const response = await axios.delete(`/tarea/${idTarea}`);
+        const response = await axios.delete(`/ticket/${IDTarea}`);
         return response;
     } catch (error) {
         console.error('Error en la solicitud:', error);
@@ -60,17 +62,12 @@ export const deleteTarea = async (idTarea) => {
     }
 };
 
-export const duplicarTarea = async (formData, idTarea) => {
+export const getEmptyTicket = async () => {
     try {
-        const config = {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
-        };
-        const response = await axios.post(`/tarea/${idTarea}`, formData, config);
-        return response;
+        const response = await axios.get('/ticket/tasks/empty');
+        return response.data;
     } catch (error) {
         console.error('Error en la solicitud:', error);
-        return { status: 500, data: [error], error: error.message };
+        return { status: 500, data: [], error: error.message };
     }
 };

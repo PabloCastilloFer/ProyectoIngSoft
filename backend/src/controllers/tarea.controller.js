@@ -1,7 +1,14 @@
 import tarea from '../models/tarea.model.js';
+import user from '../models/user.model.js';
 import { HOST, PORT } from '../config/configEnv.js';
-import { crearTareaSchema } from '../schema/tarea.schema.js';
+import { crearTareaSchema , fileParamsSchema } from '../schema/tarea.schema.js';
 import { v4 as uuidv4 } from 'uuid';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path';
+import fs from 'fs';
+import { generateRandomID } from '../models/tarea.model.js';
+import Counter from '../models/counter.model.js';
 
 export const createTarea = async (req, res) => {
     try {
@@ -12,7 +19,13 @@ export const createTarea = async (req, res) => {
             archivoURL = `http://${HOST}:${PORT}/api/tarea/src/upload/` + archivo;
         }
 
-        const idTarea = uuidv4();
+        const counter = await Counter.findByIdAndUpdate(
+            { _id: 'tareaId' },
+            { $inc: { seq: 1 } },
+            { new: true, upsert: true }
+        );
+
+        const idTarea = counter.seq.toString();
 
         const nuevaTarea = {
             nombreTarea: req.body.nombreTarea,
@@ -20,7 +33,8 @@ export const createTarea = async (req, res) => {
             tipoTarea: req.body.tipoTarea,
             estado: 'nueva',
             idTarea: idTarea,
-            archivo: archivoURL
+            archivo: archivoURL,
+            userEmail: req.email // Asegurarse de que el middleware de autenticación añade el email al request
         };
 
         const { error } = crearTareaSchema.validate(nuevaTarea);
@@ -72,10 +86,8 @@ export const deleteTareaById = async (req, res) => {
 
 export const updateTarea = async (req, res) => {
     try {
-        const idTarea = uuidv4();
-        const tareaActual = req.params.idTarea;
+        const tareaActual = req.params.idTarea; 
         const tareaModificada = await tarea.findOne({ idTarea: tareaActual });
-
         if (!tareaModificada) {
             return res.status(404).json({ message: "Tarea no encontrada" });
         }
@@ -88,8 +100,9 @@ export const updateTarea = async (req, res) => {
             descripcionTarea: req.body.descripcionTarea || tareaModificada.descripcionTarea,
             tipoTarea: req.body.tipoTarea || tareaModificada.tipoTarea,
             estado: 'nueva',
-            archivo: req.file ? URL + archivo : tareaModificada.archivo,
-            idTarea: req.body.idTarea || idTarea
+            archivo: req.file ? URL + archivo : tareaModificada.archivo || tareaModificada.archivo,
+            idTarea: tareaActual,
+            userEmail: req.email
         };
 
         const { error } = crearTareaSchema.validate(updatedTarea);
@@ -125,15 +138,23 @@ export const updateNewTarea = async (req, res) => {
 
         const archivo = req.file ? req.file.filename : tareaOriginal.archivo.split('/').pop();
         const URL = `http://${HOST}:${PORT}/api/tarea/src/upload/`;
-        const idTareaa = uuidv4();
+        
+        const counter = await Counter.findByIdAndUpdate(
+            { _id: 'tareaId' },
+            { $inc: { seq: 1 } },
+            { new: true, upsert: true }
+        );
+
+        const idTareaa = counter.seq.toString();
 
         const nuevaTarea = {
             nombreTarea: req.body.nombreTarea || tareaOriginal.nombreTarea,
             descripcionTarea: req.body.descripcionTarea || tareaOriginal.descripcionTarea,
             tipoTarea: req.body.tipoTarea || tareaOriginal.tipoTarea,
-            estado: req.body.estado || tareaOriginal.estado,
+            estado: 'nueva',
             idTarea: idTareaa,
-            archivo: req.file ? URL + archivo : tareaOriginal.archivo
+            archivo: req.file ? URL + archivo : tareaOriginal.archivo || tareaOriginal.archivo,
+            userEmail: req.email
         };
 
         const { error } = crearTareaSchema.validate(nuevaTarea);
@@ -155,6 +176,8 @@ export const updateNewTarea = async (req, res) => {
 
 export const getArchives = async (req, res) => {
     try {
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = dirname(__filename);
         const { error, value } = fileParamsSchema.validate({ filename: req.params.filename });
 
         if (error) {
@@ -162,19 +185,35 @@ export const getArchives = async (req, res) => {
         }
 
         const filename = value.filename;
-        const file = path.join(__dirname, '..', 'src', 'upload', filename);
+        const filePath = path.join(__dirname, '..', 'upload', filename);
 
-        if (!fs.existsSync(file)) {
+        if (!fs.existsSync(filePath)) {
             return res.status(404).json({ message: 'Archivo no encontrado' });
         }
 
-        res.download(file, (err) => {
+        res.download(filePath, (err) => {
             if (err) {
                 console.error('Error al descargar el archivo:', err);
                 res.status(500).send('Error interno al descargar el archivo');
             }
         });
     } catch (error) {
+        console.error('Error en el controlador:', error);
         res.status(500).json({ message: error.message });
     }
 };
+
+export const getTareasUsuario = async (req, res) => {
+    try {
+        const { email } = req.body; 
+        if (!email) {
+            return res.status(400).json({ message: 'Email no disponible en la solicitud' });
+        }
+
+        const tareas = await tarea.find({ userEmail: email });
+        res.status(200).json(tareas);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+};
+
