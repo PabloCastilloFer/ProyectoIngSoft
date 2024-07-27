@@ -7,6 +7,8 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import path from 'path';
 import fs from 'fs';
+import { generateRandomID } from '../models/tarea.model.js';
+import Counter from '../models/counter.model.js';
 
 export const createTarea = async (req, res) => {
     try {
@@ -17,7 +19,13 @@ export const createTarea = async (req, res) => {
             archivoURL = `http://${HOST}:${PORT}/api/tarea/src/upload/` + archivo;
         }
 
-        const idTarea = uuidv4();
+        const counter = await Counter.findByIdAndUpdate(
+            { _id: 'tareaId' },
+            { $inc: { seq: 1 } },
+            { new: true, upsert: true }
+        );
+
+        const idTarea = counter.seq.toString();
 
         const nuevaTarea = {
             nombreTarea: req.body.nombreTarea,
@@ -130,15 +138,22 @@ export const updateNewTarea = async (req, res) => {
 
         const archivo = req.file ? req.file.filename : tareaOriginal.archivo.split('/').pop();
         const URL = `http://${HOST}:${PORT}/api/tarea/src/upload/`;
-        const idTareaa = uuidv4();
+        
+        const counter = await Counter.findByIdAndUpdate(
+            { _id: 'tareaId' },
+            { $inc: { seq: 1 } },
+            { new: true, upsert: true }
+        );
+
+        const idTareaa = counter.seq.toString();
 
         const nuevaTarea = {
             nombreTarea: req.body.nombreTarea || tareaOriginal.nombreTarea,
             descripcionTarea: req.body.descripcionTarea || tareaOriginal.descripcionTarea,
             tipoTarea: req.body.tipoTarea || tareaOriginal.tipoTarea,
-            estado: req.body.estado || tareaOriginal.estado,
+            estado: 'nueva',
             idTarea: idTareaa,
-            archivo: req.file ? URL + archivo : tareaOriginal.archivo,
+            archivo: req.file ? URL + archivo : tareaOriginal.archivo || tareaOriginal.archivo,
             userEmail: req.email
         };
 
@@ -190,7 +205,7 @@ export const getArchives = async (req, res) => {
 
 export const getTareasUsuario = async (req, res) => {
     try {
-        const { email } = req; // Asegúrate de que el middleware de autenticación añade el email al request
+        const { email } = req.body; 
         if (!email) {
             return res.status(400).json({ message: 'Email no disponible en la solicitud' });
         }
