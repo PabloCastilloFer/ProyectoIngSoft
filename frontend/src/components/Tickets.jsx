@@ -14,16 +14,6 @@ export default function VerTicket() {
     const [filteredTickets, setFilteredTickets] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        axios.get(`/ticket/task/${searchQuery}`)
-            .then((response) => {
-                setTareas(response.data); 
-            })
-            .catch((error) => {
-                console.error('Error al obtener las tareas filtradas:', error);
-            });
-    };
     const handleDeleted = async (ticketToDelete) => {
         const isConfirmed = await DeleteQuestion();
         if (isConfirmed) {
@@ -80,27 +70,34 @@ export default function VerTicket() {
         );
     }
 
-    useEffect(() => {
-    // Obtener todos los tickets al cargar el componente
-    const fetchTickets = async () => {
-        try {
-        const response = await axios.get('/ticket'); // Asegúrate de que la ruta sea correcta
-        setTickets(response.data);
-        } catch (error) {
-        console.error('Error al obtener los tickets', error);
-        }
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     };
 
-    fetchTickets();
+    useEffect(() => {
+        axios.get('/ticket/tareas')
+            .then(response => {
+                setTickets(response.data);
+            })
+            .catch(error => {
+                console.error('There was an error fetching the tickets!', error);
+            });
     }, []);
 
     useEffect(() => {
-    // Filtrar los tickets basados en el término de búsqueda
-    const results = tickets.filter(ticket =>
-        ticket.TareaID.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredTickets(results);
-    }, [searchTerm, tickets]);
+        const allTickets = tickets.flatMap(ticketGroup =>
+            ticketGroup.ticket.map(ticket => ({
+                ...ticket,
+                nombreTarea: ticketGroup.nombreTarea,
+                descripcionTarea: ticketGroup.descripcionTarea
+            }))
+        );
+        setFilteredTickets(
+            allTickets.filter(ticket => 
+                ticket.RutAsignado && ticket.RutAsignado.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+        );
+    }, [searchQuery, tickets]);
 
 const containerStyle = {
     display: 'flex',
@@ -139,54 +136,38 @@ const BoxStyle2 = {
     <div className="has-text-centered">
         <h1 className="title is-2">Tareas asignadas</h1>
         </div>
-        <form onSubmit={handleSearch} className="mb-4">
-                    <div className="field has-addons">
-                        <div className="control is-expanded">
-                            <input
-                                className="input"
-                                type="text"
-                                placeholder="Buscar tarea por ID..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
+        {filteredTickets
+                    .filter(ticket => new Date(ticket.Inicio) > new Date())
+                    .map((ticket, index) => (
+                        <div key={ticket._id} style={BoxStyle2}>
+                        <h2 className="title is-4">{capitalizeFirstLetter(ticket.nombreTarea)}</h2>
+                            <p><strong>Descripción:</strong> {capitalizeFirstLetter(ticket.descripcionTarea)} </p>
+                            <p><strong>Usuario Asignado:</strong> {ticket.RutAsignado}</p>
+                            <p><strong>Inicio:</strong> {new Date(ticket.Inicio).toLocaleString()}</p>
+                            <p><strong>Fin:</strong> {new Date(ticket.Fin).toLocaleString()}</p>
+                            <div className="button-container">
+                                <button
+                                    className="button is-primary is-outlined is-asignar"
+                                    onClick={() => handleEditClick(ticket)}
+                                >
+                                    <span className="icon is-small">
+                                        <UserIcon />
+                                    </span>
+                                    <span>Reasignar</span>
+                                </button>
+                                <button
+                                    className="button is-danger is-outlined is-eliminar"
+                                    onClick={() => handleDeleted(ticket._id)}
+                                >
+                                    <span className="icon is-small">
+                                        <TrashIcon />
+                                    </span>
+                                    <span>Desasignar</span>
+                                </button>
+                            </div>
                         </div>
-                        <div className="control">
-                            <button type="submit" className="button is-info">
-                                Buscar
-                            </button>
-                        </div>
-                    </div>
-                </form>
-        {tickets
-            .filter(ticket => new Date(ticket.Inicio) > new Date())
-            .map((ticket, index) => (
-            <div key={ticket._id} style={BoxStyle2}>
-                <p><strong>Usuario Asignado:</strong> {ticket.RutAsignado}</p>
-                <p><strong>Inicio:</strong> {new Date(ticket.Inicio).toLocaleString()}</p>
-                <p><strong>Fin:</strong> {new Date(ticket.Fin).toLocaleString()}</p>
-                <div className="button-container">
-                <button
-                        className="button is-primary is-outlined is-asignar"
-                        onClick={() => handleEditClick(ticket)}
-                    >
-                        <span className="icon is-small">
-                            <UserIcon />
-                        </span>
-                        <span>Reasignar</span>
-                    </button>
-                    <button
-                            className="button is-danger is-outlined is-eliminar"
-                            onClick={() => handleDeleted(ticket._id)}
-                        >
-                            <span className="icon is-small">
-                            <TrashIcon />
-                            </span>
-                            <span>Desasignar</span>
-                        </button>
-                </div>
+                    ))}
             </div>
-        ))}
         </div>
-    </div>
     );
 };

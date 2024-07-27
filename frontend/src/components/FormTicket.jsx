@@ -31,7 +31,7 @@ export default function FormTicket() {
             formData.append("Inicio", data.Inicio);
             formData.append("Fin", data.Fin);
             console.log(formData)
-
+            console.log(data.TareaID)
             const response = await createTicket(formData);
             console.log(response)
             if (response.status === 201) {

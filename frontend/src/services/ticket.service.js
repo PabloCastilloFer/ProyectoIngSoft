@@ -9,7 +9,7 @@ export const createTicket = async (formData, jwt) => {
                 'Authorization': `Bearer ${jwt}` // Agregar el token JWT al encabezado Authorization
             },
         };
-        const response = await axios.post('/ticket', formData, config);
+        const response = await axios.post('/ticket/', formData, config);
         return response;
     } catch (error) {
         if (error.response) {
@@ -65,6 +65,16 @@ export const deleteTicket = async (ticketId) => {
 export const getEmptyTicket = async () => {
     try {
         const response = await axios.get('/ticket/tareas/NoAsignadas');
+        return response.data;
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        return { status: 500, data: [], error: error.message };
+    }
+};
+
+export const getAsignadoTicket = async () => {
+    try {
+        const response = await axios.get('/ticket/tareas');
         return response.data;
     } catch (error) {
         console.error('Error en la solicitud:', error);
