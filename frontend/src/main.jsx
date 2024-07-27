@@ -17,7 +17,7 @@ import UpdateTarea  from './routes/UpdateTareaRoute.jsx';
 import FromTicket from './routes/FormTicketRoutes.jsx';
 import CrearFacultad from './routes/CrearFacultad.jsx';
 import CrearUsuario from './routes/CrearUsuario.jsx';
-import ComentarioRoute from './routes/ComentarioRoute.jsx';
+import AgregarComentario from './routes/comentarioRoute.jsx';
 import DuplicarTarea from './routes/DuplicarTareaRoute.jsx';
 
 const router = createBrowserRouter([
@@ -85,8 +85,8 @@ const router = createBrowserRouter([
     element: <CrearUsuario />,
   },
   {
-    path: '/comentarios',
-    element: <ComentarioRoute />, // Añade la nueva ruta
+    path: '/agregarComentario', // Agregar la nueva ruta
+    element: <AgregarComentario />, // Componente para agregar comentarios
   },
   {
     path: '/tarea/duplicar',

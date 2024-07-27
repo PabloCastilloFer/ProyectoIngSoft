@@ -1,5 +1,5 @@
 import React from 'react';
-import AgregarComentario from '../components/AgregarComentario'; // Asegúrate de que la ruta sea correcta
+import AgregarComentario from '../components/AgregarComentario';
 
 const ComentarioRoute = () => {
   return (

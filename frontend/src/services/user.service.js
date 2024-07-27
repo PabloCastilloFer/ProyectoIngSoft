@@ -35,4 +35,13 @@ export const crearUsuario = async (data) => {
     }
   }
 };
-
+export const getEmpleados = async () => {
+  try {
+    const response = await axios.get('/users'); // Asegúrate de que esta ruta está definida en tu backend
+    console.log('Respuesta de getEmpleados:', response);
+    return response.data;
+  } catch (error) {
+    console.log('Error al obtener empleados:', error);
+    throw error;
+  }
+};

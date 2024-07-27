@@ -69,7 +69,7 @@ const Navbar = () => {
               <li data-icon=">" onClick={() => handleNavigation('/generarPDF')}>
                 <span>Generar PDF</span>
               </li>
-              <li data-icon=">" onClick={() => handleNavigation('/comentarios')}>
+              <li data-icon=">" onClick={() => handleNavigation('/Agregarcomentario')}>
                 <span>Agregar Comentario</span>
               </li>
             </ul>
