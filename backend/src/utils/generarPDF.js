@@ -8,6 +8,7 @@ import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { fileURLToPath } from 'url';
+import { obtenerComentarios } from '../controllers/comentario.controller.js';
 
 async function dataUser() {
   try {
