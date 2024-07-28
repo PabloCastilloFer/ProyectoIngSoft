@@ -17,11 +17,13 @@ const TareasAsignadas = () => {
   const fetchTareas = async () => {
     try {
       const response = await getTareasAsignadas(rutUsuario);
-      console.log(response);
-      if (Array.isArray(response)) {
+      if (response.status === 404) {
+        setError(response.message);
+        setTareas([]);
+      } else if (Array.isArray(response)) {
         setTareas(response);
+        setError(null);
       } else {
-        console.error('La respuesta de la API no es una matriz:', response);
         setError('La respuesta de la API no es válida');
         setTareas([]);
       }
@@ -49,13 +51,9 @@ const TareasAsignadas = () => {
     tarea.nombreTarea.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   const containerStyle = {
     display: 'flex',
-    marginRight:'300px',
+    marginRight: '300px',
     marginTop: '64px', // Ajustar para la altura de la navbar
     justifyContent: 'center',
     alignItems: 'center',
@@ -103,7 +101,9 @@ const TareasAsignadas = () => {
             />
           </div>
         </div>
-        {filteredTareas.length === 0 ? (
+        {error ? (
+          <p>{error}</p>
+        ) : filteredTareas.length === 0 ? (
           <p>No hay tareas asignadas.</p>
         ) : (
           filteredTareas.map((tarea) => (
@@ -112,9 +112,11 @@ const TareasAsignadas = () => {
               <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
               <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
               <p><strong>Estado:</strong> {tarea.estadoTarea}</p>
-              <p><strong>ID:</strong> {tarea.idTarea}</p>
-              <p>
-                <strong>Archivo adjunto:</strong> {tarea.archivo ? (
+              <p><strong>Inicio:</strong> {tarea.inicio}</p>
+              <p><strong>Fin:</strong> {tarea.fin}</p>
+              <div>
+                <p><strong>Archivo adjunto:</strong></p>
+                {tarea.archivo ? (
                   <div className="download-container">
                     <span>{tarea.archivo}</span>
                     <a 
@@ -125,8 +127,10 @@ const TareasAsignadas = () => {
                       DESCARGAR
                     </a>
                   </div>
-                ) : 'No hay archivo adjunto'}
-              </p>
+                ) : (
+                  <span>No hay archivo adjunto</span>
+                )}
+              </div>
               <div className="buttons">
                 <button 
                   className="button is-primary" 

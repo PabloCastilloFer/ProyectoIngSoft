@@ -6,12 +6,8 @@ import {
   getTareasIncompletas,
   getTareasNoRealizadas,
 } from '../services/tareaRealizada.service.js';
-import axios from 'axios';
-
-
 import Navbar from '../components/navbar';
 import '../styles/Generico.css';  // Importa los estilos
-import { formToJSON } from 'axios';
 
 const TareasRealizadas = () => {
   const [tareas, setTareas] = useState([]);
@@ -41,6 +37,7 @@ const TareasRealizadas = () => {
       console.log('Response from API:', response);
       if (Array.isArray(response)) {
         setTareas(response);
+        setError(null); // Limpiar cualquier error previo
         console.log('Tasks set in state:', response);
       } else {
         console.error('La respuesta de la API no es una matriz:', response);
@@ -53,20 +50,6 @@ const TareasRealizadas = () => {
       setTareas([]);
     }
   };
-  useEffect(() => {
-    fetchData();
-}, []);
-
-  const fetchData = () => {
-    axios.get('/tarea')
-        .then((response) => {
-            setTareas(response.data);
-            console.log( response.data);
-        })
-        .catch((error) => {
-            console.error('Error al obtener las tareas:', error);
-        });
-};
 
   useEffect(() => {
     console.log('Fetching tasks with filter:', filtro);
@@ -139,12 +122,13 @@ const TareasRealizadas = () => {
           <p>No hay tareas para mostrar.</p>
         ) : (
           tareas.map((tarea, index) => (
-            <div key={`${tarea.idTarea}-${index}`} style={BoxStyle2}>
-              <h2 className="title is-4">{tarea.nombreTarea}</h2>
-              <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
-              <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
-              <p><strong>Estado:</strong> {tarea.estadoTarea}</p>
-              <p><strong>ID:</strong> {tarea.idTarea}</p>
+            <div key={`${tarea.id}-${index}`} style={BoxStyle2}>
+              <h2 className="title is-4">{tarea.tarea?.nombreTarea || 'Nombre no disponible'}</h2>
+              <p><strong>Tipo:</strong> {tarea.tarea?.tipoTarea || 'Tipo no disponible'}</p>
+              <p><strong>Descripción:</strong> {tarea.tarea?.descripcionTarea || 'Descripción no disponible'}</p>
+              <p><strong>Estado:</strong> {tarea.estado}</p>
+              <p><strong>Inicio:</strong> {tarea.ticket?.inicio ? new Date(tarea.ticket.inicio).toLocaleString() : 'Fecha no disponible'}</p>
+              <p><strong>Fin:</strong> {tarea.ticket?.fin ? new Date(tarea.ticket.fin).toLocaleString() : 'Fecha no disponible'}</p>
               <div>
                 <strong>Archivo adjunto:</strong> {tarea.archivoAdjunto ? (
                   <div className="download-container">

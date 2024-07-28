@@ -1,3 +1,4 @@
+// FormTareaRealizada.jsx
 import 'bulma/css/bulma.min.css';
 import { useState, useEffect } from 'react';
 import { showError, showConfirmFormTarea, showErrorFormTarea } from '../helpers/swaHelper.js';
@@ -8,7 +9,6 @@ import '../styles/FormTareaRealizada.css';
 import Navbar from '../components/navbar';
 
 export default function FormTareaRealizada() {
-
     const { id: tareaId } = useParams();
     const user = JSON.parse(localStorage.getItem('user'));
     const rutUsuario = user.rut;
@@ -56,10 +56,10 @@ export default function FormTareaRealizada() {
                 setArchivo(null);
                 reset();
             } else {
-                await showErrorFormTarea();
+                await showErrorFormTarea(response.data.message);
             }
         } catch (error) {
-            await showError(error.message || "Error al enviar la respuesta");
+            await showErrorFormTarea(error.message || "Error al enviar la respuesta");
         } finally {
             setIsLoading(false);
         }
