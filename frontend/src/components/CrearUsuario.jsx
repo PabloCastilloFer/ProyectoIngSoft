@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { crearUsuario } from '../services/user.service';
-import Navbar from '../components/Navbar.jsx';
+import Navbar from '../components/navbar.jsx';
 import '../styles/Generico.css';
 import {showUsernameError,showEmailError,showPasswordError,showPasswordLengthError,showRutError,showRutDuplicateError,showRoleError,showFacultyError,showAuthError} from '../helpers/swaHelper.js';
 

@@ -75,6 +75,9 @@ const Navbar = () => {
               <li data-icon=">" onClick={() => handleNavigation('/Agregarcomentario')}>
                 <span>Agregar Comentario</span>
               </li>
+              <li data-icon=">" onClick={() => handleNavigation('/comentarios')}>
+                <span>Ver Comentarios</span>
+              </li>
             </ul>
           )}
           <li data-icon="📃" onClick={() => handleNavigation('/tareas-asignadas')}>

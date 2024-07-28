@@ -18,14 +18,19 @@ const AgregarComentario = () => {
       console.log('Empleado encontrado:', empleadoEncontrado);
       if (empleadoEncontrado) {
         setEmpleado(empleadoEncontrado);
+        const comentariosEmpleado = await obtenerComentariosPorRut(rutAsignado);
+        console.log('Comentarios encontrados:', comentariosEmpleado);
+        setComentarios(comentariosEmpleado);
         setError('');
       } else {
         setEmpleado(null);
+        setComentarios([]);
         setError('Empleado no encontrado o no tiene rol de empleado');
       }
     } catch (error) {
       console.log('Error al obtener empleado:', error);
       setEmpleado(null);
+      setComentarios([]);
       setError('Error al obtener empleado');
     }
   };

@@ -11,7 +11,7 @@ export const agregarComentario = async (data) => {
 };
 export const obtenerComentariosPorRut = async (rutAsignado) => {
   try {
-    const response = await axios.get(`/comentario/rut/${rutAsignado}`);
+    const response = await axios.get(`/comentario/${rutAsignado}`);
     return response.data;
   } catch (error) {
     console.log('Error al obtener comentarios:', error);
