@@ -134,7 +134,7 @@ async function findUserByRut(req, res) {
     const rut = req.params.rut; // Extrae el RUT de los parámetros de la ruta
     console.log(`Buscando usuario con RUT: ${rut}`); // Agregar console.log aquí
 
-    const user = await User.findOne({ rut: rut }).exec(); // Busca el usuario por RUT
+    const user = await User.findOne({ rut: rut }).populate('roles').exec();
     console.log("Resultado de la búsqueda:", user); // Agregar console.log aquí
 
     if (user) {
