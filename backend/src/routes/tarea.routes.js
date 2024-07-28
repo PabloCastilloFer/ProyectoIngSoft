@@ -37,7 +37,7 @@ router.use(handleFileSizeLimit); // Aplicar middleware para manejar el error de 
 router.post('/', isSupervisor,upload.single("archivo"), createTarea);
 router.get('/', isSupervisor, getTareas);
 router.get('/:nombreTarea', isSupervisor, getTarea);
-router.get('/miTarea', getTareasUsuario);
+router.get('/mi-tarea/:email', isSupervisor ,getTareasUsuario);
 router.get('/src/upload/:filename', isSupervisor, getArchives);  //RUTA PARA OBTENER ARCHIVOS
 router.put('/:idTarea', upload.single("archivo"),isSupervisor, updateTarea);
 router.post('/:idTarea', upload.single("archivo"), isSupervisor, updateNewTarea);
