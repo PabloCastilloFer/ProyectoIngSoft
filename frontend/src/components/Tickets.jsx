@@ -89,12 +89,16 @@ export default function VerTicket() {
             ticketGroup.ticket.map(ticket => ({
                 ...ticket,
                 nombreTarea: ticketGroup.nombreTarea,
-                descripcionTarea: ticketGroup.descripcionTarea
+                descripcionTarea: ticketGroup.descripcionTarea,
+                userEmail: ticketGroup.userEmail // Asegúrate de que userEmail viene de ticketGroup
             }))
         );
+        const userEmail = JSON.parse(localStorage.getItem('user')).email;
         setFilteredTickets(
             allTickets.filter(ticket => 
-                ticket.RutAsignado && ticket.RutAsignado.toLowerCase().includes(searchQuery.toLowerCase())
+                ticket.RutAsignado && 
+                ticket.RutAsignado.toLowerCase().includes(searchQuery.toLowerCase()) &&
+                ticket.userEmail === userEmail // Filtra por el email del usuario logueado
             )
         );
     }, [searchQuery, tickets]);

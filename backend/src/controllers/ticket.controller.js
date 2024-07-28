@@ -3,7 +3,6 @@ import Tarea from '../models/tarea.model.js';
 import Usuario from '../models/user.model.js';
 import sgMail from "@sendgrid/mail";
 import { API_KEY } from "../config/configEnv.js";
-import User from "../models/user.model.js";
 
 // Función para validar si una fecha está dentro de los días laborables y el horario de trabajo
 function isValidDate(date) {

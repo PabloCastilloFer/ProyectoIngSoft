@@ -1,15 +1,15 @@
 import axios from './root.service';
 
-export const createTicket = async (formData, jwt) => {
+export const createTicket = async (FormData, jwt) => {
     try {
 
         const config = {
             headers: {
-                'Content-Type': 'multipart/form-data',
-                // Agregar el token JWT al encabezado Authorization
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwt}` // Agregar el token JWT al encabezado Authorization
             },
         };
-        const response = await axios.post('/ticket', formData, config);
+        const response = await axios.post('/ticket', FormData, config);
         return response;
     } catch (error) {
         if (error.response) {
