@@ -26,5 +26,5 @@ router.get("/rut/:rut", usuarioController.findUserByRut);
 router.get("/email/:email", usuarioController.findUsersByFaculty);
 router.get("/rol/:rol", usuarioController.findUsersByRole);
 
-// Exporta el enrutador
+// Exporta el enrutadorcd
 export default router;
