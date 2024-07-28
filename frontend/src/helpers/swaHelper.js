@@ -34,7 +34,7 @@ export const showErrorFormTarea = async () => {
 export const showError = async () => {
     await Toast.fire({
         icon: "info",
-        title: error
+        title: "error"
     });
 };
 
@@ -245,7 +245,6 @@ export const DeleteQuestion = async () => {
     return result.isConfirmed;
   };
 
-
   export const CreatedTicket = async () => {
     const result = await Swal.fire({
       title: "¿Estas seguro de los datos ingresados?",
@@ -297,6 +296,41 @@ export const showDeleteTicket = async () => {
       title: "Tarea desasignada exitosamente!"
   });
 }
+
+export const showFechaInicioError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "La fecha de inicio debe ser en el futuro"
+  });
+};
+
+export const showFechaInicioLaboralError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "La fecha de inicio debe ser en días laborables y horario de trabajo"
+  });
+};
+
+export const showFechaFinError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "La fecha de fin debe ser después de la fecha de inicio"
+  });
+};
+
+export const showFechaFinLaboralError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "La fecha de fin debe ser en días laborables y horario de trabajo"
+  });
+};
+
+export const showRutAsignadoError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "El RUT asignado es obligatorio"
+  });
+};
 
 export const showUsernameError = async () => {
   await Toast.fire({

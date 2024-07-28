@@ -1,10 +1,65 @@
 import 'bulma/css/bulma.min.css';
 import React, { useEffect, useState } from 'react';
 import { useLocation , useNavigate} from 'react-router-dom';
-import { showError, showConfirmFormTicket, CreatedTicket, VolverQuestion } from '../helpers/swaHelper.js';
+import { showError, showConfirmFormTicket, CreatedTicket, VolverQuestion, showFechaInicioError, showFechaInicioLaboralError, showFechaFinError, showFechaFinLaboralError, showRutAsignadoError } from '../helpers/swaHelper.js';
 import { useForm } from 'react-hook-form'; 
 import { createTicket } from '../services/ticket.service.js';
 import Navbar from './navbar.jsx';
+
+const isValidDate = (date) => {
+    const dayOfWeek = date.getUTCDay();
+    const hour = date.getUTCHours();
+
+    if (dayOfWeek < 1 || dayOfWeek > 5) {
+        return false;
+    }
+
+    if (hour < 8 || hour > 18) {
+        return false;
+    }
+
+    return true;
+};
+
+const validateForm = (data) => {
+    const { TareaID, Inicio, Fin, RutAsignado } = data;
+
+    if (!TareaID) {
+        showTareaError();
+        return false;
+    }
+
+    const inicio = new Date(Inicio);
+    const fin = new Date(Fin);
+    const now = new Date();
+
+    if (inicio <= now) {
+        showFechaInicioError();
+        return false;
+    }
+
+    if (!isValidDate(inicio)) {
+        showFechaInicioLaboralError();
+        return false;
+    }
+
+    if (fin <= inicio) {
+        showFechaFinError();
+        return false;
+    }
+
+    if (!isValidDate(fin)) {
+        showFechaFinLaboralError();
+        return false;
+    }
+
+    if (!RutAsignado) {
+        showRutAsignadoError();
+        return false;
+    }
+
+    return true;
+};
 
 const FormTicket = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -43,6 +98,13 @@ const FormTicket = () => {
 
             console.log("FormData contenido:", Array.from(formData.entries())); // Agrega esto para verificar el contenido de FormData
 
+            // Convertir formData a un objeto simple para validar
+            const formDataObject = Object.fromEntries(formData.entries());
+            if (!validateForm(formDataObject)) {
+                setIsLoading(false);
+                return;
+            }
+
             const response = await createTicket(formData);
             if (response.status === 201) {
                 await showConfirmFormTicket();
@@ -57,6 +119,7 @@ const FormTicket = () => {
             setIsLoading(false);
         }
     };
+    
     
     const handleVolver = async (tareaToVolver) => {
         const isConfirmed = await VolverQuestion();

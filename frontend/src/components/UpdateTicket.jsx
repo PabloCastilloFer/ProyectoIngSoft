@@ -3,7 +3,62 @@ import { useForm } from 'react-hook-form';
 import Navbar from '../components/navbar.jsx';
 import { updateTicket } from '../services/ticket.service.js';
 import { useLocation , useNavigate} from 'react-router-dom';
-import { UpdatedTicket , VolverQuestion} from '../helpers/swaHelper.js'; // Asegúrate de importar UpdateQuestion
+import { showError, showConfirmFormTicket, CreatedTicket, VolverQuestion, showFechaInicioError, showFechaInicioLaboralError, showFechaFinError, showFechaFinLaboralError, showRutAsignadoError, UpdatedTicket } from '../helpers/swaHelper.js';
+
+const isValidDate = (date) => {
+    const dayOfWeek = date.getUTCDay();
+    const hour = date.getUTCHours();
+
+    if (dayOfWeek < 1 || dayOfWeek > 5) {
+        return false;
+    }
+
+    if (hour < 8 || hour > 18) {
+        return false;
+    }
+
+    return true;
+};
+
+const validateForm = (data) => {
+    const { TareaID, Inicio, Fin, RutAsignado } = data;
+
+    if (!TareaID) {
+        showTareaError();
+        return false;
+    }
+
+    const inicio = new Date(Inicio);
+    const fin = new Date(Fin);
+    const now = new Date();
+
+    if (inicio <= now) {
+        showFechaInicioError();
+        return false;
+    }
+
+    if (!isValidDate(inicio)) {
+        showFechaInicioLaboralError();
+        return false;
+    }
+
+    if (fin <= inicio) {
+        showFechaFinError();
+        return false;
+    }
+
+    if (!isValidDate(fin)) {
+        showFechaFinLaboralError();
+        return false;
+    }
+
+    if (!RutAsignado) {
+        showRutAsignadoError();
+        return false;
+    }
+
+    return true;
+};
 
 const EditarTicket = ({ initialData }) => {
     const navigate = useNavigate();
@@ -15,35 +70,43 @@ const EditarTicket = ({ initialData }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const onSubmit = async (data) => {
-        // Solicita confirmación antes de continuar
-        const isConfirmed = await UpdatedTicket();
-        
-        if (!isConfirmed) {
-            // Si el usuario cancela, no hace nada
-            return;
-        }
-
-        setIsLoading(true);
-        const formData = new FormData();
-        formData.append('TareaID', ticket.TareaID);
-        formData.append('RutAsignado', data.RutAsignado);
-        formData.append('Inicio', data.Inicio);
-        formData.append('Fin', data.Fin);
-
         try {
+            const isConfirmed = await CreatedTicket();
+
+            if (!isConfirmed) {
+                return;
+            }
+            setIsLoading(true);
+            const formData = new FormData();
+            formData.append("TareaID", ticket.TareaID);
+            formData.append("RutAsignado", data.RutAsignado);
+            formData.append("Inicio", data.Inicio);
+            formData.append("Fin", data.Fin);
+
             console.log("FormData contenido:", Array.from(formData.entries())); // Agrega esto para verificar el contenido de FormData
-            const response = await updateTicket(formData, ticket.TareaID);
+
+            // Convertir formData a un objeto simple para validar
+            const formDataObject = Object.fromEntries(formData.entries());
+            if (!validateForm(formDataObject)) {
+                setIsLoading(false);
+                return;
+            }
+
+            const response = await updateTicket(formData);
             if (response.status === 200) {
+                await showConfirmFormTicket();
                 navigate(-1);
-            } else {
-                alert('Error al actualizar la asignacion');
+            } else if (response.status === 400 || response.status === 500) {
+                await showError(response.data.message);
             }
         } catch (error) {
-            alert('Ocurrió un error al actualizar la asignacion');
+            console.error("Error:", error);
+            showError("Ha ocurrido un error al actualizar el ticket.");
         } finally {
             setIsLoading(false);
         }
     };
+
 
 const handleVolver = async (tareaToVolver) => {
     const isConfirmed = await VolverQuestion();
