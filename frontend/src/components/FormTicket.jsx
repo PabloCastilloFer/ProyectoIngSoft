@@ -8,12 +8,9 @@ import { useAuth } from '../context/AuthContext.jsx';
 import Navbar from './navbar.jsx';
 
 export default function FormTicket() {
-    const navigate = useNavigate(); 
-
-    const jwt = useAuth();
-
+    const navigate = useNavigate();
     const userStorage = localStorage.getItem('user');
-    const userDat = JSON.parse(userStorage); 
+    const userDat = JSON.parse(userStorage);
     
     const [isLoading, setIsLoading] = useState(false);
     const { register, formState: { errors }, handleSubmit, reset } = useForm();
@@ -30,26 +27,21 @@ export default function FormTicket() {
             formData.append("RutAsignado", data.RutAsignado);
             formData.append("Inicio", data.Inicio);
             formData.append("Fin", data.Fin);
-            console.log(formData)
-            console.log(data.TareaID)
+            
             const response = await createTicket(formData);
-            console.log(response)
             if (response.status === 201) {
                 await showConfirmFormTicket();
                 reset();
-            } else if (response.status === 400) {
-                await showError(response.data[0].response.data.message);
-            } else if (response.status === 500) {
-                await showError(response.data[0].response.data.message);
+            } else if (response.status === 400 || response.status === 500) {
+                await showError(response.data.message);
             }
-            console.log(response);
         } catch (error) {
-            console.log("Error:", error);
+            console.error("Error:", error);
+            showError("Ha ocurrido un error al crear el ticket.");
         } finally {
             setIsLoading(false);
         }
     };
-
     const handleVolver = async (tareaToVolver) => {
         const isConfirmed = await VolverQuestion();
         if (isConfirmed) {
@@ -122,17 +114,16 @@ export default function FormTicket() {
                         <div className="column is-two-thirds">
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <div className="field">
-                                    <label className="label" htmlFor="TareaID">ID de la Tarea:</label>
+                                    <label className="label" htmlFor="TareaID">ID de Tarea:</label>
                                     <div className="control">
                                         <input
                                             id="TareaID"
                                             type="text"
-                                            placeholder="Ej. 12345"
                                             className={`input ${errors.TareaID ? 'is-danger' : ''}`}
                                             {...register('TareaID', { required: true })}
                                         />
                                     </div>
-                                    {errors.tareaID && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.TareaID && <p className="help is-danger">Este campo es obligatorio</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="RutAsignado">RUT Asignado:</label>
@@ -140,12 +131,11 @@ export default function FormTicket() {
                                         <input
                                             id="RutAsignado"
                                             type="text"
-                                            placeholder="Ej. 12345678-9"
                                             className={`input ${errors.RutAsignado ? 'is-danger' : ''}`}
                                             {...register('RutAsignado', { required: true })}
                                         />
                                     </div>
-                                    {errors.rutAsignado && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.RutAsignado && <p className="help is-danger">Este campo es obligatorio</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="Inicio">Fecha de Inicio:</label>
@@ -153,11 +143,11 @@ export default function FormTicket() {
                                         <input
                                             id="Inicio"
                                             type="datetime-local"
-                                            className={`input ${errors.inicio ? 'is-danger' : ''}`}
+                                            className={`input ${errors.Inicio ? 'is-danger' : ''}`}
                                             {...register('Inicio', { required: true })}
                                         />
                                     </div>
-                                    {errors.inicio && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.Inicio && <p className="help is-danger">Este campo es obligatorio</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="Fin">Fecha de Fin:</label>
@@ -165,11 +155,11 @@ export default function FormTicket() {
                                         <input
                                             id="Fin"
                                             type="datetime-local"
-                                            className={`input ${errors.fin ? 'is-danger' : ''}`}
+                                            className={`input ${errors.Fin ? 'is-danger' : ''}`}
                                             {...register('Fin', { required: true })}
                                         />
                                     </div>
-                                    {errors.fin && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.Fin && <p className="help is-danger">Este campo es obligatorio</p>}
                                 </div>
                                 <div className="field is-grouped">
                                     <div className="control">

@@ -15,7 +15,6 @@ const EditarTicket = ({ initialData }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const onSubmit = async (data) => {
-        console.log( ticket.TareaID);
         // Solicita confirmación antes de continuar
         const isConfirmed = await UpdatedTicket();
         
@@ -26,16 +25,16 @@ const EditarTicket = ({ initialData }) => {
 
         setIsLoading(true);
         const formData = new FormData();
-        formData.append('TareaID', data.TareaID);
+        formData.append('TareaID', ticket.TareaID);
         formData.append('RutAsignado', data.RutAsignado);
         formData.append('Inicio', data.Inicio);
         formData.append('Fin', data.Fin);
 
         try {
-            console.log("NOPUEDOMASTOCOCAMBIODECARRERA", formData);
+            console.log("FormData contenido:", Array.from(formData.entries())); // Agrega esto para verificar el contenido de FormData
             const response = await updateTicket(formData, ticket.TareaID);
             if (response.status === 200) {
-                window.location.reload();
+                navigate(-1);
             } else {
                 alert('Error al actualizar la asignacion');
             }

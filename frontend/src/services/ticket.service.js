@@ -2,14 +2,14 @@ import axios from './root.service';
 
 export const createTicket = async (formData, jwt) => {
     try {
-        console.log("1", formData);
+
         const config = {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                'Authorization': `Bearer ${jwt}` // Agregar el token JWT al encabezado Authorization
+                // Agregar el token JWT al encabezado Authorization
             },
         };
-        const response = await axios.post('/ticket/', formData, config);
+        const response = await axios.post('/ticket', formData, config);
         return response;
     } catch (error) {
         if (error.response) {
@@ -33,10 +33,8 @@ export const updateTicket = async (data, TareaID) => {
             },
         };
         const response = await axios.put(`/ticket/tarea/${TareaID}`, data, config);
-        console.log("Response from server: ", response);
         return response;
     } catch (error) {
-        console.error("Error in updateTicket: ", error);
         return { status: 500, data: [error], error: error.message };
     }
 };
