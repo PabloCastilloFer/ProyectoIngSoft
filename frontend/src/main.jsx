@@ -14,6 +14,10 @@ import VerTicket from './routes/verTicket.jsx';
 import TareasRealizadas from './routes/TareasRealizadasRoute.jsx';
 import UpdateTicket from './routes/UpdateTicketRoute.jsx';
 import UpdateTarea  from './routes/UpdateTareaRoute.jsx';
+import FromTicket from './routes/FormTicketRoutes.jsx';
+import CrearFacultad from './routes/CrearFacultad.jsx';
+import CrearUsuario from './routes/CrearUsuario.jsx';
+import AgregarComentario from './routes/comentarioRoute.jsx';
 import FormTicket from './routes/FormTicketRoutes.jsx';
 import DuplicarTarea from './routes/DuplicarTareaRoute.jsx';
 import MisTareas from './routes/MisTareasRoute.jsx';
@@ -75,6 +79,18 @@ const router = createBrowserRouter([
     element: <FormTicket />,
   },
   {
+    path: '/facultades',
+    element: <CrearFacultad />,
+  },
+  {
+    path: '/usuarios',
+    element: <CrearUsuario />,
+  },
+  {
+    path: '/agregarComentario', // Agregar la nueva ruta
+    element: <AgregarComentario />, // Componente para agregar comentarios
+  },
+  {
     path: '/tarea/duplicar',
     element: <DuplicarTarea />,
   },
@@ -89,3 +105,4 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   <RouterProvider router={router} />
 );
+

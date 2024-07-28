@@ -5,6 +5,8 @@ import logo from '../assets/Logo.png';
 
 const Navbar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isUsersMenuOpen, setIsUsersMenuOpen] = useState(false);
+  const [isInformeEmpleadosMenuOpen, setIsInformeEmpleadosMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,7 +15,7 @@ const Navbar = () => {
       setIsCollapsed(JSON.parse(savedState));
     }
   }, []);
-  
+
   const handleToggleSidebar = () => {
     const newState = !isCollapsed;
     setIsCollapsed(newState);
@@ -23,7 +25,15 @@ const Navbar = () => {
   const handleNavigation = (path) => {
     navigate(path);
   };
-  
+
+  const handleUsersMenuToggle = () => {
+    setIsUsersMenuOpen(!isUsersMenuOpen);
+  };
+
+  const handleInformeEmpleadosMenuToggle = () => {
+    setIsInformeEmpleadosMenuOpen(!isInformeEmpleadosMenuOpen);
+  };
+
   const navbarStyle = {
     position: 'fixed',
     right: '0',
@@ -57,6 +67,16 @@ const Navbar = () => {
           <li data-icon="📋" onClick={() => handleNavigation('/generarPDF')}>
             <span>Informe empleados</span>
           </li>
+          {isInformeEmpleadosMenuOpen && (
+            <ul className="submenu">
+              <li data-icon=">" onClick={() => handleNavigation('/generarPDF')}>
+                <span>Generar PDF</span>
+              </li>
+              <li data-icon=">" onClick={() => handleNavigation('/Agregarcomentario')}>
+                <span>Agregar Comentario</span>
+              </li>
+            </ul>
+          )}
           <li data-icon="📃" onClick={() => handleNavigation('/tareas-asignadas')}>
             <span>Ver tareas asignadas</span>
           </li>

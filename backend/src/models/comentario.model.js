@@ -1,36 +1,23 @@
-import { Schema, model } from "mongoose";
-import User from "./user.model.js"; // AsegÃºrate de importar el modelo User correctamente
+import mongoose from 'mongoose';
 
-const comentarioSchema = new Schema(
-  {
-    ticket: {
-      type: String,
-      ref: 'User',
-      required: [true, 'Por favor, ingrese el rut del usuario'],
-      validate: {
-        validator: async function(rutUsuario) {
-          const user = await User.findOne({ rut: rutUsuario });
-          console.log("Rut usuario: ", user)
-          return !!user;
-        },
-        message: 'El rut del usuario ingresado no existe'
-      }
-    },
-    tarea: {
-      type: String,
-      ref: "tarea",
-      required: true,
-    },
-    comentario: {
-      type: String,
-      required: true,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
+const comentarioSchema = new mongoose.Schema({
+  rutAsignado: {
+    type: String,
+    required: true,
+    match: /^[0-9]+[-|‐]{1}[0-9kK]{1}$/,
+    minlength: 9,
+    maxlength: 10
   },
-  { collection: "comentarios", versionKey: false, timestamps: true }
-);
+  comentario: {
+    type: String,
+    required: true
+  },
+  fecha: {
+    type: Date,
+    default: Date.now
+  }
+});
 
-export default model("Comentario", comentarioSchema);
+const Comentario = mongoose.model('Comentario', comentarioSchema);
+
+export default Comentario;

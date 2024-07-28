@@ -9,6 +9,7 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { fileURLToPath } from 'url';
 
+
 async function dataUser() {
   try {
     // Encuentra el rol de empleado
@@ -118,8 +119,9 @@ export async function generatePDF(req, res) {
   for (const user of dataUserResults) {
     const roles = user.roles.map(role => role.name).join(', ') || 'N/A';
     const hoursWorked = await calculateHoursWorkedForUser(user);
-    const { tareasCompletas, tareasIncompletas } = await contarTareasPorEstadoPorEmpleador(user.rut); // Obtener tareas completas e incompletas para el usuario
-    table.rows.push([user.username, user.rut, user.email, roles, hoursWorked, tareasCompletas, tareasIncompletas, '']);
+    const { tareasCompletas, tareasIncompletas } = await contarTareasPorEstadoPorEmpleador(user.rut);
+    const comentarios = dataCommentResults.filter(comentario => comentario.rutAsignado === user.rut).map(comentario => comentario.comentario).join(', ') || 'N/A';
+    table.rows.push([user.username, user.rut, user.email, roles, hoursWorked, tareasCompletas, tareasIncompletas, comentarios]);
   }
 
 
