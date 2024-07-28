@@ -1,0 +1,48 @@
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color:#FBA834;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 20px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10; /* Asegúrate de que este valor sea menor que el de la navbar */
+  }
+  
+ 
+
+ 
+.user-section {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+  }
+  
+  .logout-button {
+    background-color: #fff;
+    color: #387ADF;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 20px;
+  }
+  
+  .logout-button:hover {
+    background-color: #f5f5f5;
+  }
+  

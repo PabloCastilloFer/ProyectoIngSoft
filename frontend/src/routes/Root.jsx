@@ -1,10 +1,8 @@
 import { Outlet } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { logout } from '../services/auth.service';
-import { AuthProvider, useAuth } from '../context/AuthContext';
+import { AuthProvider } from '../context/AuthContext';
 import Navbar from '../components/navbar.jsx';
-import '../styles/Generico.css'; // Asegúrate de importar tu archivo de estilos
-import iuser from '../assets/user.png'; // Asegúrate de importar tu ícono de usuario
+import TopBar from '../components/TopBar.jsx';
+import '../styles/Generico.css'; 
 import '../styles/App.css';
 
 function Root() {
@@ -16,34 +14,17 @@ function Root() {
 }
 
 function PageRoot() {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/auth');
-  };
-
-  const { user } = useAuth();
-
   return (
     <div>
-      <Navbar />
-      <div className="page-container">
-      <img
-        src="/UB.jpg"
-        alt="Descripción de la imagen" // Añade un alt para accesibilidad
-      />
-
-    </div>
-      <div className="user-details-container">
-        <div className="user-info">
-          <div className="user-icon">
-            <img src={iuser} alt="User Icon" style={{ width: '20px', height: '20px' }} />
-          </div>
-          <p>Bienvenido/a</p>
-          <p>{user?.email}</p>
+      <TopBar /> {/* Incluye el componente TopBar */}
+      <div className="main-content" style={{ marginTop: '50px', position: 'relative' }}>
+        <div className="page-container">
+          <img
+            src="/UB.jpg"
+            alt="Descripción de la imagen" 
+          />
         </div>
-        <button onClick={handleLogout}>Cerrar sesión</button>
+        <Navbar /> {/* Asegúrate de que el Navbar esté dentro del main-content */}
       </div>
       <Outlet />
     </div>

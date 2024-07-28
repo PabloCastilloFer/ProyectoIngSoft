@@ -1,4 +1,3 @@
-import 'bulma/css/bulma.min.css';
 import React, { useEffect, useState } from 'react';
 import {
   getTareasRealizadas,
@@ -8,6 +7,7 @@ import {
 } from '../services/tareaRealizada.service.js';
 import Navbar from '../components/navbar';
 import '../styles/Generico.css';  // Importa los estilos
+import '../styles/TareasRealizadas.css'; // Importa los estilos específicos
 
 const TareasRealizadas = () => {
   const [tareas, setTareas] = useState([]);
@@ -61,40 +61,10 @@ const TareasRealizadas = () => {
     setFiltro(e.target.value);
   };
 
-  const containerStyle = {
-    display: 'flex',
-    marginRight: '300px',
-    marginTop: '64px', // Ajustar para la altura de la navbar
-    justifyContent: 'center',
-    alignItems: 'center',
-  };
-
-  const BoxStyle = {
-    alignItems: 'center',
-    paddingTop: '64px', // Ajustar para la altura de la navbar
-    width: '800px',
-    padding: '1rem',
-    borderRadius: '8px',
-    textAlign: 'left',
-    boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#fff',
-  };
-
-  const BoxStyle2 = {
-    alignItems: 'center',
-    paddingTop: '10px', // Ajustar para la altura de la navbar
-    padding: '1rem',
-    borderRadius: '10px',
-    textAlign: 'left',
-    boxShadow: '0 5px 10px rgba(0, 0, 0, 0.2)',
-    backgroundColor: '#fff',
-    marginBottom: '10px',
-  };
-
   return (
-    <div style={containerStyle}>
+    <div className="container">
       <Navbar />
-      <div style={BoxStyle}>
+      <div className="box">
         <div className="has-text-centered">
           <h1 className="title is-2">Tareas Realizadas</h1>
         </div>
@@ -122,7 +92,7 @@ const TareasRealizadas = () => {
           <p>No hay tareas para mostrar.</p>
         ) : (
           tareas.map((tarea, index) => (
-            <div key={`${tarea.id}-${index}`} style={BoxStyle2}>
+            <div key={`${tarea.id}-${index}`} className="task-box">
               <h2 className="title is-4">{tarea.tarea?.nombreTarea || 'Nombre no disponible'}</h2>
               <p><strong>Tipo:</strong> {tarea.tarea?.tipoTarea || 'Tipo no disponible'}</p>
               <p><strong>Descripción:</strong> {tarea.tarea?.descripcionTarea || 'Descripción no disponible'}</p>

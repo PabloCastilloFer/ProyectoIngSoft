@@ -27,9 +27,10 @@ const Navbar = () => {
   const navbarStyle = {
     position: 'fixed',
     right: '0',
-    top: '0',
+    top: '0', // Ajusta el top a 0
     height: '100vh',
     width: '250px',
+    zIndex: 20, // Z-index más alto que el de la top-bar
   };
 
   return (
