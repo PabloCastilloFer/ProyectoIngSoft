@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { agregarComentario } from '../services/comentario.service';
-import { getUserByRut } from '../services/user.service'; // Nueva función para obtener usuario por RUT
-import Navbar from '../components/Navbar.jsx';
+import { getUserByRut, getUsersByRole } from '../services/user.service'; // Nueva función para obtener usuario por RUT
+import Navbar from '../components/navbar.jsx';
 import '../styles/Generico.css';
 import { showRutError } from '../helpers/swaHelper.js';
 
@@ -68,7 +68,7 @@ const AgregarComentario = () => {
           {error && <p className="error">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>RUT Asignado</label>
+              <label>RUT empleado</label>
               <input
                 type="text"
                 value={rutAsignado}
@@ -79,9 +79,10 @@ const AgregarComentario = () => {
             </div>
             {empleado && (
               <div className="form-group">
-                <p><strong>Nombre:</strong> {empleado.username}</p>
-                <p><strong>Email:</strong> {empleado.email}</p>
-              </div>
+              <p><strong>Nombre:</strong> {empleado.username}</p>
+              <p><strong>Email:</strong> {empleado.email}</p>
+              <p><strong>Rol:</strong> {empleado.roles.map(role => role.name).join(', ')}</p>
+            </div>
             )}
             <div className="form-group">
               <label>Comentario</label>
