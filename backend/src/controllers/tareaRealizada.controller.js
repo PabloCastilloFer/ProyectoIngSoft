@@ -6,6 +6,7 @@ import { crearTareaRealizadaSchema } from '../schema/tareaRealizada.schema.js';
 import sgMail from "@sendgrid/mail";
 import { API_KEY } from "../config/configEnv.js";
 
+
 // Crear una nueva tarea realizada
 const crearTareaRealizada = async (req, res) => {
     try {
@@ -102,13 +103,23 @@ const crearTareaRealizada = async (req, res) => {
         };
 
         sgMail.setApiKey(API_KEY);
+
+        // Verificar que el correo del supervisor está definido
+        if (!tarea.userEmail) {
+            console.error('El correo del supervisor no está definido');
+            return;
+        }
+        
+        // Imprimir el correo del supervisor para verificación
+        console.log("Correo del supervisor:", tarea.userEmail);
+        
         const msg = {
-            to: "luis.acuna2101@alumnos.ubiobio.cl",
+            to: tarea.userEmail, // Usar el correo del supervisor almacenado en la tarea
             from: "repondernttareas@gmail.com",
             subject: "Tarea Realizada",
             text: `Aviso de tarea realizada:\nnombre tarea: ${tarea.nombreTarea}\nEstado: ${tareaRealizada.estado}\nComentario: ${tareaRealizada.comentario}`,
         };
-
+        
         sgMail
             .send(msg)
             .then(() => {
@@ -117,7 +128,6 @@ const crearTareaRealizada = async (req, res) => {
             .catch((error) => {
                 console.error('Error al enviar el correo:', error);
             });
-
         res.status(201).json({
             message: 'Tarea realizada creada exitosamente',
             tareaRealizada: response

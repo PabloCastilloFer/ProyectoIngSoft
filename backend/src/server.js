@@ -1,3 +1,5 @@
+"use strict";
+
 // Importa el archivo 'configEnv.js' para cargar las variables de entorno
 import { PORT, HOST } from "./config/configEnv.js";
 // Importa el módulo 'cors' para agregar los cors
@@ -15,41 +17,7 @@ import { setupDB } from "./config/configDB.js";
 // Importa el handler de errores
 import { handleFatalError, handleError } from "./utils/errorHandler.js";
 import { createFacultades, createRoles, createUsers } from "./config/initialSetup.js";
-import cron from 'node-cron'; // Importa cron
-import TareaRealizada from './models/tareaRealizada.model.js'; // Importa el modelo TareaRealizada
-import Ticket from './models/ticket.model.js'; // Importa el modelo Ticket
-
-// Función para marcar tareas no realizadas
-const marcarTareasNoRealizadas = async () => {
-    try {
-        const now = new Date();
-        const tickets = await Ticket.find({ Fin: { $lt: now } });
-
-        for (const ticket of tickets) {
-            const tareaRealizada = await TareaRealizada.findOne({ tarea: ticket.TareaID, ticket: ticket.RutAsignado });
-
-            if (!tareaRealizada) {
-                const nuevaTareaNoRealizada = new TareaRealizada({
-                    tarea: ticket.TareaID,
-                    ticket: ticket.RutAsignado,
-                    estado: 'no realizada',
-                    comentario: 'Tarea no realizada en el tiempo establecido'
-                });
-
-                await nuevaTareaNoRealizada.save();
-                console.log(`Tarea ${ticket.TareaID} marcada como no realizada.`);
-            }
-        }
-    } catch (error) {
-        console.error('Error al marcar tareas no realizadas:', error);
-    }
-};
-
-// Programar tarea para que se ejecute cada minuto (o ajusta según necesites)
-cron.schedule('* * * * *', () => {
-    console.log('Ejecutando tarea programada para marcar tareas no realizadas');
-    marcarTareasNoRealizadas();
-});
+import marcarTareasNoRealizadas from './services/scheduler.service.js'; // Importa la función de tareas programadas
 
 /**
  * Inicia el servidor web
@@ -96,6 +64,9 @@ async function setupAPI() {
     await createFacultades();
     // Inicia la creación del usuario admin y user
     await createUsers();
+
+    // Ejecuta la función de tareas programadas
+    marcarTareasNoRealizadas();
   } catch (err) {
     handleFatalError(err, "/server.js -> setupAPI");
   }

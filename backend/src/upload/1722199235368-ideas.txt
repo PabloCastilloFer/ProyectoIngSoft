@@ -1,0 +1,81 @@
+en crear tareas
+-restriccion de hora que solo se pueda completar en el horario estipulado(listo)
+-cambio de estado(falta)
+
+
+-envio de mensajes 
+-si ya paso la hora , notificar que el empleado no completo la tarea
+-en caso de completaar envia correo 
+
+Buscador 
+
+-Tareas completas
+-Tareas no completas
+-Tareas asignadas
+
+
+Restricciones
+
+-El tema de que se pueda solo responder una vez la tarea asignada(listo)
+-mensajes de errores(añadir mensajes de errores en no se a encontrado tareas"
+en busqueda de tareas 
+- que el estado se modifique solo
+
+Problemas
+
+por que se cada ve que hago una peticion se guarda la imagen, aun que la peticion
+resulte fallida¿?
+-validar multer
+- que solo se muestre lo necesario
+- arreglas parametros en los buscadores
+
+*
+
+
+// routes/tareaRealizada.routes.js
+
+import { Router } from "express";
+import multer from 'multer';
+import { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareaRealizadaPorId } from "../controllers/tareaRealizada.controller.js";
+import authenticationMiddleware from "../middlewares/authentication.middleware.js";
+import { isEmpleado } from "../middlewares/authorization.middleware.js";
+
+const router = Router();
+router.use(authenticationMiddleware);
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './src/upload/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // Validación de que el archivo sea como máximo de 5 MB
+    }
+});
+
+const handleFileSizeLimit = (err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        res.status(400).json({ message: "El tamaño del archivo excede el límite de 5 MB" });
+    } else {
+        next(err);
+    }
+};
+
+// Crear una nueva tarea realizada
+router.post('/', upload.single("archivo"), isEmpleado, crearTareaRealizada);
+
+// Obtener todas las tareas realizadas
+router.get('/', isEmpleado, obtenerTareasRealizadas);
+
+// Obtener una tarea realizada por su ID
+router.get('/:id', isEmpleado, obtenerTareaRealizadaPorId);
+
+router.use(handleFileSizeLimit); // Middleware para manejar el error de límite de tamaño de archivo
+
+export default router;
