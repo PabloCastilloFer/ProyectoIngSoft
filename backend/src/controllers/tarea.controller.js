@@ -205,8 +205,9 @@ export const getArchives = async (req, res) => {
 
 export const getTareasUsuario = async (req, res) => {
     try {
-        const { email } = req.body; 
-        if (!email) {
+        const { email } = req.params;
+        const userEmail = req.params;
+        if (!userEmail) {
             return res.status(400).json({ message: 'Email no disponible en la solicitud' });
         }
 

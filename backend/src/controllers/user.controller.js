@@ -4,7 +4,7 @@ import { respondSuccess, respondError } from "../utils/resHandler.js";
 import UserService from "../services/user.service.js";
 import { userBodySchema, userIdSchema } from "../schema/user.schema.js";
 import { handleError } from "../utils/errorHandler.js";
-
+import User from '../models/user.model.js';
 
 /**
  * Obtiene todos los usuarios
@@ -132,10 +132,16 @@ async function deleteUser(req, res) {
 async function findUserByRut(req, res) {
   try {
     const rut = req.params.rut; // Extrae el RUT de los parámetros de la ruta
-    const user = await User.findOne({ rut: rut }).exec(); // Busca el usuario por RUT
+    console.log(`Buscando usuario con RUT: ${rut}`); // Agregar console.log aquí
+
+    const user = await User.findOne({ rut: rut }).populate('roles').exec();
+    console.log("Resultado de la búsqueda:", user); // Agregar console.log aquí
+
     if (user) {
-      res.status(200).send(user.email); // Envía el correo electrónico del usuario como respuesta
+      console.log("Usuario encontrado:", user); // Agregar console.log aquí
+      res.status(200).send(user); // Envía el correo electrónico del usuario como respuesta
     } else {
+      console.log("Usuario no encontrado"); // Agregar console.log aquí
       res.status(404).send("Usuario no encontrado"); // Envía un mensaje de error si el usuario no se encuentra
     }
   } catch (error) {
@@ -143,6 +149,7 @@ async function findUserByRut(req, res) {
     res.status(500).send("Error interno del servidor"); // Envía un mensaje de error en caso de un error del servidor
   }
 }
+
 
 /**
  * Busca usuarios por su facultad y devuelve una lista de usuarios.

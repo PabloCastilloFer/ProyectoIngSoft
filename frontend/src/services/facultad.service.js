@@ -1,18 +1,17 @@
-import instance from './root.service';
+import axios from './root.service';
 
 // Función para obtener el token del almacenamiento local o cookies
 const getToken = () => {
   return localStorage.getItem('token'); // O cookies.get('token') si estás usando cookies
 };
 
-export const generarPDF = async (data) => {
+export const crearFacultad = async (data) => {
   try {
     const token = getToken();
-    const response = await instance.post('/generatePDF', data, {  // Asegúrate de que la ruta apunte a /api/generatePDF
+    const response = await axios.post('/facultades', data, {
       headers: {
         'Authorization': `Bearer ${token}`
-      },
-      responseType: 'blob',
+      }
     });
     return response;
   } catch (error) {
@@ -27,6 +26,5 @@ export const generarPDF = async (data) => {
 };
 
 export default {
-  generarPDF,
+  crearFacultad,
 };
-
