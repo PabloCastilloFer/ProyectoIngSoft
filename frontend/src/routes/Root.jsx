@@ -16,7 +16,7 @@ function Root() {
 function PageRoot() {
   return (
     <div>
-      <TopBar /> {/* Incluye el componente TopBar */}
+      <TopBar />
       <div className="main-content" style={{ marginTop: '50px', position: 'relative' }}>
         <div className="page-container">
           <img
@@ -24,7 +24,7 @@ function PageRoot() {
             alt="Descripción de la imagen" 
           />
         </div>
-        <Navbar /> {/* Asegúrate de que el Navbar esté dentro del main-content */}
+        <Navbar />
       </div>
       <Outlet />
     </div>
