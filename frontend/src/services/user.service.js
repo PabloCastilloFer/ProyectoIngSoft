@@ -35,13 +35,26 @@ export const crearUsuario = async (data) => {
     }
   }
 };
-export const getEmpleados = async () => {
+
+export const getUserByRut = async (rut) => {
   try {
-    const response = await axios.get('/users'); // Asegúrate de que esta ruta está definida en tu backend
-    console.log('Respuesta de getEmpleados:', response);
+    const response = await axios.get(`/users/rut/${rut}`);
+    console.log('Usuario obtenido por RUT:', response.data);
     return response.data;
   } catch (error) {
-    console.log('Error al obtener empleados:', error);
+    console.log('Error al obtener usuario por RUT:', error);
+    throw error;
+  }
+};
+
+// Otras funciones existentes
+export const getUsersByRole = async (role) => {
+  try {
+    const response = await axios.get(`/users/rol/${role}`);
+    console.log('Usuarios obtenidos por rol:', response.data);
+    return response.data;
+  } catch (error) {
+    console.log('Error al obtener usuarios por rol:', error);
     throw error;
   }
 };

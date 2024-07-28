@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { agregarComentario } from '../services/comentario.service';
-import { getEmpleados } from '../services/user.service';
+import { getUserByRut } from '../services/user.service'; // Nueva función para obtener usuario por RUT
 import Navbar from '../components/Navbar.jsx';
 import '../styles/Generico.css';
 import { showRutError } from '../helpers/swaHelper.js';
@@ -8,27 +8,33 @@ import { showRutError } from '../helpers/swaHelper.js';
 const AgregarComentario = () => {
   const [rutAsignado, setRutAsignado] = useState('');
   const [comentario, setComentario] = useState('');
-  const [empleados, setEmpleados] = useState([]);
+  const [empleado, setEmpleado] = useState(null);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchEmpleados = async () => {
-      try {
-        console.log("Fetching empleados...");
-        const empleados = await getEmpleados();
-        console.log("Empleados obtenidos:", empleados);
-        setEmpleados(empleados);
-      } catch (error) {
-        console.log('Error al obtener empleados:', error);
-        setError('Error al obtener empleados');
+  const handleBuscarEmpleado = async () => {
+    try {
+      console.log('Buscando empleado con RUT:', rutAsignado);
+      const empleadoEncontrado = await getUserByRut(rutAsignado);
+      console.log('Empleado encontrado:', empleadoEncontrado);
+      if (empleadoEncontrado) {
+        setEmpleado(empleadoEncontrado);
+        setError('');
+      } else {
+        setEmpleado(null);
+        setError('Empleado no encontrado o no tiene rol de empleado');
       }
-    };
-    fetchEmpleados();
-  }, []);
+    } catch (error) {
+      console.log('Error al obtener empleado:', error);
+      setEmpleado(null);
+      setError('Error al obtener empleado');
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError(null);
+
+    console.log('Enviando comentario:', { rutAsignado, comentario });
 
     if (!rutAsignado) {
       await showRutError();
@@ -46,6 +52,7 @@ const AgregarComentario = () => {
       alert('Comentario agregado con éxito');
       setRutAsignado('');
       setComentario('');
+      setEmpleado(null);
     } catch (error) {
       console.log('Error al agregar comentario:', error);
       setError('Error al agregar comentario');
@@ -62,19 +69,20 @@ const AgregarComentario = () => {
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label>RUT Asignado</label>
-              <select
+              <input
+                type="text"
                 value={rutAsignado}
                 onChange={(e) => setRutAsignado(e.target.value)}
                 required
-              >
-                <option value="">Seleccione un empleado</option>
-                {empleados.map((empleado) => (
-                  <option key={empleado.rut} value={empleado.rut}>
-                    {empleado.username} - {empleado.rut}
-                  </option>
-                ))}
-              </select>
+              />
+              <button type="button" onClick={handleBuscarEmpleado} className="btn btn-secondary">Buscar Empleado</button>
             </div>
+            {empleado && (
+              <div className="form-group">
+                <p><strong>Nombre:</strong> {empleado.username}</p>
+                <p><strong>Email:</strong> {empleado.email}</p>
+              </div>
+            )}
             <div className="form-group">
               <label>Comentario</label>
               <textarea
