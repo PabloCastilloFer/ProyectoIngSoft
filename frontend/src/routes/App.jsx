@@ -5,7 +5,6 @@ import Nabvar from '../components/navbar.jsx';
 function App() {
   return (
     <div className="page-container">
-      <Nabvar />
       <img
         src="/UB.jpg"
         alt="Descripción de la imagen" // Añade un alt para accesibilidad

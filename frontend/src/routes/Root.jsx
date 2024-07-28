@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from '../context/AuthContext';
 import Navbar from '../components/navbar.jsx';
 import '../styles/Generico.css'; // Asegúrate de importar tu archivo de estilos
 import iuser from '../assets/user.png'; // Asegúrate de importar tu ícono de usuario
+import '../styles/App.css';
 
 function Root() {
   return (
@@ -26,6 +27,14 @@ function PageRoot() {
 
   return (
     <div>
+      <Navbar />
+      <div className="page-container">
+      <img
+        src="/UB.jpg"
+        alt="Descripción de la imagen" // Añade un alt para accesibilidad
+      />
+
+    </div>
       <div className="user-details-container">
         <div className="user-info">
           <div className="user-icon">

@@ -59,3 +59,18 @@ export const deleteTarea = async (idTarea) => {
         return { status: 500, data: [error], error: error.message };
     }
 };
+
+export const duplicarTarea = async (formData, idTarea) => {
+    try {
+        const config = {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        };
+        const response = await axios.post(`/tarea/${idTarea}`, formData, config);
+        return response;
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        return { status: 500, data: [error], error: error.message };
+    }
+};
