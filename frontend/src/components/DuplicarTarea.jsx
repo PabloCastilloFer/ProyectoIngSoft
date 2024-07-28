@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import Navbar from '../components/navbar.jsx'; // Asegúrate de que la ruta a Navbar sea correcta
 import { duplicarTarea } from '../services/tarea.service.js'; // Asegúrate de que la ruta al servicio sea correcta
 import { useLocation, useNavigate } from 'react-router-dom';
-import { VolverQuestion } from '../helpers/swaHelper.js';
+import { VolverQuestion , DuplicarQuestion , showConfirmFormTareaDuplicar} from '../helpers/swaHelper.js';
 
 const DuplicarTarea = () => {
     const navigate = useNavigate();
@@ -27,6 +27,10 @@ const DuplicarTarea = () => {
     };
 
     const onSubmit = async (data) => {
+        const isConfirmed = await DuplicarQuestion();
+        if (!isConfirmed) {
+            return;
+        }
         setIsLoading(true);
         try {
             // Crear FormData y agregar los campos
@@ -37,7 +41,7 @@ const DuplicarTarea = () => {
             if (archivo) {
                 formData.append('archivo', archivo);
             }
-
+            await showConfirmFormTareaDuplicar();
             await duplicarTarea(formData, tarea.idTarea); // Pasa el formData y el idTarea
             navigate('/tareas'); // Redirige a la lista de tareas o a donde sea apropiado
         } catch (error) {

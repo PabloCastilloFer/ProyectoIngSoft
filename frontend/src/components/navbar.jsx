@@ -43,22 +43,25 @@ const Navbar = () => {
       </button>
       <ul>
       <li data-icon="📁" onClick={() => handleNavigation('/tarea')}>
-            <span>Crear Tarea</span>
+            <span>Crear tarea</span>
           </li>
           <li data-icon="📄" onClick={() => handleNavigation('/tareas')}>
-            <span>Ver Tareas</span>
+            <span>Ver tareas</span>
+          </li>
+          <li data-icon="📋" onClick={() => handleNavigation('/mis-tareas')}>
+            <span>Mis tareas creadas</span>
           </li>
           <li data-icon="📤" onClick={() => handleNavigation('/verticket')}>
             <span>Tareas asignadas</span>
           </li>
           <li data-icon="📋" onClick={() => handleNavigation('/generarPDF')}>
-            <span>Informe Empleados</span>
+            <span>Informe empleados</span>
           </li>
           <li data-icon="📃" onClick={() => handleNavigation('/tareas-asignadas')}>
-            <span>Ver Tareas Asignadas</span>
+            <span>Ver tareas asignadas</span>
           </li>
           <li data-icon="📍" onClick={() => handleNavigation('/tareas-realizadas')}>
-            <span>Tareas Realizadas</span>
+            <span>Tareas realizadas</span>
           </li>
       </ul>
     </div>

@@ -14,8 +14,9 @@ import VerTicket from './routes/verTicket.jsx';
 import TareasRealizadas from './routes/TareasRealizadasRoute.jsx';
 import UpdateTicket from './routes/UpdateTicketRoute.jsx';
 import UpdateTarea  from './routes/UpdateTareaRoute.jsx';
-import FromTicket from './routes/FormTicketRoutes.jsx';
+import FormTicket from './routes/FormTicketRoutes.jsx';
 import DuplicarTarea from './routes/DuplicarTareaRoute.jsx';
+import MisTareas from './routes/MisTareasRoute.jsx';
 
 const router = createBrowserRouter([
   {
@@ -71,11 +72,15 @@ const router = createBrowserRouter([
   },
   {
     path: '/ticket',
-    element: <FromTicket />,
+    element: <FormTicket />,
   },
   {
     path: '/tarea/duplicar',
     element: <DuplicarTarea />,
+  },
+  {
+    path: '/mis-tareas',
+    element: <MisTareas />,
   }
 
 

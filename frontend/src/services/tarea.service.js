@@ -74,3 +74,13 @@ export const duplicarTarea = async (formData, idTarea) => {
         return { status: 500, data: [error], error: error.message };
     }
 };
+
+export const obtenerMisTareas = async (email) => {
+    try {
+        const response = await axios.get(`/tarea/mi-tarea/${email}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        return { status: 500, data: [error], error: error.message };
+    }
+}
