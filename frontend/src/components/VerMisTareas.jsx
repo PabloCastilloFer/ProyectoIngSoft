@@ -1,32 +1,31 @@
 import 'bulma/css/bulma.min.css';
 import { useState, useEffect } from 'react';
 import { deleteTarea } from '../services/tarea.service.js';
-import { showDeleteTarea, DeleteQuestion , showNoAsignada , showNoEntregada, showNoRevisada , showNoEnRevision } from '../helpers/swaHelper.js';
+import { showDeleteTarea, DeleteQuestion, showNoAsignada, showNoEntregada, showNoRevisada, showNoEnRevision } from '../helpers/swaHelper.js';
 import Navbar from '../components/navbar.jsx';
-import axios from '../services/root.service.js';
 import { useNavigate } from 'react-router-dom';
 import { getArchive } from '../services/archive.service.js';
+import { obtenerMisTareas } from '../services/tarea.service.js'; // Importa el servicio
 import '../styles/Tareas.css';
 
 export default function VerTareas() {
     const navigate = useNavigate();
     const [tareas, setTareas] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const email = JSON.parse(localStorage.getItem('user')).email;
 
     useEffect(() => {
         fetchData();
     }, []);
 
-    const fetchData = () => {
-        axios.get('/tarea')
-            .then((response) => {
-                setTareas(response.data);
-                console.log(response.data);
-            })
-            .catch((error) => {
-                console.error('Error al obtener las tareas:', error);
-            });
+    const fetchData = async () => {
+        try {
+            const userEmail = JSON.parse(localStorage.getItem('user')).email;
+            const response = await obtenerMisTareas(userEmail);
+            setTareas(response);
+            console.log(response);
+        } catch (error) {
+            console.error('Error al obtener las tareas:', error);
+        }
     };
 
     const handleSearchChange = (e) => {
@@ -47,7 +46,7 @@ export default function VerTareas() {
             window.location.reload();
         }
     };
-    
+
     const handleAsignarClick = (tarea) => {
         navigate(`/ticket`, {
             state: { tarea },
@@ -55,15 +54,15 @@ export default function VerTareas() {
     };
 
     const handleEditClick = (tarea) => {
-        if(tarea.estado === 'asignada'){
+        if (tarea.estado === 'asignada') {
             showNoAsignada();
-        }else if(tarea.estado === 'finalizada'){
+        } else if (tarea.estado === 'finalizada') {
             showNoEntregada();
-        }else if(tarea.estado === 'revisada'){
+        } else if (tarea.estado === 'revisada') {
             showNoRevisada();
-        }else if(tarea.estado === 'en revision'){
+        } else if (tarea.estado === 'en revision') {
             showNoEnRevision();
-        }else {
+        } else {
             navigate(`/tarea/modificar`, {
                 state: { tarea },
             });
@@ -174,8 +173,8 @@ export default function VerTareas() {
             </svg>
         );
     }
- 
-      function DownloadIcon(props) {
+
+    function DownloadIcon(props) {
         return (
             <svg
                 {...props}
@@ -198,12 +197,12 @@ export default function VerTareas() {
 
     const containerStyle = {
         display: 'flex',
-        marginRight:'250px',
+        marginRight: '250px',
         marginTop: '64px', // Ajustar para la altura de la navbar
         justifyContent: 'center',
         alignItems: 'center',
     };
-    
+
     const BoxStyle = {
         alignItems: 'center',
         paddingTop: '64px', // Ajustar para la altura de la navbar
@@ -214,7 +213,7 @@ export default function VerTareas() {
         boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)',
         backgroundColor: '#fff',
     };
-    
+
     const BoxStyle2 = {
         alignItems: 'center',
         paddingTop: '10px', // Ajustar para la altura de la navbar
@@ -228,8 +227,8 @@ export default function VerTareas() {
 
     return (
         <div style={containerStyle}>
-        <Navbar />
-        <div style={BoxStyle}>
+            <Navbar />
+            <div style={BoxStyle}>
                 <div className="has-text-centered">
                     <h1 className="title is-2">Lista de tareas</h1>
                 </div>
@@ -275,9 +274,9 @@ export default function VerTareas() {
                                                     onClick={() => handleArchivo(tarea.archivo)}
                                                 >
                                                     <span className="icon is-small">
-                                                <DownloadIcon />
-                                            </span>
-                                            <span>Descargar archivo</span>
+                                                        <DownloadIcon />
+                                                    </span>
+                                                    <span>Descargar archivo</span>
                                                 </button>
                                             </>
                                         ) : (
@@ -285,28 +284,26 @@ export default function VerTareas() {
                                         )}
                                     </p>
                                     <div className="button-container">
-                                    {tarea.estado === 'nueva' && tarea.userEmail === email && (
+                                        {tarea.estado === 'nueva' && (
+                                            <button
+                                                className="button is-primary is-outlined is-asignar"
+                                                onClick={() => handleAsignarClick(tarea)}
+                                            >
+                                                <span className="icon is-small">
+                                                    <UserIcon />
+                                                </span>
+                                                <span>Asignar</span>
+                                            </button>
+                                        )}
                                         <button
-                                            className="button is-primary is-outlined is-asignar"
-                                            onClick={() => handleAsignarClick(tarea)}
-                                        >
-                                            <span className="icon is-small">
-                                                <UserIcon />
-                                            </span>
-                                            <span>Asignar</span>
-                                        </button>
-                                    )}
-                                    {tarea.userEmail === email && (
-                                        <button
-                                            className="button is-primary is-outlined is-asignar"
+                                            className="button is-warning is-outlined is-actualizar"
                                             onClick={() => handleEditClick(tarea)}
                                         >
                                             <span className="icon is-small">
                                                 <PencilIcon />
                                             </span>
-                                            <span>Editar</span>
+                                            <span>Editar tarea</span>
                                         </button>
-                                    )}
                                         <button
                                             className="button is-warning is-outlined is-duplicar"
                                             onClick={() => handleDuplicarClick(tarea)}
@@ -316,17 +313,15 @@ export default function VerTareas() {
                                             </span>
                                             <span>Duplicar</span>
                                         </button>
-                                        {tarea.userEmail === email && (
                                         <button
                                             className="button is-danger is-outlined mr-2 is-eliminar"
-                                            onClick={() => handleDeleted(tarea)}
+                                            onClick={() => handleDeleted(tarea.idTarea)}
                                         >
                                             <span className="icon is-small">
                                                 <TrashIcon />
                                             </span>
                                             <span>Eliminar</span>
                                         </button>
-                                    )}
                                     </div>
                                 </div>
                             </div>

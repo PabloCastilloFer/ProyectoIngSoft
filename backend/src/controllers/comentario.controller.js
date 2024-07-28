@@ -1,82 +1,110 @@
 import Comentario from "../models/comentario.model.js";
-import Tarea from "../models/tarea.model.js";
+import User from "../models/user.model.js";
+import Role from "../models/role.model.js";
+import { handleError } from "../utils/errorHandler.js";
+import { respondSuccess, respondError } from "../utils/resHandler.js";
 
-// Controlador para crear un nuevo comentario
+// Crear un nuevo comentario
 export const crearComentario = async (req, res) => {
   try {
-    const { RutAsignado, tareaId, comentario } = req.body;
+    const { rutAsignado, comentario } = req.body;
 
-    const tareaExistente = await Tarea.findOne({ idTarea: tareaId});
-    if (!tareaExistente) {
-      return res.status(404).json({ mensaje: "La tarea no existe" });
+    // Obtener el rol de empleado
+    const empleadoRole = await Role.findOne({ name: "empleado" });
+
+    if (!empleadoRole) {
+      return res.status(400).json({ mensaje: "El rol de empleado no existe" });
     }
 
-    const nuevoComentario = await Comentario.create({ ticket: RutAsignado, tarea: tareaId, comentario });
-    res.status(201).json({ mensaje: "Comentario creado correctamente", comentario: nuevoComentario });
-  } catch (error) {
-    res.status(400).json({ mensaje: "Hubo un error al crear el comentario", error: error.message });
-  }
-};
-// Controlador para actualizar un comentario por su ID
-export const actualizarComentario = async (req, res) => {
-  const { id } = req.params;
-  const { comentario } = req.body;
-  console.log('ID del comentario a actualizar:', id);
-  console.log('Nuevo comentario:', comentario);
+    // Verificar que el usuario con el RUT asignado exista y tenga rol de empleado
+    const usuario = await User.findOne({ rut: rutAsignado, roles: empleadoRole._id });
 
-  try {
-    const comentarioActualizado = await Comentario.findByIdAndUpdate(id, { comentario }, { new: true });
-    if (!comentarioActualizado) {
-      return res.status(404).json({ mensaje: "Comentario no encontrado" });
+    console.log("Usuario encontrado:", usuario); // Ver qué usuario se encuentra
+
+    if (!usuario) {
+      return res.status(400).json({ mensaje: "El usuario asignado no existe o no tiene rol de empleado" });
     }
-    res.status(200).json({ mensaje: "Comentario actualizado correctamente", comentario: comentarioActualizado });
+
+    const nuevoComentario = new Comentario({
+      rutAsignado,
+      comentario,
+    });
+
+    const comentarioGuardado = await nuevoComentario.save();
+    respondSuccess(req, res, 201, comentarioGuardado);
   } catch (error) {
-    res.status(500).json({ mensaje: "Hubo un error al actualizar el comentario", error: error.message });
+    console.log("Error al crear el comentario:", error); // Ver el error exacto
+    handleError(error, "comentario.controller -> crearComentario");
+    respondError(req, res, 500, "Error al crear el comentario");
   }
 };
 
-
+// Obtener comentarios por RUT asignado
 export const obtenerComentariosPorRut = async (req, res) => {
-  const { RutAsignado } = req.params;
-
-  console.log('RutAsignado recibido:', RutAsignado); // Log para verificar el parámetro
-
   try {
-    const comentarios = await Comentario.find({ ticket: RutAsignado }).populate('tarea');
-    console.log('Comentarios encontrados:', comentarios); // Log de los comentarios obtenidos
+    const { rutAsignado } = req.params;
+    const comentarios = await Comentario.find({ rutAsignado });
 
-    if (comentarios.length === 0) {
-      return res.status(404).json({ mensaje: 'No se encontraron comentarios para este rut' });
+    if (!comentarios) {
+      return respondError(req, res, 404, "No se encontraron comentarios para el RUT asignado");
     }
 
-    res.status(200).json(comentarios);
+    respondSuccess(req, res, 200, comentarios);
   } catch (error) {
-    console.error('Error al obtener los comentarios:', error); // Log del error
-    res.status(500).json({ mensaje: "Hubo un error al obtener los comentarios", error: error.message });
+    handleError(error, "comentario.controller -> obtenerComentariosPorRut");
+    respondError(req, res, 500, "Error al obtener los comentarios");
   }
 };
 
+// Actualizar un comentario por ID
+export const actualizarComentario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { comentario } = req.body;
 
-// Controlador para eliminar un comentario por su ID
+    const comentarioActualizado = await Comentario.findByIdAndUpdate(id, { comentario }, { new: true });
+
+    if (!comentarioActualizado) {
+      return respondError(req, res, 404, "No se encontró el comentario para actualizar");
+    }
+
+    respondSuccess(req, res, 200, comentarioActualizado);
+  } catch (error) {
+    handleError(error, "comentario.controller -> actualizarComentario");
+    respondError(req, res, 500, "Error al actualizar el comentario");
+  }
+};
+
+// Eliminar un comentario por ID
 export const eliminarComentarioPorId = async (req, res) => {
-  const { id } = req.params;
   try {
+    const { id } = req.params;
+
     const comentarioEliminado = await Comentario.findByIdAndDelete(id);
+
     if (!comentarioEliminado) {
-      return res.status(404).json({ mensaje: "Comentario no encontrado" });
+      return respondError(req, res, 404, "No se encontró el comentario para eliminar");
     }
-    res.status(200).json({ mensaje: "Comentario eliminado correctamente" });
+
+    respondSuccess(req, res, 200, comentarioEliminado);
   } catch (error) {
-    res.status(500).json({ mensaje: "Hubo un error al eliminar el comentario", error: error.message });
+    handleError(error, "comentario.controller -> eliminarComentarioPorId");
+    respondError(req, res, 500, "Error al eliminar el comentario");
   }
 };
 
-// Controlador para obtener todos los comentarios
+// Obtener todos los comentarios
 export const obtenerComentarios = async (req, res) => {
   try {
-    const comentarios = await Comentario.find();
-    res.status(200).json(comentarios);
+    const comentarios = await Comentario.find({});
+
+    if (!comentarios) {
+      return respondError(req, res, 404, "No se encontraron comentarios");
+    }
+
+    respondSuccess(req, res, 200, comentarios);
   } catch (error) {
-    res.status(500).json({ mensaje: "Hubo un error al obtener los comentarios", error: error.message });
+    handleError(error, "comentario.controller -> obtenerComentarios");
+    respondError(req, res, 500, "Error al obtener los comentarios");
   }
 };
