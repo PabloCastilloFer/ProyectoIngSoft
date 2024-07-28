@@ -42,12 +42,12 @@ router.get('/:rutUsuario', isEmpleado, obtenerTareasRealizadas);
 router.get('/asignadas/:rutUsuario', isEmpleado, obtenerTareasAsignadas);
 
 // Obtener todas la tareas completadas por un empleado
-router.get('/completadas/:rutUsuario', isEmpleado, obtenerTareasCompletas);
+router.get('/:rutUsuario/completadas', isEmpleado, obtenerTareasCompletas);
 
 // Obtener todas las tareas incompletas por un empleado
-router.get('/incompletas/:rutUsuario', isEmpleado, obtenerTareasIncompletas);
+router.get('/:rutUsuario/incompletas', isEmpleado, obtenerTareasIncompletas);
 
 // Obtener todas las tareas no realizadas por un empleado
-router.get('/noRealizadas/:rutUsuario', isEmpleado, obtenerTareasNoRealizadas);
+router.get('/:rutUsuario/noRealizadas', isEmpleado, obtenerTareasNoRealizadas);
 
 export default router;
