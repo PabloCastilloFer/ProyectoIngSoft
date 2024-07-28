@@ -1,0 +1,22 @@
+
+*cambiar estado cuando esta completada*
+
+*errores de helpers*
+
+centrar ventanas
+
+arreglar descargas tema token
+
+hacer que la lista de tareas realizadas se muestre 
+
+
+mostrar fechas en las tareas asignadas 
+
+GENERAL:
+
+CREAR USUARIOS
+CREAR FACULTADES
+
+
+
+

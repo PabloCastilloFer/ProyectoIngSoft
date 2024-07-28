@@ -4,12 +4,20 @@ import { getTareasAsignadas } from '../services/tareaRealizada.service.js';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './navbar.jsx';
 import '../styles/TareasAsignadas.css';  // Importa los estilos
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload, faTasks } from '@fortawesome/free-solid-svg-icons';
 
 const TareasAsignadas = () => {
   const navigate = useNavigate();
   const [tareas, setTareas] = useState([]);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState(''); // Estado para el campo de búsqueda
+  const [filtroEstado, setFiltroEstado] = useState({
+    asignada: true,
+    entregada: true,
+  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [tareasPerPage] = useState(5);
 
   const user = JSON.parse(localStorage.getItem('user'));
   const rutUsuario = user.rut;
@@ -46,102 +54,126 @@ const TareasAsignadas = () => {
     setSearchQuery(e.target.value);
   };
 
-  // Filtrar tareas según el término de búsqueda
+  const handleFiltroEstadoChange = (e) => {
+    const { name, checked } = e.target;
+    setFiltroEstado((prevFiltroEstado) => ({
+      ...prevFiltroEstado,
+      [name]: checked
+    }));
+  };
+
+  // Filtrar tareas según el término de búsqueda y el estado
   const filteredTareas = tareas.filter(tarea => 
-    tarea.nombreTarea.toLowerCase().includes(searchQuery.toLowerCase())
+    tarea.nombreTarea.toLowerCase().includes(searchQuery.toLowerCase()) &&
+    filtroEstado[tarea.estadoTarea.toLowerCase().replace(' ', '')]
   );
 
-  const containerStyle = {
-    display: 'flex',
-    marginRight: '300px',
-    marginTop: '64px', // Ajustar para la altura de la navbar
-    justifyContent: 'center',
-    alignItems: 'center',
-  };
+  const indexOfLastTarea = currentPage * tareasPerPage;
+  const indexOfFirstTarea = indexOfLastTarea - tareasPerPage;
+  const currentTareas = filteredTareas.slice(indexOfFirstTarea, indexOfLastTarea);
 
-  const BoxStyle = {
-    alignItems: 'center',
-    paddingTop: '64px', // Ajustar para la altura de la navbar
-    width: '800px',
-    padding: '1rem',
-    borderRadius: '8px',
-    textAlign: 'left',
-    boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#fff',
-  };
-
-  const BoxStyle2 = {
-    alignItems: 'center',
-    paddingTop: '10px', // Ajustar para la altura de la navbar
-    padding: '1rem',
-    borderRadius: '10px',
-    textAlign: 'left',
-    boxShadow: '0 5px 10px rgba(0, 0, 0, 0.2)',
-    backgroundColor: '#fff',
-    marginBottom: '10px',
-  };
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div style={containerStyle}>
+    <div className="container-content">
       <Navbar />
-      <div style={BoxStyle}>
-        <div className="has-text-centered">
-          <h1 className="title is-2">Tareas Asignadas</h1>
-        </div>
-        <div className="field">
-          <label className="label" htmlFor="search">Buscar Tareas:</label>
-          <div className="control">
-            <input
-              id="search"
-              type="text"
-              className="input"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              placeholder="Buscar por nombre de tarea..."
-            />
+      <div className="main-content">
+        <div className="box">
+          <div className="has-text-centered">
+            <h1 className="title is-2">Tareas Asignadas</h1>
+          </div>
+          <div className="field">
+            <label className="label" htmlFor="search">Buscar Tareas:</label>
+            <div className="control">
+              <input
+                id="search"
+                type="text"
+                className="input"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Buscar por nombre de tarea..."
+              />
+            </div>
+          </div>
+          <div className="field">
+            <label className="label">Filtrar por estado:</label>
+            <div className="control">
+              <label className="checkbox">
+                <input
+                  type="checkbox"
+                  name="asignada"
+                  checked={filtroEstado.asignada}
+                  onChange={handleFiltroEstadoChange}
+                />
+                Asignada
+              </label>
+              <label className="checkbox" style={{marginLeft: '10px'}}>
+                <input
+                  type="checkbox"
+                  name="entregada"
+                  checked={filtroEstado.entregada}
+                  onChange={handleFiltroEstadoChange}
+                />
+                Entregada
+              </label>
+            </div>
+          </div>
+          {error ? (
+            <p>{error}</p>
+          ) : currentTareas.length === 0 ? (
+            <p>No hay tareas asignadas.</p>
+          ) : (
+            currentTareas.map((tarea) => (
+              <div key={tarea.idTarea} className="task-box">
+                <h2 className="title is-4">{tarea.nombreTarea}</h2>
+                <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
+                <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
+                <p><strong>Estado:</strong> {tarea.estadoTarea}</p>
+                <p><strong>Inicio:</strong> {new Date(tarea.inicio).toLocaleString()}</p>
+                <p><strong>Fin:</strong> {new Date(tarea.fin).toLocaleString()}</p>
+                <div>
+                  <p><strong>Archivo adjunto:</strong></p>
+                  {tarea.archivo ? (
+                    <div className="download-container">
+                      <span>{tarea.archivo}</span>
+                      <a 
+                        href={tarea.archivo} 
+                        className="button is-link is-small ml-2" 
+                        download
+                      >
+                        <FontAwesomeIcon icon={faDownload} /> DESCARGAR
+                      </a>
+                    </div>
+                  ) : (
+                    <span>No hay archivo adjunto</span>
+                  )}
+                </div>
+                <div className="buttons">
+                  <button 
+                    className="button is-primary" 
+                    onClick={() => handleResponderTarea(tarea.idTarea)}
+                  >
+                    <FontAwesomeIcon icon={faTasks} /> RESPONDER TAREA
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+          <div className="pagination is-centered mt-4">
+            <ul className="pagination-list">
+              {Array.from({ length: Math.ceil(filteredTareas.length / tareasPerPage) }, (_, index) => (
+                <li key={index}>
+                  <a
+                    className={`pagination-link ${index + 1 === currentPage ? 'is-current' : ''}`}
+                    onClick={() => paginate(index + 1)}
+                  >
+                    {index + 1}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-        {error ? (
-          <p>{error}</p>
-        ) : filteredTareas.length === 0 ? (
-          <p>No hay tareas asignadas.</p>
-        ) : (
-          filteredTareas.map((tarea) => (
-            <div key={tarea.idTarea} style={BoxStyle2}>
-              <h2 className="title is-4">{tarea.nombreTarea}</h2>
-              <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
-              <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
-              <p><strong>Estado:</strong> {tarea.estadoTarea}</p>
-              <p><strong>Inicio:</strong> {tarea.inicio}</p>
-              <p><strong>Fin:</strong> {tarea.fin}</p>
-              <div>
-                <p><strong>Archivo adjunto:</strong></p>
-                {tarea.archivo ? (
-                  <div className="download-container">
-                    <span>{tarea.archivo}</span>
-                    <a 
-                      href={tarea.archivo} 
-                      className="button is-link is-small ml-2" 
-                      download
-                    >
-                      DESCARGAR
-                    </a>
-                  </div>
-                ) : (
-                  <span>No hay archivo adjunto</span>
-                )}
-              </div>
-              <div className="buttons">
-                <button 
-                  className="button is-primary" 
-                  onClick={() => handleResponderTarea(tarea.idTarea)}
-                >
-                  <span>RESPONDER TAREA</span>
-                </button>
-              </div>
-            </div>
-          ))
-        )}
       </div>
     </div>
   );

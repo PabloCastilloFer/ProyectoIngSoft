@@ -1,4 +1,3 @@
-// FormTareaRealizada.jsx
 import 'bulma/css/bulma.min.css';
 import { useState, useEffect } from 'react';
 import { showError, showConfirmFormTarea, showErrorFormTarea } from '../helpers/swaHelper.js';
@@ -7,6 +6,8 @@ import { createTareaRealizada, getTareasAsignadas } from '../services/tareaReali
 import { useParams } from 'react-router-dom';
 import '../styles/FormTareaRealizada.css';
 import Navbar from '../components/navbar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faComment, faFile, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 export default function FormTareaRealizada() {
     const { id: tareaId } = useParams();
@@ -120,6 +121,7 @@ export default function FormTareaRealizada() {
                                     className={`button is-link ${isLoading ? 'is-loading' : ''}`}
                                     type="submit"
                                 >
+                                    <FontAwesomeIcon icon={faArrowRight} className="icon" />
                                     Enviar Respuesta
                                 </button>
                             </div>

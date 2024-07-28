@@ -2,71 +2,51 @@ import TareaRealizada from '../models/tareaRealizada.model.js';
 import Tarea from '../models/tarea.model.js';
 import Ticket from '../models/ticket.model.js';
 import { HOST, PORT } from '../config/configEnv.js';
-import {crearTareaRealizadaSchema} from '../schema/tareaRealizada.schema.js';
+import { crearTareaRealizadaSchema } from '../schema/tareaRealizada.schema.js';
 import sgMail from "@sendgrid/mail";
 import { API_KEY } from "../config/configEnv.js";
 
 // Crear una nueva tarea realizada
-
 const crearTareaRealizada = async (req, res) => {
     try {
         console.log("Body de la solicitud:", req.body);
         console.log("Archivo adjunto:", req.file);
 
-        // Validar los datos de entrada utilizando el esquema Joi
         const { error, value } = crearTareaRealizadaSchema.validate(req.body);
-        console.log("Resultado de la validación:", { error, value });
-
         if (error) {
             console.log("Error de validación:", error.details[0].message);
             return res.status(400).json({ message: error.details[0].message });
         }
 
-        // Extraer información de la solicitud validada
         const { TareaID, comentario, estado } = value;
-        console.log("Datos extraídos:", { TareaID, comentario, estado });
-
-        // Verificar que todos los campos requeridos estén presentes
         if (!TareaID || !comentario || !estado) {
             console.log("Campos faltantes:", { TareaID, comentario, estado });
             return res.status(400).json({ message: 'Todos los campos son obligatorios: TareaID, comentario, estado' });
         }
 
-        // Verificar si la tarea está asignada al usuario
         const ticket = await Ticket.findOne({ TareaID: TareaID, 'Historial.RutAsignado': req.params.rutUsuario });
-        console.log("Ticket encontrado:", ticket);
-
         if (!ticket) {
             console.log("Tarea no asignada al usuario");
             return res.status(404).json({ message: 'Tarea no asignada al usuario' });
         }
 
-        // Verificar si la tarea está en el historial del ticket y asignada al usuario
         const tareaAsignada = ticket.Historial.find(historial => 
             historial.RutAsignado === req.params.rutUsuario && ticket.TareaID === TareaID
         );
-        console.log("Tarea asignada encontrada en el historial:", tareaAsignada);
-
         if (!tareaAsignada) {
             console.log("Tarea no asignada en el historial del usuario");
             return res.status(404).json({ message: 'Tarea no asignada en el historial del usuario' });
         }
 
-        // Buscar la tarea
         const tarea = await Tarea.findOne({ idTarea: TareaID });
-        console.log("Tarea encontrada:", tarea);
-
         if (!tarea) {
             console.log("Tarea no encontrada");
             return res.status(404).json({ message: 'Tarea no encontrada' });
         }
 
-        // Verificar si se está dentro del plazo
         const now = new Date();
         const inicio = new Date(ticket.Inicio);
         const fin = new Date(ticket.Fin);
-        console.log("Fechas:", { now, inicio, fin });
-
         if (now < inicio) {
             console.log("Aun no comienza la tarea");
             return res.status(400).json({ message: 'Aun no comienza la tarea' });
@@ -76,25 +56,18 @@ const crearTareaRealizada = async (req, res) => {
             return res.status(400).json({ message: 'Tarea después del plazo válido' });
         }
 
-        // Verificar si el estado es válido
         const estadosPermitidos = ['completa', 'incompleta', 'no realizada'];
-        console.log("Estados permitidos:", estadosPermitidos);
-
         if (!estadosPermitidos.includes(estado)) {
             console.log("Estado no válido:", estado);
             return res.status(400).json({ message: 'Estado no válido' });
         }
 
-        // Verificar si la tarea ya fue realizada
         const tareaRealizadaExistente = await TareaRealizada.findOne({ tarea: TareaID, ticket: ticket.RutAsignado });
-        console.log("Tarea realizada existente:", tareaRealizadaExistente);
-
         if (tareaRealizadaExistente) {
             console.log("Ya se ha respondido a esta tarea");
             return res.status(400).json({ message: 'Ya se ha respondido a esta tarea' });
         }
 
-        // Crear nueva tarea realizada
         const URL = `http://${HOST}:${PORT}/api/tareaRealizada/src/upload/`;
         const nuevaTareaRealizada = new TareaRealizada({
             tarea: TareaID,
@@ -103,13 +76,14 @@ const crearTareaRealizada = async (req, res) => {
             estado: estado,
             comentario: comentario
         });
-        console.log("Nueva tarea realizada a guardar:", nuevaTareaRealizada);
 
-        // Guardar la tarea realizada en la base de datos
         const tareaRealizada = await nuevaTareaRealizada.save();
         console.log("Tarea realizada guardada:", tareaRealizada);
 
-        // Construir la respuesta
+        tarea.estado = 'entregada';
+        await tarea.save();
+        console.log("Estado de la tarea actualizado a 'entregada'");
+
         const response = {
             id: tareaRealizada._id,
             tarea: {
@@ -126,9 +100,7 @@ const crearTareaRealizada = async (req, res) => {
             archivoAdjunto: tareaRealizada.archivoAdjunto,
             fechaCreacion: tareaRealizada.createdAt,
         };
-        console.log("Respuesta a enviar:", response);
 
-        // Enviar un correo electrónico al supervisor para notificarle que se ha completado una tarea
         sgMail.setApiKey(API_KEY);
         const msg = {
             to: "luis.acuna2101@alumnos.ubiobio.cl",
@@ -146,34 +118,26 @@ const crearTareaRealizada = async (req, res) => {
                 console.error('Error al enviar el correo:', error);
             });
 
-        // Respuesta exitosa
         res.status(201).json({
             message: 'Tarea realizada creada exitosamente',
             tareaRealizada: response
         });
     } catch (error) {
         console.error("Error al crear tarea realizada: ", error);
-
-        // Si se produce un error, manejarlo adecuadamente
         res.status(500).json({ message: 'Hubo un error al procesar la solicitud' });
     }
 };
 
-
-
-
-
-
 // Obtener todas las tareas realizadas
-
-// Ejemplo de cómo modificar las funciones para asegurar datos consistentes
-
 const obtenerTareasRealizadas = async (req, res) => {
     const rutUsuario = req.params.rutUsuario;
     try {
+        console.log("Obteniendo tareas realizadas para el usuario:", rutUsuario);
+
         const tareasRealizadas = await TareaRealizada.find({ ticket: rutUsuario });
 
         if (tareasRealizadas.length === 0) {
+            console.log("No se encontraron tareas realizadas");
             return res.status(404).json({ message: 'No se encontraron tareas realizadas' });
         }
 
@@ -181,7 +145,7 @@ const obtenerTareasRealizadas = async (req, res) => {
             const tarea = await Tarea.findOne({ idTarea: tareaRealizada.tarea });
             const ticket = await Ticket.findOne({ RutAsignado: tareaRealizada.ticket });
 
-            return {
+            const result = {
                 id: tareaRealizada._id,
                 tarea: {
                     nombreTarea: tarea?.nombreTarea || 'Nombre no disponible',
@@ -197,6 +161,8 @@ const obtenerTareasRealizadas = async (req, res) => {
                 archivoAdjunto: tareaRealizada.archivoAdjunto,
                 fechaCreacion: tareaRealizada.createdAt,
             };
+            console.log("Tarea con detalles:", result);
+            return result;
         });
 
         const tareasConDetalles = await Promise.all(tareasPromises);
@@ -208,40 +174,16 @@ const obtenerTareasRealizadas = async (req, res) => {
     }
 };
 
-
-
-const contarTareasCompletasPorEmpleador = async (rutEmpleador) => {
-    try {
-        console.log("Valor de rutEmpleador:", rutEmpleador);
-        // Traer todas las tareas realizadas por el empleador utilizando el campo 'ticket' que contiene el RUT
-        const tareasRealizadas = await TareaRealizada.find({ ticket: rutEmpleador });
-
-        // Imprimir las tareas realizadas en la consola para verificar
-        console.log("Tareas realizadas:", tareasRealizadas);
-
-        // Contar las tareas incompletas realizadas por el empleador
-        let contador = 0;
-        tareasRealizadas.forEach(tareaRealizada => {
-            console.log("Estado de la tarea realizada:", tareaRealizada.estado); // Imprime el estado de cada tarea realizada
-            if (tareaRealizada.estado === "completa") {
-                contador++;
-            }
-        });
-
-        return contador;
-    } catch (error) {
-        console.error("Error al contar las tareas Completas por el empleador: ", error);
-        throw new Error("Error al contar las tareas Completas por el empleador");
-    }
-};
-
+// Obtener tareas completas
 const obtenerTareasCompletas = async (req, res) => {
     const rutUsuario = req.params.rutUsuario;
     try {
-        // Encontrar todas las tareas completas para el usuario
+        console.log("Obteniendo tareas completas para el usuario:", rutUsuario);
+
         const tareasCompletas = await TareaRealizada.find({ estado: 'completa', ticket: rutUsuario });
 
         if (tareasCompletas.length === 0) {
+            console.log("No se encontraron tareas completas para este usuario");
             return res.status(404).json({ message: 'No se encontraron tareas completas para este usuario' });
         }
 
@@ -258,7 +200,7 @@ const obtenerTareasCompletas = async (req, res) => {
                 return null;
             }
 
-            return {
+            const result = {
                 id: tareaRealizada._id,
                 tarea: {
                     nombreTarea: tarea.nombreTarea,
@@ -274,6 +216,8 @@ const obtenerTareasCompletas = async (req, res) => {
                 archivoAdjunto: tareaRealizada.archivoAdjunto,
                 fechaCreacion: tareaRealizada.createdAt,
             };
+            console.log("Tarea completa con detalles:", result);
+            return result;
         });
 
         const tareasConDetalles = await Promise.all(tareasPromises.filter(tarea => tarea !== null));
@@ -285,15 +229,16 @@ const obtenerTareasCompletas = async (req, res) => {
     }
 };
 
-
 // Obtener tareas incompletas
 const obtenerTareasIncompletas = async (req, res) => {
     const rutUsuario = req.params.rutUsuario;
     try {
-        // Encontrar todas las tareas incompletas para el usuario
+        console.log("Obteniendo tareas incompletas para el usuario:", rutUsuario);
+
         const tareasIncompletas = await TareaRealizada.find({ estado: 'incompleta', ticket: rutUsuario });
 
         if (tareasIncompletas.length === 0) {
+            console.log("No se encontraron tareas incompletas");
             return res.status(404).json({ message: 'No se encontraron tareas incompletas' });
         }
 
@@ -310,7 +255,7 @@ const obtenerTareasIncompletas = async (req, res) => {
                 return null;
             }
 
-            return {
+            const result = {
                 id: tareaRealizada._id,
                 tarea: {
                     nombreTarea: tarea.nombreTarea,
@@ -326,6 +271,8 @@ const obtenerTareasIncompletas = async (req, res) => {
                 archivoAdjunto: tareaRealizada.archivoAdjunto,
                 fechaCreacion: tareaRealizada.createdAt,
             };
+            console.log("Tarea incompleta con detalles:", result);
+            return result;
         });
 
         const tareasConDetalles = await Promise.all(tareasPromises.filter(tarea => tarea !== null));
@@ -337,15 +284,16 @@ const obtenerTareasIncompletas = async (req, res) => {
     }
 };
 
-
 // Obtener tareas no realizadas
 const obtenerTareasNoRealizadas = async (req, res) => {
     const rutUsuario = req.params.rutUsuario;
     try {
-        // Encontrar todas las tareas no realizadas para el usuario
+        console.log("Obteniendo tareas no realizadas para el usuario:", rutUsuario);
+
         const tareasNoRealizadas = await TareaRealizada.find({ estado: 'no realizada', ticket: rutUsuario });
 
         if (tareasNoRealizadas.length === 0) {
+            console.log("No se encontraron tareas no realizadas");
             return res.status(404).json({ message: 'No se encontraron tareas no realizadas' });
         }
 
@@ -362,7 +310,7 @@ const obtenerTareasNoRealizadas = async (req, res) => {
                 return null;
             }
 
-            return {
+            const result = {
                 id: tareaRealizada._id,
                 tarea: {
                     nombreTarea: tarea.nombreTarea,
@@ -378,6 +326,8 @@ const obtenerTareasNoRealizadas = async (req, res) => {
                 archivoAdjunto: tareaRealizada.archivoAdjunto,
                 fechaCreacion: tareaRealizada.createdAt,
             };
+            console.log("Tarea no realizada con detalles:", result);
+            return result;
         });
 
         const tareasConDetalles = await Promise.all(tareasPromises.filter(tarea => tarea !== null));
@@ -388,18 +338,23 @@ const obtenerTareasNoRealizadas = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// Obtener tareas asignadas
 const obtenerTareasAsignadas = async (req, res) => {
-   
     try {
         const rutUsuario = req.params.rutUsuario;
+        console.log("Obteniendo tareas asignadas para el usuario:", rutUsuario);
+
         // Encontrar todos los tickets asignados al usuario
         const ticketsAsignados = await Ticket.find({ RutAsignado: rutUsuario });
         console.log("Tickets asignados:", ticketsAsignados);
+
         // Verificar si se encontraron tickets asignados
         if (ticketsAsignados.length === 0) {
+            console.log("No se encontraron tareas asignadas para este usuario");
             return res.status(404).json({ message: 'No se encontraron tareas asignadas para este usuario' });
         }
-        console.log("Tickets asignados:", ticketsAsignados);
+
         // Crear una lista de promesas para obtener detalles de las tareas asignadas
         const tareasPromises = ticketsAsignados.map(async ticket => {
             // Obtener la tarea asociada al ticket
@@ -408,7 +363,7 @@ const obtenerTareasAsignadas = async (req, res) => {
             if (!tarea) {
                 console.log("No se encontró la tarea con idTarea:", ticket.TareaID);
                 return null;
-            }            
+            }
             return {
                 idTarea: tarea.idTarea,
                 nombreTarea: tarea.nombreTarea,
@@ -417,12 +372,15 @@ const obtenerTareasAsignadas = async (req, res) => {
                 estadoTarea: tarea.estado,
                 archivo: tarea.archivo,
                 fechaCreacionTarea: tarea.created_at,
+                inicio: ticket.Inicio,
+                fin: ticket.Fin
             };
         });
 
         // Esperar a que todas las promesas se resuelvan
-        const tareasAsignadas = await Promise.all(tareasPromises);
+        const tareasAsignadas = await Promise.all(tareasPromises.filter(tarea => tarea !== null));
         console.log("Tareas asignadas:", tareasAsignadas);
+
         // Enviar la respuesta con las tareas asignadas y sus detalles
         res.status(200).json(tareasAsignadas);
     } catch (error) {
@@ -431,4 +389,24 @@ const obtenerTareasAsignadas = async (req, res) => {
     }
 };
 
-export { crearTareaRealizada, obtenerTareasRealizadas,obtenerTareasAsignadas,obtenerTareasCompletas,obtenerTareasIncompletas,obtenerTareasNoRealizadas };
+const contarTareasCompletasPorEmpleador = async (rutEmpleador) => {
+    try {
+        console.log("Valor de rutEmpleador:", rutEmpleador);
+        const tareasRealizadas = await TareaRealizada.find({ ticket: rutEmpleador });
+        console.log("Tareas realizadas:", tareasRealizadas);
+        let contador = 0;
+        tareasRealizadas.forEach(tareaRealizada => {
+            console.log("Estado de la tarea realizada:", tareaRealizada.estado);
+            if (tareaRealizada.estado === "completa") {
+                contador++;
+            }
+        });
+
+        return contador;
+    } catch (error) {
+        console.error("Error al contar las tareas Completas por el empleador: ", error);
+        throw new Error("Error al contar las tareas Completas por el empleador");
+    }
+};
+
+export { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareasAsignadas, obtenerTareasCompletas, obtenerTareasIncompletas, obtenerTareasNoRealizadas };

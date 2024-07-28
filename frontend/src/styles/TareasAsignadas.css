@@ -1,158 +1,93 @@
-/* TareasAsignadas.css */
-
-.container {
+.container-content {
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin: 50px auto;
-  padding-top: 60px; /* Añade espacio para la navbar */
+  transition: margin-right 0.3s;
+  margin-right: 0px; /* Ajusta el margen derecho para el contenido principal */
+}
+
+.container-content.collapsed {
+  margin-right: 80px; /* Ajusta el margen derecho cuando la barra lateral está colapsada */
+  transition: margin-right 0.3s;
+}
+
+.main-content {
+  width: 100%;
+  max-width: 800px;
 }
 
 .box {
-  background-color: #fff;
+  width: 100%;
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 800px;
-  margin-bottom: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Title styles */
-.title {
-  font-size: 24px;
-  font-weight: bold;
+.task-box {
+  border: 2px solid #ddd; /* Borde más marcado */
+  padding: 20px;
   margin-bottom: 20px;
-  text-align: center;
-  color: #333;
+  border-radius: 8px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15); /* Sombreado adicional */
 }
 
-/* Field styles */
 .field {
-  margin-bottom: 15px;
-}
-
-.label {
-  font-weight: bold;
-  color: #333;
-}
-
-.textarea,
-.input,
-.select select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-top: 5px;
-  box-sizing: border-box;
-  background-color: #f9f9f9;
-  color: #333;
-}
-
-.textarea:focus,
-.input:focus,
-.select select:focus {
-  outline: none;
-  border-color: #387ADF;
-  box-shadow: 0 0 5px rgba(56, 122, 223, 0.3);
-}
-
-.select {
-  width: 100%;
-  position: relative;
-}
-
-.select select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  padding-right: 2.5rem;
-  padding-top: 0.8rem;
-  padding-bottom: 0.8rem;
-  height: auto; /* Ajustar la altura */
-  line-height: 1.5;
-  font-size: 1rem; /* Ajustar el tamaño de la fuente */
-}
-
-.select::after {
-  content: '▼';
-  font-size: 0.8em;
-  color: #333;
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-
-.button {
-  background-color: #387ADF;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  text-transform: uppercase;
-  transition: background-color 0.3s ease;
-}
-
-.button:hover {
-  background-color: #50c4ed;
-}
-
-.button.is-loading {
-  cursor: not-allowed;
-}
-
-.help {
-  font-size: 12px;
-  color: #d9534f;
-}
-
-/* Specific styles for TareasAsignadas */
-.ml-2 {
-  margin-left: 0.5rem;
+  margin-bottom: 20px;
 }
 
 .buttons {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  margin-top: 20px;
 }
 
 .button.is-primary {
-  background-color: #387ADF;
+  background-color: #007bff;
+  border-color: #007bff;
   color: #fff;
-  border-color: #387ADF;
 }
 
 .button.is-primary:hover {
-  background-color: #50c4ed;
-  border-color: #50c4ed;
-}
-
-.button.is-link {
-  background-color: #50c4ed;
+  background-color: #0056b3;
+  border-color: #004085;
   color: #fff;
-  padding: 0.2rem 1rem; /* Ajustar el tamaño del botón */
-  font-size: 1rem; /* Ajustar el tamaño de la fuente */
-}
-
-.button.is-link:hover {
-  background-color: #80c4ed;
-}
-
-.button.is-small {
-  padding: 0.3rem 1rem;
-  font-size: 0.875rem;
 }
 
 .download-container {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+  justify-content: space-between; /* Añadir esta línea */
+  flex-wrap: nowrap; /* Asegura que los elementos se mantengan en una sola línea */
+}
+
+.download-container span {
+  margin-right: 10px;
+  word-break: break-all; /* Asegura que el texto largo se ajuste al contenedor */
+}
+
+.button.is-link.is-small.ml-2 {
+  margin-left: 0; /* Elimina el margen izquierdo */
+  white-space: nowrap; /* Asegura que el texto del botón no se divida en varias líneas */
+}
+
+
+.pagination {
+  margin-top: 20px;
+}
+
+.pagination-list {
+  display: flex;
+  justify-content: center;
+}
+
+.pagination-link {
+  padding: 5px 10px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.pagination-link.is-current {
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 4px;
 }
