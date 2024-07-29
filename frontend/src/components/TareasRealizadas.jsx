@@ -11,11 +11,11 @@ import '../styles/TareasRealizadas.css'; // Importa los estilos específicos
 
 const TareasRealizadas = () => {
   const [tareas, setTareas] = useState([]);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(false);
   const [filtro, setFiltro] = useState('todas');
 
   const user = JSON.parse(localStorage.getItem('user'));
-  const rutUsuario = user?.rut; // Obtén el rut del usuario desde el localStorage
+  const rutUsuario = user?.rut;
 
   const fetchTareas = async (filtro) => {
     try {
@@ -34,26 +34,22 @@ const TareasRealizadas = () => {
           response = await getTareasRealizadas(rutUsuario);
           break;
       }
-      console.log('Response from API:', response);
+
       if (Array.isArray(response)) {
-        setTareas(response);
-        setError(null); // Limpiar cualquier error previo
-        console.log('Tasks set in state:', response);
+        const filteredTareas = response.filter(tarea => tarea.tarea); // Filtra tareas que tienen información
+        setTareas(filteredTareas);
+        setError(false);
       } else {
-        console.error('La respuesta de la API no es una matriz:', response);
-        setError('La respuesta de la API no es válida');
+        setError(true);
         setTareas([]);
       }
     } catch (error) {
-      console.error('Error al obtener las tareas:', error);
-      setError('Error al obtener las tareas');
+      setError(true);
       setTareas([]);
     }
   };
 
   useEffect(() => {
-    console.log('Fetching tasks with filter:', filtro);
-    console.log('RUT Usuario:', rutUsuario);
     fetchTareas(filtro);
   }, [filtro]);
 
@@ -61,29 +57,10 @@ const TareasRealizadas = () => {
     setFiltro(e.target.value);
   };
 
-  const containerStyle = {
-    display: 'flex',
-    marginRight:'250px',
-    marginTop: '64px', // Ajustar para la altura de la navbar
-    justifyContent: 'center',
-    alignItems: 'center',
-};
-
-const BoxStyle = {
-    alignItems: 'center',
-    paddingTop: '64px', // Ajustar para la altura de la navbar
-    width: '800px',
-    padding: '1rem',
-    borderRadius: '8px',
-    textAlign: 'left',
-    boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#fff',
-};
-
   return (
-    <div style={containerStyle}>
-    <Navbar />
-    <div style={BoxStyle}>
+    <div style={{ display: 'flex', marginRight: '250px', marginTop: '64px', justifyContent: 'center', alignItems: 'center' }}>
+      <Navbar />
+      <div style={{ alignItems: 'center', paddingTop: '64px', width: '800px', padding: '1rem', borderRadius: '8px', textAlign: 'left', boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)', backgroundColor: '#fff' }}>
         <div className="has-text-centered">
           <h1 className="title is-2">Tareas Realizadas</h1>
         </div>
@@ -106,34 +83,32 @@ const BoxStyle = {
             </div>
           </div>
         </div>
-        {error && <p className="help is-danger">Error: {error}</p>}
-        {tareas.length === 0 ? (
+        {tareas.length === 0 && (
           <p>No hay tareas para mostrar.</p>
-        ) : (
-          tareas.map((tarea, index) => (
-            <div key={`${tarea.id}-${index}`} className="task-box">
-              <h2 className="title is-4">{tarea.tarea?.nombreTarea || 'Nombre no disponible'}</h2>
-              <p><strong>Tipo:</strong> {tarea.tarea?.tipoTarea || 'Tipo no disponible'}</p>
-              <p><strong>Descripción:</strong> {tarea.tarea?.descripcionTarea || 'Descripción no disponible'}</p>
-              <p><strong>Estado:</strong> {tarea.estado}</p>
-              <p><strong>Fecha de creación:</strong> {tarea.fechaCreacion ? new Date(tarea.fechaCreacion).toLocaleString() : 'Fecha no disponible'}</p>
-              <div>
-                <strong>Archivo adjunto:</strong> {tarea.archivoAdjunto ? (
-                  <div className="download-container">
-                    <span>{tarea.archivoAdjunto}</span>
-                    <a
-                      href={tarea.archivoAdjunto}
-                      className="button is-link is-small ml-2"
-                      download
-                    >
-                      DESCARGAR
-                    </a>
-                  </div>
-                ) : 'No hay archivo adjunto'}
-              </div>
-            </div>
-          ))
         )}
+        {tareas.map((tarea, index) => (
+          <div key={`${tarea.id}-${index}`} className="task-box">
+            <h2 className="title is-4">{tarea.tarea?.nombreTarea || 'Nombre no disponible'}</h2>
+            <p><strong>Tipo:</strong> {tarea.tarea?.tipoTarea || 'Tipo no disponible'}</p>
+            <p><strong>Descripción:</strong> {tarea.tarea?.descripcionTarea || 'Descripción no disponible'}</p>
+            <p><strong>Estado:</strong> {tarea.estado}</p>
+            <p><strong>Fecha de creación:</strong> {tarea.fechaCreacion ? new Date(tarea.fechaCreacion).toLocaleString() : 'Fecha no disponible'}</p>
+            <div>
+              <strong>Archivo adjunto:</strong> {tarea.archivoAdjunto ? (
+                <div className="download-container">
+                  <span>{tarea.archivoAdjunto}</span>
+                  <a
+                    href={tarea.archivoAdjunto}
+                    className="button is-link is-small ml-2"
+                    download
+                  >
+                    DESCARGAR
+                  </a>
+                </div>
+              ) : 'No hay archivo adjunto'}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

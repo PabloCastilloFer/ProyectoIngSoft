@@ -6,6 +6,7 @@ import Navbar from './navbar.jsx';
 import '../styles/TareasAsignadas.css';  // Importa los estilos
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faTasks } from '@fortawesome/free-solid-svg-icons';
+import { getArchive } from '../services/archive.service.js'; // Importa el servicio para manejar archivos
 
 const TareasAsignadas = () => {
   const navigate = useNavigate();
@@ -74,15 +75,35 @@ const TareasAsignadas = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const handleArchivo = async (url) => {
+    try {
+      const data = await getArchive(url);
+      const extension = url.split('.').pop().split(/\#|\?/)[0];
+      const blob = new Blob([data], { type: 'application/octet-stream' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `archivo.${extension}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error al manejar el archivo:', error.message);
+    }
+  };
+
+  const getFileName = (url) => {
+    return url.split('/').pop().split('#')[0].split('?')[0];
+  };
+
   const containerStyle = {
     display: 'flex',
     marginRight:'250px',
     marginTop: '64px', // Ajustar para la altura de la navbar
     justifyContent: 'center',
     alignItems: 'center',
-};
+  };
 
-const BoxStyle = {
+  const BoxStyle = {
     alignItems: 'center',
     paddingTop: '64px', // Ajustar para la altura de la navbar
     width: '800px',
@@ -91,12 +112,12 @@ const BoxStyle = {
     textAlign: 'left',
     boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)',
     backgroundColor: '#fff',
-};
+  };
 
-return (
+  return (
     <div style={containerStyle}>
-        <Navbar />
-        <div style={BoxStyle}>
+      <Navbar />
+      <div style={BoxStyle}>
         <div>
           <div className="has-text-centered">
             <h1 className="title is-2">Tareas Asignadas</h1>
@@ -148,20 +169,21 @@ return (
                 <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
                 <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
                 <p><strong>Estado:</strong> {tarea.estadoTarea}</p>
-                <p><strong>Supervisor:</strong> {tarea.supervisorNombre} </p> {/* Mostrar nombre y correo del supervisor */}
-                <div>
-                  <p><strong>Archivo adjunto:</strong></p>
+                <p><strong>Supervisor:</strong> {tarea.supervisorNombre} ({tarea.supervisorEmail})</p>
+                <p><strong>Fecha de Inicio:</strong> {new Date(tarea.inicio).toLocaleString()}</p>
+                <p><strong>Fecha de Fin:</strong> {new Date(tarea.fin).toLocaleString()}</p>
+                <div className="download-container">
+                  <strong>Archivo adjunto:</strong>
                   {tarea.archivo ? (
-                    <div className="download-container">
-                      <span>{tarea.archivo}</span>
-                      <a 
-                        href={tarea.archivo} 
-                        className="button is-link is-small ml-2" 
-                        download
+                    <>
+                      <span className="archivo-nombre">{getFileName(tarea.archivo)}</span>
+                      <button 
+                        className="button is-link is-small button-download" 
+                        onClick={() => handleArchivo(tarea.archivo)}
                       >
                         <FontAwesomeIcon icon={faDownload} /> DESCARGAR
-                      </a>
-                    </div>
+                      </button>
+                    </>
                   ) : (
                     <span>No hay archivo adjunto</span>
                   )}

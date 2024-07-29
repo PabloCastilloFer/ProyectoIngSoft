@@ -21,7 +21,7 @@ import Ticket from './routes/TicketRoutes.jsx';
 import DuplicarTarea from './routes/DuplicarTareaRoute.jsx';
 import MisTareas from './routes/MisTareasRoute.jsx';
 import VerComentarios from './components/VerComentarios.jsx';
-import Contactos from './routes/ContactPageRoute.jsx';
+
 
 const router = createBrowserRouter([
   {
@@ -103,10 +103,6 @@ const router = createBrowserRouter([
     path: '/mis-tareas',
     element: <MisTareas />,
   },
-  {
-    path: '/contactos',
-    element: <Contactos />,
-  }
 
 
 ]);

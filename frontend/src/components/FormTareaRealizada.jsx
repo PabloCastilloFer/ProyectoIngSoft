@@ -1,22 +1,19 @@
 import 'bulma/css/bulma.min.css';
 import { useState, useEffect } from 'react';
-import { showError, showConfirmFormTarea, showErrorFormTarea } from '../helpers/swaHelper.js';
+import { showConfirmFormTarea, showErrorFormTarea } from '../helpers/swaHelper.js';
 import { useForm } from 'react-hook-form';
 import { createTareaRealizada, getTareasAsignadas } from '../services/tareaRealizada.service.js';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import '../styles/FormTareaRealizada.css';
 import Navbar from '../components/navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComment, faFile, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 export default function FormTareaRealizada() {
     const { id: tareaId } = useParams();
+    const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user'));
     const rutUsuario = user?.rut;
-
-    console.log("Tarea ID desde useParams:", tareaId);
-    console.log("Usuario desde localStorage:", user);
-    console.log("RUT del Usuario:", rutUsuario);
 
     const [archivo, setArchivo] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -28,64 +25,51 @@ export default function FormTareaRealizada() {
         const fetchTarea = async () => {
             try {
                 const tareas = await getTareasAsignadas(rutUsuario);
-                console.log("Tareas obtenidas:", tareas);
                 if (tareas && tareas.length > 0) {
                     const tarea = tareas.find(t => t && t.idTarea && t.idTarea === tareaId);
                     if (tarea) {
                         setNombreTarea(tarea.nombreTarea);
                     } else {
                         setNombreTarea('Error al obtener la tarea');
-                        console.error('Tarea no encontrada con idTarea:', tareaId);
                     }
                 } else {
                     setNombreTarea('No hay tareas asignadas para este usuario');
-                    console.error('No se encontraron tareas asignadas para rutUsuario:', rutUsuario);
                 }
             } catch (error) {
-                console.error('Error al obtener la tarea:', error);
                 setNombreTarea('Error al obtener la tarea');
             }
         };
         if (rutUsuario && tareaId) {
             fetchTarea();
         } else {
-            console.error('rutUsuario o tareaId no están definidos:', { rutUsuario, tareaId });
             setNombreTarea('Información de usuario o tarea no disponible');
         }
     }, [tareaId, rutUsuario]);
 
     const onSubmit = async (data) => {
         try {
-            console.log("Datos del formulario:", data);
-            console.log("Archivo adjunto:", archivo);
             setIsLoading(true);
             const formData = new FormData();
-            formData.append("TareaID", tareaId); 
+            formData.append("TareaID", tareaId);
             formData.append("comentario", data.comentario);
             formData.append("estado", data.estado);
             if (archivo) {
                 formData.append("archivoAdjunto", archivo, archivo.name);
             }
 
-            console.log("Datos enviados a createTareaRealizada:", {
-                TareaID: tareaId,
-                comentario: data.comentario,
-                estado: data.estado,
-                archivoAdjunto: archivo
-            });
-
             const response = await createTareaRealizada(formData, rutUsuario);
-            console.log("Respuesta de createTareaRealizada:", response);
             if (response.status === 201) {
                 await showConfirmFormTarea();
                 setArchivo(null);
                 reset();
+                navigate('/tareas-asignadas'); // Redirige a la página de tareas asignadas después de enviar el formulario
             } else {
                 await showErrorFormTarea(response.data.message);
+                navigate('/tareas-asignadas'); // Redirige a la página de tareas asignadas en caso de error
             }
         } catch (error) {
-            console.error('Error al enviar la respuesta:', error);
             await showErrorFormTarea(error.message || "Error al enviar la respuesta");
+            navigate('/tareas-asignadas'); // Redirige a la página de tareas asignadas en caso de error
         } finally {
             setIsLoading(false);
         }
@@ -93,6 +77,10 @@ export default function FormTareaRealizada() {
 
     const handleArchivoChange = (e) => {
         setArchivo(e.target.files[0]);
+    };
+
+    const handleVolver = () => {
+        navigate('/tareas-asignadas'); // Asegúrate de que esta ruta sea correcta
     };
 
     const containerStyle = {
@@ -160,13 +148,23 @@ export default function FormTareaRealizada() {
                             </div>
                         </div>
                         <div className="field is-grouped">
-                            <div className="control">
+                            <div className="control is-expanded">
                                 <button
-                                    className={`button is-link ${isLoading ? 'is-loading' : ''}`}
-                                    type="submit"
+                                    className="button is-light is-small is-fullwidth"
+                                    type="button"
+                                    onClick={handleVolver}
                                 >
-                                    <FontAwesomeIcon icon={faArrowRight} className="icon" />
+                                    <FontAwesomeIcon icon={faArrowLeft} className="icon-left" />
+                                    Volver a Tareas
+                                </button>
+                            </div>
+                            <div className="control is-expanded">
+                                <button
+                                   className={`button is-link is-small is-fullwidth ${isLoading ? 'is-loading' : ''}`}
+                                    type="submit"
+                                > 
                                     Enviar Respuesta
+                                    <FontAwesomeIcon icon={faArrowRight} className="icon-right"/>
                                 </button>
                             </div>
                         </div>

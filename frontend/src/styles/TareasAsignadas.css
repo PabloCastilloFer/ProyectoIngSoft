@@ -45,6 +45,7 @@
   background-color: #007bff;
   border-color: #007bff;
   color: #fff;
+  width: 100%; /* Ancho completo */
 }
 
 .button.is-primary:hover {
@@ -56,37 +57,84 @@
 .download-container {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Añadir esta línea */
+  justify-content: flex-start; /* Alinear a la izquierda */
   flex-wrap: nowrap; /* Asegura que los elementos se mantengan en una sola línea */
 }
 
-.download-container span {
+.download-container strong {
+  margin-right: 10px;
+}
+
+.download-container .archivo-nombre {
   margin-right: 10px;
   word-break: break-all; /* Asegura que el texto largo se ajuste al contenedor */
 }
 
-.button.is-link.is-small.ml-2 {
+.button.is-link.is-small.button-download {
   margin-left: 0; /* Elimina el margen izquierdo */
   white-space: nowrap; /* Asegura que el texto del botón no se divida en varias líneas */
-}
-
-.pagination {
-  margin-top: 20px;
-}
-
-.pagination-list {
-  display: flex;
-  justify-content: center;
-}
-
-.pagination-link {
-  padding: 5px 10px;
-  margin: 0 5px;
+  background-color: #4A90E2;
+  color: #FFFFFF;
+  border: 2px solid #357ABD;
+  padding: 1px 4px;
+  border-radius: 5px;
+  font-size: 15px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
-.pagination-link.is-current {
-  background-color: #007bff;
-  color: #fff;
-  border-radius: 4px;
+.button.is-link.is-small.button-download:hover {
+  background-color: #357ABD;
+  border-color: #2C6FA3;
+}
+
+.button-download svg {
+  margin-right: 2px;
+  fill: #FFFFFF;
+}
+
+.box-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  margin-right: 250px;
+}
+
+.search-input {
+  width: 400px;
+  margin-right: 250px;
+}
+
+.tarea-box {
+  margin-top: 1rem;
+}
+
+.button.is-asignar {
+  background-color: #387adf;
+  border-color: #2c63b4;
+  color: white;
+}
+
+.button.is-asignar:hover {
+  background-color: #1e57ac;
+  border-color: #1e57ac;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.button-container .button {
+  flex: 1;
+  margin: 5px;
+  min-width: 150px; /* Ensure a minimum width for buttons */
+}
+
+.button-responder {
+  width: 100%; /* Ancho completo */
+  margin-top: 10px; /* Espacio superior adicional */
 }
