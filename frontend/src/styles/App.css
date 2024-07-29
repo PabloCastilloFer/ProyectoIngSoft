@@ -19,3 +19,13 @@
   object-fit: cover; /* Ajusta la imagen para cubrir todo el contenedor sin distorsión */
   z-index: -1; /* Envía la imagen al fondo para que el contenido sea visible encima */
 }
+
+.Abajo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+  color: #fba834;
+}
