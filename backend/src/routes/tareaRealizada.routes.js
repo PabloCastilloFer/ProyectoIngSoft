@@ -1,6 +1,6 @@
 import { Router } from "express";
 import multer from 'multer';
-import { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareasAsignadas, obtenerTareasCompletas, obtenerTareasIncompletas, obtenerTareasNoRealizadas } from "../controllers/tareaRealizada.controller.js";
+import { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareasAsignadas, obtenerTareasCompletas, obtenerTareasIncompletas, obtenerTareasNoRealizadas,descargarArchivo } from "../controllers/tareaRealizada.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 import { isEmpleado } from "../middlewares/authorization.middleware.js";
 
@@ -50,4 +50,6 @@ router.get('/:rutUsuario/incompletas', isEmpleado, obtenerTareasIncompletas);
 // Obtener todas las tareas no realizadas por un empleado
 router.get('/:rutUsuario/noRealizadas', isEmpleado, obtenerTareasNoRealizadas);
 
+
+router.get('/src/upload/:filename', isEmpleado, descargarArchivo) //RUTA PARA OBTENER ARCHIVOS
 export default router;

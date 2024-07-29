@@ -5,6 +5,8 @@ import { HOST, PORT } from '../config/configEnv.js';
 import { crearTareaRealizadaSchema } from '../schema/tareaRealizada.schema.js';
 import sgMail from "@sendgrid/mail";
 import { API_KEY } from "../config/configEnv.js";
+import path from 'path';
+import fs from 'fs';
 
 import User from '../models/user.model.js';
 
@@ -156,16 +158,20 @@ const obtenerTareasRealizadas = async (req, res) => {
             const tarea = await Tarea.findOne({ idTarea: tareaRealizada.tarea });
             const ticket = await Ticket.findOne({ RutAsignado: tareaRealizada.ticket });
 
+            if (!tarea || !ticket) {
+                return null; // No incluir si la tarea o el ticket no existen
+            }
+
             const result = {
                 id: tareaRealizada._id,
                 tarea: {
-                    nombreTarea: tarea?.nombreTarea || 'Nombre no disponible',
-                    descripcionTarea: tarea?.descripcionTarea || 'Descripción no disponible',
-                    tipoTarea: tarea?.tipoTarea || 'Tipo no disponible',
+                    nombreTarea: tarea.nombreTarea,
+                    descripcionTarea: tarea.descripcionTarea,
+                    tipoTarea: tarea.tipoTarea,
                 },
                 ticket: {
-                    inicio: ticket?.Inicio || null,
-                    fin: ticket?.Fin || null,
+                    inicio: ticket.Inicio,
+                    fin: ticket.Fin,
                 },
                 estado: tareaRealizada.estado,
                 comentario: tareaRealizada.comentario,
@@ -176,7 +182,7 @@ const obtenerTareasRealizadas = async (req, res) => {
             return result;
         });
 
-        const tareasConDetalles = await Promise.all(tareasPromises);
+        const tareasConDetalles = (await Promise.all(tareasPromises)).filter(tarea => tarea !== null);
 
         res.status(200).json(tareasConDetalles);
     } catch (error) {
@@ -184,6 +190,7 @@ const obtenerTareasRealizadas = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 // Obtener tareas completas
 const obtenerTareasCompletas = async (req, res) => {
@@ -200,15 +207,10 @@ const obtenerTareasCompletas = async (req, res) => {
 
         const tareasPromises = tareasCompletas.map(async tareaRealizada => {
             const tarea = await Tarea.findOne({ idTarea: tareaRealizada.tarea });
-            if (!tarea) {
-                console.log("No se encontró la tarea con idTarea:", tareaRealizada.tarea);
-                return null;
-            }
-
             const ticket = await Ticket.findOne({ RutAsignado: tareaRealizada.ticket });
-            if (!ticket) {
-                console.log("No se encontró el ticket con RutAsignado:", tareaRealizada.ticket);
-                return null;
+
+            if (!tarea || !ticket) {
+                return null; // No incluir si la tarea o el ticket no existen
             }
 
             const result = {
@@ -231,7 +233,7 @@ const obtenerTareasCompletas = async (req, res) => {
             return result;
         });
 
-        const tareasConDetalles = await Promise.all(tareasPromises.filter(tarea => tarea !== null));
+        const tareasConDetalles = (await Promise.all(tareasPromises)).filter(tarea => tarea !== null);
 
         res.status(200).json(tareasConDetalles);
     } catch (error) {
@@ -255,15 +257,10 @@ const obtenerTareasIncompletas = async (req, res) => {
 
         const tareasPromises = tareasIncompletas.map(async tareaRealizada => {
             const tarea = await Tarea.findOne({ idTarea: tareaRealizada.tarea });
-            if (!tarea) {
-                console.log("No se encontró la tarea con idTarea:", tareaRealizada.tarea);
-                return null;
-            }
-
             const ticket = await Ticket.findOne({ RutAsignado: tareaRealizada.ticket });
-            if (!ticket) {
-                console.log("No se encontró el ticket con RutAsignado:", tareaRealizada.ticket);
-                return null;
+
+            if (!tarea || !ticket) {
+                return null; // No incluir si la tarea o el ticket no existen
             }
 
             const result = {
@@ -286,7 +283,7 @@ const obtenerTareasIncompletas = async (req, res) => {
             return result;
         });
 
-        const tareasConDetalles = await Promise.all(tareasPromises.filter(tarea => tarea !== null));
+        const tareasConDetalles = (await Promise.all(tareasPromises)).filter(tarea => tarea !== null);
 
         res.status(200).json(tareasConDetalles);
     } catch (error) {
@@ -294,6 +291,7 @@ const obtenerTareasIncompletas = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 // Obtener tareas no realizadas
 const obtenerTareasNoRealizadas = async (req, res) => {
@@ -310,15 +308,10 @@ const obtenerTareasNoRealizadas = async (req, res) => {
 
         const tareasPromises = tareasNoRealizadas.map(async tareaRealizada => {
             const tarea = await Tarea.findOne({ idTarea: tareaRealizada.tarea });
-            if (!tarea) {
-                console.log("No se encontró la tarea con idTarea:", tareaRealizada.tarea);
-                return null;
-            }
-
             const ticket = await Ticket.findOne({ RutAsignado: tareaRealizada.ticket });
-            if (!ticket) {
-                console.log("No se encontró el ticket con RutAsignado:", tareaRealizada.ticket);
-                return null;
+
+            if (!tarea || !ticket) {
+                return null; // No incluir si la tarea o el ticket no existen
             }
 
             const result = {
@@ -341,7 +334,7 @@ const obtenerTareasNoRealizadas = async (req, res) => {
             return result;
         });
 
-        const tareasConDetalles = await Promise.all(tareasPromises.filter(tarea => tarea !== null));
+        const tareasConDetalles = (await Promise.all(tareasPromises)).filter(tarea => tarea !== null);
 
         res.status(200).json(tareasConDetalles);
     } catch (error) {
@@ -436,4 +429,26 @@ const contarTareasCompletasPorEmpleador = async (rutEmpleador) => {
     }
 };
 
-export { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareasAsignadas, obtenerTareasCompletas, obtenerTareasIncompletas, obtenerTareasNoRealizadas };
+const descargarArchivo = async (req, res) => {
+    try {
+        const { archivoNombre } = req.params;
+
+        // Ruta del archivo en el servidor
+        const archivoRuta = path.join(__dirname, '../uploads', archivoNombre);
+
+        // Verificar si el archivo existe
+        if (!fs.existsSync(archivoRuta)) {
+            return res.status(404).json({ message: 'Archivo no encontrado' });
+        }
+
+        // Enviar el archivo como respuesta
+        res.download(archivoRuta);
+    } catch (error) {
+        console.error("Error al descargar el archivo: ", error);
+        res.status(500).json({ message: 'Hubo un error al procesar la solicitud' });
+    }
+};
+
+
+
+export { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareasAsignadas, obtenerTareasCompletas, obtenerTareasIncompletas, obtenerTareasNoRealizadas ,descargarArchivo};

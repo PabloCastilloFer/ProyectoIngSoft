@@ -15,9 +15,19 @@ const marcarTareasNoRealizadas = async () => {
     const tickets = await Ticket.find({ Fin: { $lt: now } });
 
     for (const ticket of tickets) {
+      const tarea = await Tarea.findOne({ idTarea: ticket.TareaID });
+
+      // Verificar si la tarea existe
+      if (!tarea) {
+        console.log(`Tarea con ID ${ticket.TareaID} no encontrada, no se creará TareaRealizada.`);
+        continue; // Saltar al siguiente ticket si la tarea no existe
+      }
+
+      // Verificar si ya existe una tarea realizada para este ticket y tarea
       const tareaRealizada = await TareaRealizada.findOne({ tarea: ticket.TareaID, ticket: ticket.RutAsignado });
 
       if (!tareaRealizada) {
+        // Crear nueva tarea no realizada
         const nuevaTareaNoRealizada = new TareaRealizada({
           tarea: ticket.TareaID,
           ticket: ticket.RutAsignado,
@@ -30,17 +40,12 @@ const marcarTareasNoRealizadas = async () => {
         console.log(`Tarea ${ticket.TareaID} marcada como no realizada.`);
 
         // Actualizar el estado de la tarea a 'entregada'
-        const tarea = await Tarea.findOne({ idTarea: ticket.TareaID });
-        if (tarea) {
-          tarea.estado = 'entregada';
-          await tarea.save();
-          console.log(`Estado de la tarea ${ticket.TareaID} actualizado a 'entregada'.`);
-        } else {
-          console.log(`Tarea con ID ${ticket.TareaID} no encontrada para actualización.`);
-        }
+        tarea.estado = 'entregada';
+        await tarea.save();
+        console.log(`Estado de la tarea ${ticket.TareaID} actualizado a 'entregada'.`);
 
         // Enviar correo al supervisor
-        if (tarea && tarea.userEmail) {
+        if (tarea.userEmail) {
           console.log("Correo del supervisor:", tarea.userEmail);
           const msg = {
             to: tarea.userEmail,
