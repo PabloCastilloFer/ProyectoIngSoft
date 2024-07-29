@@ -104,6 +104,7 @@ const VerComentarios = () => {
               <label>RUT Empleado</label>
               <input
                 type="text"
+                placeholder="Ejemplo: 12345678-9"
                 value={rutAsignado}
                 onChange={(e) => setRutAsignado(e.target.value)}
                 className="form-control"

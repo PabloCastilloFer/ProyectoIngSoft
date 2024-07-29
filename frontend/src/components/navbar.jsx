@@ -64,7 +64,7 @@ const Navbar = () => {
           <li data-icon="📤" onClick={() => handleNavigation('/verticket')}>
             <span>Tareas asignadas</span>
             </li>
-          <li data-icon="📋" onClick={handleInformeEmpleadosMenuToggle}>
+          <li data-icon="📇" onClick={handleInformeEmpleadosMenuToggle}>
             <span>Informe Empleados {isInformeEmpleadosMenuOpen ? '▲' : '▼'}</span>
           </li>
           {isInformeEmpleadosMenuOpen && (
