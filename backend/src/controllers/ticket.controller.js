@@ -6,8 +6,8 @@ import { API_KEY } from "../config/configEnv.js";
 
 // Función para validar si una fecha está dentro de los días laborables y el horario de trabajo
 function isValidDate(date) {
-  const dayOfWeek = date.getUTCDay();
-  const hour = date.getUTCHours();
+  const dayOfWeek = date.getDay();
+  const hour = date.getHours();
 
   // Verificar si el día de la semana es entre lunes (1) y viernes (5)
   if (dayOfWeek < 1 || dayOfWeek > 5) {

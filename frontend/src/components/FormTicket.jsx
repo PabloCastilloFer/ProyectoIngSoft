@@ -7,8 +7,8 @@ import { createTicket } from '../services/ticket.service.js';
 import Navbar from './navbar.jsx';
 
 const isValidDate = (date) => {
-    const dayOfWeek = date.getUTCDay();
-    const hour = date.getUTCHours();
+    const dayOfWeek = date.getDay();
+    const hour = date.getHours();
 
     if (dayOfWeek < 1 || dayOfWeek > 5) {
         return false;
