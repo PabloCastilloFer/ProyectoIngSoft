@@ -64,12 +64,31 @@ const AgregarComentario = () => {
     }
   };
 
+  const containerStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: '250px', 
+    marginTop: '64px', // Ajustar para la altura de la navbar
+};
+
+const BoxStyle = {
+    alignItems: 'center',
+    paddingTop: '64px', 
+    width: '700px',
+    padding: '2rem',
+    borderRadius: '8px',
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#fff',
+    textAlign: 'center',
+    position: 'relative', 
+};
+
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={containerStyle}>
       <Navbar />
-      <div style={{ margin: 'auto', padding: '20px', width: '100%', maxWidth: '600px', backgroundColor: '#fff', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)', borderRadius: '8px' }}>
-        <div className="form-container">
-          <h2>Agregar Comentario</h2>
+      <div style={BoxStyle}>
+          <h2 className="title">Agregar Comentario</h2>
           {error && <p className="error">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -95,13 +114,13 @@ const AgregarComentario = () => {
                 value={comentario}
                 onChange={(e) => setComentario(e.target.value)}
                 required
+                className="form-control comment-textarea"
               />
             </div>
             <button type="submit" className="btn btn-primary">Agregar Comentario</button>
           </form>
         </div>
       </div>
-    </div>
   );
 };
 

@@ -6,18 +6,23 @@ import { showConfirmFacultyCreated,DeleteFacultyQuestion } from '../helpers/swaH
 
 const containerStyle = {
   display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginRight: '250px', 
+  marginTop: '64px', // Ajustar para la altura de la navbar
 };
 
 const boxStyle = {
-  margin: 'auto',
-  padding: '20px',
-  width: '100%',
-  maxWidth: '600px',
-  backgroundColor: '#fff',
-  boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+  alignItems: 'center',
+  paddingTop: '64px', 
+  width: '700px',
+  padding: '2rem',
   borderRadius: '8px',
+  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+  backgroundColor: '#fff',
+  textAlign: 'center',
+  position: 'relative', 
 };
-
 const CrearFacultad = () => {
   const [nombre, setNombre] = useState('');
   const [error, setError] = useState(null);
@@ -57,7 +62,7 @@ const CrearFacultad = () => {
     <div style={containerStyle}>
       <Navbar />
       <div style={boxStyle}>
-        <div className="form-container">
+        <div>
           <h2>Crear Facultad</h2>
           {error && <p className="error">{error}</p>}
           <form onSubmit={handleSubmit}>

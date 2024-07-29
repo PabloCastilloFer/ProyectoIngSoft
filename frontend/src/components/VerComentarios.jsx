@@ -7,18 +7,23 @@ import '../styles/Generico.css';
 
 const containerStyle = {
   display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginRight: '250px', 
+  marginTop: '64px', // Ajustar para la altura de la navbar
 };
 
 const boxStyle = {
-  margin: 'auto',
-  padding: '20px',
-  width: '100%',
-  maxWidth: '600px',
-  backgroundColor: '#fff',
-  boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+  alignItems: 'center',
+  paddingTop: '64px', 
+  width: '700px',
+  padding: '2rem',
   borderRadius: '8px',
+  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+  backgroundColor: '#fff',
+  textAlign: 'center',
+  position: 'relative', 
 };
-
 const VerComentarios = () => {
   const [rutAsignado, setRutAsignado] = useState('');
   const [comentarios, setComentarios] = useState([]);
@@ -91,8 +96,8 @@ const VerComentarios = () => {
     <div style={containerStyle}>
       <Navbar />
       <div style={boxStyle}>
-        <div className="form-container">
-          <h2>Ver Comentarios</h2>
+        <div>
+          <h2 className="title">Ver Comentarios</h2>
           {error && <p className="error">{error}</p>}
           <form onSubmit={(e) => e.preventDefault()}>
             <div className="form-group">
@@ -107,50 +112,48 @@ const VerComentarios = () => {
             </div>
             {empleado && (
               <div className="form-group">
-                <h3>Información del Empleado</h3>
+                <h2 className="title">Información del Empleado</h2>
                 <p><strong>Nombre:</strong> {empleado.username}</p>
                 <p><strong>Email:</strong> {empleado.email}</p>
               </div>
             )}
             {comentarios.length > 0 ? (
               <div className="comments-section">
-                <h3>Comentarios</h3>
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Comentario</th>
-                      <th>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {comentarios.map((comentario) => (
-                      <tr key={comentario._id}>
-                        <td>{comentario.comentario}</td>
-                        <td>
-                          <button onClick={() => handleEditar(comentario)} className="btn btn-warning">Editar</button>
-                          <button onClick={() => handleEliminar(comentario._id)} className="btn btn-danger">Eliminar</button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <h3 className="title">Comentarios</h3>
+                <div className="comments-header">
+                  <div className="comment-column">Comentario</div>
+                  <div className="actions-column">Acciones</div>
+                </div>
+                {comentarios.map((comentario) => (
+                  <div key={comentario._id} className="comment-row">
+                    <div className="comment-column">{comentario.comentario}</div>
+                    <div className="actions-column">
+                      <div className="button-containerfs">
+                        <button className="buttonfs is-actualizar" onClick={() => handleEditar(comentario)}>Editar</button>
+                        <button className="buttonfs is-eliminar" onClick={() => handleEliminar(comentario._id)}>Eliminar</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : (
-              <p>No hay comentarios para este empleado.</p>
+              <p>No hay comentarios disponibles.</p>
             )}
             {comentarioSeleccionado && (
-              <div>
-                <h3>Modificar Comentario</h3>
+              <div className="modify-comment">
+                <h3 className="title">Modificar Comentario</h3>
                 <div className="form-group">
                   <label>Comentario</label>
                   <textarea
                     value={nuevoComentario}
                     onChange={(e) => setNuevoComentario(e.target.value)}
                     required
-                    className="form-control"
+                    className="form-control comment-textarea"
                   />
                 </div>
-                <button onClick={handleActualizar} className="btn btn-primary">Actualizar Comentario</button>
+                <button onClick={handleActualizar} className="buttonfs is-actualizar">
+                  Actualizar Comentario
+                </button>
               </div>
             )}
           </form>
