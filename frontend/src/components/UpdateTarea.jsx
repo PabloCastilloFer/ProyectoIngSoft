@@ -4,8 +4,7 @@ import { useForm } from 'react-hook-form';
 import Navbar from '../components/navbar.jsx';
 import { updateTarea } from '../services/tarea.service.js';
 import { useLocation , useNavigate } from 'react-router-dom';
-import { UpdateQuestion , VolverQuestion } from '../helpers/swaHelper.js'; // Asegúrate de importar UpdateQuestion
-
+import { UpdateQuestion , VolverQuestion } from '../helpers/swaHelper.js';
 const EditarTarea = ({ initialData }) => {
     const navigate = useNavigate(); 
     const location = useLocation();
@@ -21,11 +20,9 @@ const EditarTarea = ({ initialData }) => {
     };
 
     const onSubmit = async (data) => {
-        // Solicita confirmación antes de continuar
         const isConfirmed = await UpdateQuestion();
         
         if (!isConfirmed) {
-            // Si el usuario cancela, no hace nada
             return;
         }
 
@@ -52,7 +49,7 @@ const EditarTarea = ({ initialData }) => {
         }
     };
 
-    const handleVolver = async (tareaToVolver) => {
+    const handleVolver = async () => {
         const isConfirmed = await VolverQuestion();
         if (isConfirmed) {
             navigate(-1);
@@ -108,12 +105,12 @@ const EditarTarea = ({ initialData }) => {
         <div style={containerStyle}>
             <Navbar />
             <div style={BoxStyle}>
-            <div style={volverButtonStyle}>
+                <div style={volverButtonStyle}>
                     <button className="button is-light" onClick={handleVolver}>
-                    <span className="icon is-small">
-                                            <ArrowLeftIcon />
-                                        </span>
-                                        <span>Volver</span>
+                        <span className="icon is-small">
+                            <ArrowLeftIcon />
+                        </span>
+                        <span>Volver</span>
                     </button>
                 </div>
                 <div>
@@ -121,7 +118,7 @@ const EditarTarea = ({ initialData }) => {
                     <p className="subtitle is-6">Ingresa las modificaciones a la tarea</p>
                     <div className="columns is-centered">
                         <div className="column is-two-thirds">
-                            <form onSubmit={handleSubmit(onSubmit)} autocomplete="off">
+                            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                                 <div className="field">
                                     <label className="label" htmlFor="nombreTarea">Nombre de la tarea:</label>
                                     <div className="control">
@@ -130,10 +127,15 @@ const EditarTarea = ({ initialData }) => {
                                             type="text"
                                             placeholder={tarea.nombreTarea}
                                             className={`input ${errors.nombreTarea ? 'is-danger' : ''}`}
-                                            {...register('nombreTarea', { required: false })}
+                                            {...register('nombreTarea', {
+                                                pattern: {
+                                                    value: /^[A-Za-z0-9\s]+$/i,
+                                                    message: "Solo se permiten letras, números y espacios"
+                                                }
+                                            })}
                                         />
                                     </div>
-                                    {errors.nombreTarea && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.nombreTarea && <p className="help is-danger">{errors.nombreTarea.message}</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="tipoTarea">Tipo de tarea:</label>
@@ -141,7 +143,7 @@ const EditarTarea = ({ initialData }) => {
                                         <div className={`select ${errors.tipoTarea ? 'is-danger' : ''}`}>
                                             <select
                                                 id="tipoTarea"
-                                                {...register('tipoTarea', { required: true })}
+                                                {...register('tipoTarea', { required: "Este campo es obligatorio" })}
                                             >
                                                 <option value="">Selecciona un tipo</option>
                                                 <option value="simple">Simple</option>
@@ -149,7 +151,7 @@ const EditarTarea = ({ initialData }) => {
                                             </select>
                                         </div>
                                     </div>
-                                    {errors.tipoTarea && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.tipoTarea && <p className="help is-danger">{errors.tipoTarea.message}</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="descripcionTarea">Descripción de la Tarea:</label>
@@ -158,9 +160,15 @@ const EditarTarea = ({ initialData }) => {
                                             id="descripcionTarea"
                                             placeholder={tarea.descripcionTarea}
                                             className={`textarea ${errors.descripcionTarea ? 'is-danger' : ''}`}
-                                            {...register('descripcionTarea', { required: false })}
+                                            {...register('descripcionTarea', {
+                                                validate: value => {
+                                                    const wordCount = value.split(/\s+/).length;
+                                                    return wordCount <= 500 || "No puede exceder 500 palabras";
+                                                }
+                                            })}
                                         />
                                     </div>
+                                    {errors.descripcionTarea && <p className="help is-danger">{errors.descripcionTarea.message}</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="archivo">Archivo Adjunto:</label>
@@ -191,20 +199,7 @@ const EditarTarea = ({ initialData }) => {
             </div>
         </div>
     );
+    
 };
 
 export default EditarTarea;
-
-// Define tus estilos de contenedor y caja
-const containerStyle = {
-    padding: '20px'
-};
-
-const BoxStyle = {
-    margin: '20px auto',
-    padding: '20px',
-    maxWidth: '800px',
-    backgroundColor: '#f5f5f5',
-    borderRadius: '8px',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-};

@@ -1,8 +1,8 @@
 import 'bulma/css/bulma.min.css';
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import Navbar from '../components/navbar.jsx'; // Asegúrate de que la ruta a Navbar sea correcta
-import { duplicarTarea } from '../services/tarea.service.js'; // Asegúrate de que la ruta al servicio sea correcta
+import Navbar from '../components/navbar.jsx';
+import { duplicarTarea } from '../services/tarea.service.js';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { VolverQuestion , DuplicarQuestion , showConfirmFormTareaDuplicar} from '../helpers/swaHelper.js';
 
@@ -23,7 +23,7 @@ const DuplicarTarea = () => {
     }, [tarea, setValue]);
 
     const handleArchivoChange = (event) => {
-        setArchivo(event.target.files[0]); // Guarda el archivo en el estado
+        setArchivo(event.target.files[0]);
     };
 
     const onSubmit = async (data) => {
@@ -42,8 +42,8 @@ const DuplicarTarea = () => {
                 formData.append('archivo', archivo);
             }
             await showConfirmFormTareaDuplicar();
-            await duplicarTarea(formData, tarea.idTarea); // Pasa el formData y el idTarea
-            navigate('/tareas'); // Redirige a la lista de tareas o a donde sea apropiado
+            await duplicarTarea(formData, tarea.idTarea);
+            navigate('/tareas'); 
         } catch (error) {
             console.error('Error duplicando tarea:', error);
         } finally {
@@ -131,10 +131,15 @@ const DuplicarTarea = () => {
                                             type="text"
                                             placeholder="Nombre de la tarea"
                                             className={`input ${errors.nombreTarea ? 'is-danger' : ''}`}
-                                            {...register('nombreTarea', { required: false })}
+                                            {...register('nombreTarea', {
+                                                pattern: {
+                                                    value: /^[A-Za-z0-9\s]+$/i,
+                                                    message: "Solo se permiten letras, números y espacios"
+                                                }
+                                            })}
                                         />
                                     </div>
-                                    {errors.nombreTarea && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.nombreTarea && <p className="help is-danger">{errors.nombreTarea.message}</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="tipoTarea">Tipo de tarea:</label>
@@ -142,7 +147,7 @@ const DuplicarTarea = () => {
                                         <div className={`select ${errors.tipoTarea ? 'is-danger' : ''}`}>
                                             <select
                                                 id="tipoTarea"
-                                                {...register('tipoTarea', { required: true })}
+                                                {...register('tipoTarea', { required: "Este campo es obligatorio" })}
                                             >
                                                 <option value="">Selecciona un tipo</option>
                                                 <option value="simple">Simple</option>
@@ -150,7 +155,7 @@ const DuplicarTarea = () => {
                                             </select>
                                         </div>
                                     </div>
-                                    {errors.tipoTarea && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.tipoTarea && <p className="help is-danger">{errors.tipoTarea.message}</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="descripcionTarea">Descripción de la Tarea:</label>
@@ -159,9 +164,15 @@ const DuplicarTarea = () => {
                                             id="descripcionTarea"
                                             placeholder="Descripción de la tarea"
                                             className={`textarea ${errors.descripcionTarea ? 'is-danger' : ''}`}
-                                            {...register('descripcionTarea', { required: false })}
+                                            {...register('descripcionTarea', {
+                                                validate: value => {
+                                                    const wordCount = value.split(/\s+/).length;
+                                                    return wordCount <= 500 || "No puede exceder 500 palabras";
+                                                }
+                                            })}
                                         />
                                     </div>
+                                    {errors.descripcionTarea && <p className="help is-danger">{errors.descripcionTarea.message}</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="archivo">Archivo Adjunto:</label>
@@ -192,6 +203,7 @@ const DuplicarTarea = () => {
             </div>
         </div>
     );
+    
 };
 
 export default DuplicarTarea;
