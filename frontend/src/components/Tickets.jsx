@@ -103,48 +103,65 @@ export default function VerTicket() {
         );
     }, [searchQuery, tickets]);
 
-const containerStyle = {
-    display: 'flex',
-    marginRight:'250px',
-    marginTop: '64px', // Ajustar para la altura de la navbar
-    justifyContent: 'center',
-    alignItems: 'center',
-};
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
 
-const BoxStyle = {
-    alignItems: 'center',
-    paddingTop: '64px', // Ajustar para la altura de la navbar
-    width: '800px',
-    padding: '1rem',
-    borderRadius: '8px',
-    textAlign: 'left',
-    boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#fff',
-};
+    const containerStyle = {
+        display: 'flex',
+        marginRight:'250px',
+        marginTop: '64px', // Ajustar para la altura de la navbar
+        justifyContent: 'center',
+        alignItems: 'center',
+    };
 
-const BoxStyle2 = {
-    alignItems: 'center',
-    paddingTop: '10px', // Ajustar para la altura de la navbar
-    padding: '1rem',
-    borderRadius: '10px',
-    textAlign: 'left',
-    boxShadow: '0 5px 10px rgba(0, 0, 0, 0.2)',
-    backgroundColor: '#fff',
-    marginBottom: '10px',
-};
+    const BoxStyle = {
+        alignItems: 'center',
+        paddingTop: '64px', // Ajustar para la altura de la navbar
+        width: '800px',
+        padding: '1rem',
+        borderRadius: '8px',
+        textAlign: 'left',
+        boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)',
+        backgroundColor: '#fff',
+    };
+
+    const BoxStyle2 = {
+        alignItems: 'center',
+        paddingTop: '10px', // Ajustar para la altura de la navbar
+        padding: '1rem',
+        borderRadius: '10px',
+        textAlign: 'left',
+        boxShadow: '0 5px 10px rgba(0, 0, 0, 0.2)',
+        backgroundColor: '#fff',
+        marginBottom: '10px',
+    };
 
     return (
-    <div style={containerStyle}>
-    <Navbar />
-    <div style={BoxStyle}>
-    <div className="has-text-centered">
-        <h1 className="title is-2">Tareas asignadas</h1>
-        </div>
-        {filteredTickets
+        <div style={containerStyle}>
+            <Navbar />
+            <div style={BoxStyle}>
+                <div className="has-text-centered">
+                    <h1 className="title is-2">Tareas asignadas</h1>
+                </div>
+                <div className="field">
+                    <label className="label" htmlFor="search">Filtrar por usuario:</label>
+                    <div className="control">
+                        <input
+                            id="search"
+                            type="text"
+                            className="input search-input"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            placeholder="Buscar por usuario asignado..."
+                        />
+                    </div>
+                </div>
+                {filteredTickets
                     .filter(ticket => new Date(ticket.Inicio) > new Date())
                     .map((ticket, index) => (
                         <div key={ticket._id} style={BoxStyle2}>
-                        <h2 className="title is-4">{capitalizeFirstLetter(ticket.nombreTarea)}</h2>
+                            <h2 className="title is-4">{capitalizeFirstLetter(ticket.nombreTarea)}</h2>
                             <p><strong>Descripción:</strong> {capitalizeFirstLetter(ticket.descripcionTarea)} </p>
                             <p><strong>Usuario Asignado:</strong> {ticket.RutAsignado}</p>
                             <p><strong>Inicio:</strong> {new Date(ticket.Inicio).toLocaleString()}</p>
