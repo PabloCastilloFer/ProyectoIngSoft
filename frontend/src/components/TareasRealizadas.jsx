@@ -97,8 +97,7 @@ const TareasRealizadas = () => {
               <p><strong>Tipo:</strong> {tarea.tarea?.tipoTarea || 'Tipo no disponible'}</p>
               <p><strong>Descripción:</strong> {tarea.tarea?.descripcionTarea || 'Descripción no disponible'}</p>
               <p><strong>Estado:</strong> {tarea.estado}</p>
-              <p><strong>Inicio:</strong> {tarea.ticket?.inicio ? new Date(tarea.ticket.inicio).toLocaleString() : 'Fecha no disponible'}</p>
-              <p><strong>Fin:</strong> {tarea.ticket?.fin ? new Date(tarea.ticket.fin).toLocaleString() : 'Fecha no disponible'}</p>
+              <p><strong>Fecha de creación:</strong> {tarea.fechaCreacion ? new Date(tarea.fechaCreacion).toLocaleString() : 'Fecha no disponible'}</p>
               <div>
                 <strong>Archivo adjunto:</strong> {tarea.archivoAdjunto ? (
                   <div className="download-container">
