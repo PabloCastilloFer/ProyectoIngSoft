@@ -6,6 +6,7 @@ import { crearTareaRealizadaSchema } from '../schema/tareaRealizada.schema.js';
 import sgMail from "@sendgrid/mail";
 import { API_KEY } from "../config/configEnv.js";
 
+import User from '../models/user.model.js';
 
 // Crear una nueva tarea realizada
 const crearTareaRealizada = async (req, res) => {
@@ -350,6 +351,8 @@ const obtenerTareasNoRealizadas = async (req, res) => {
 };
 
 // Obtener tareas asignadas
+
+
 const obtenerTareasAsignadas = async (req, res) => {
     try {
         const rutUsuario = req.params.rutUsuario;
@@ -374,6 +377,14 @@ const obtenerTareasAsignadas = async (req, res) => {
                 console.log("No se encontró la tarea con idTarea:", ticket.TareaID);
                 return null;
             }
+
+            // Buscar el supervisor por su correo
+            const supervisor = await User.findOne({ email: tarea.userEmail });
+            if (!supervisor) {
+                console.log("No se encontró el supervisor con el correo:", tarea.userEmail);
+                return null;
+            }
+
             return {
                 idTarea: tarea.idTarea,
                 nombreTarea: tarea.nombreTarea,
@@ -383,7 +394,9 @@ const obtenerTareasAsignadas = async (req, res) => {
                 archivo: tarea.archivo,
                 fechaCreacionTarea: tarea.created_at,
                 inicio: ticket.Inicio,
-                fin: ticket.Fin
+                fin: ticket.Fin,
+                supervisorEmail: tarea.userEmail,
+                supervisorNombre: supervisor.username, // Incluye el nombre del supervisor
             };
         });
 
@@ -398,6 +411,10 @@ const obtenerTareasAsignadas = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
+
+
 
 const contarTareasCompletasPorEmpleador = async (rutEmpleador) => {
     try {

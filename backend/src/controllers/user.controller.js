@@ -5,6 +5,8 @@ import UserService from "../services/user.service.js";
 import { userBodySchema, userIdSchema } from "../schema/user.schema.js";
 import { handleError } from "../utils/errorHandler.js";
 import User from '../models/user.model.js';
+import Facultade from '../models/facultade.model.js';
+import Role from '../models/role.model.js';
 
 /**
  * Obtiene todos los usuarios
@@ -200,6 +202,46 @@ async function findUsersByRole(req, res) {
     });
   }
 }
+async function getSupervisoresByFacultad(req, res) {
+  try {
+    const facultadName = req.params.facultadName; // Asumiendo que el nombre de la facultad se pasa como parámetro en la URL
+
+    // Buscar la facultad por nombre
+    const facultad = await Facultade.findOne({ name: facultadName });
+    if (!facultad) {
+      return res.status(404).send({
+        message: "Facultad no encontrada"
+      });
+    }
+
+    // Buscar el rol de supervisor
+    const supervisorRole = await Role.findOne({ name: 'supervisor' }); // Asumiendo que el nombre del rol de supervisor es 'supervisor'
+    if (!supervisorRole) {
+      return res.status(404).send({
+        message: "Rol de supervisor no encontrado"
+      });
+    }
+
+    // Buscar supervisores en la facultad encontrada
+    const supervisores = await User.find({
+      facultades: facultad._id,
+      roles: supervisorRole._id // Usar el ID del rol de supervisor
+    }).select('username email');
+
+    if (!supervisores || supervisores.length === 0) {
+      return res.status(404).send({
+        message: "No se encontraron supervisores para la facultad especificada"
+      });
+    }
+
+    return res.status(200).send(supervisores);
+  } catch (error) {
+    console.error('Error buscando supervisores por facultad:', error);
+    return res.status(500).send({
+      message: "Error interno al buscar supervisores por facultad"
+    });
+  }
+}
 
 export default {
   getUsers,
@@ -210,4 +252,5 @@ export default {
   findUserByRut,
   findUsersByFaculty,
   findUsersByRole,
+  getSupervisoresByFacultad
 };

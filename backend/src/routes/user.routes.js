@@ -25,6 +25,8 @@ router.delete("/:id", isAdmin, usuarioController.deleteUser);
 router.get("/rut/:rut", usuarioController.findUserByRut);
 router.get("/email/:email", usuarioController.findUsersByFaculty);
 router.get("/rol/:rol", usuarioController.findUsersByRole);
+router.get("/supervisores/facultad/:facultadName", usuarioController.getSupervisoresByFacultad);
+
 
 // Exporta el enrutadorcd
 export default router;
