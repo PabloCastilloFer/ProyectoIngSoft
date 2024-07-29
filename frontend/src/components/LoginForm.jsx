@@ -4,6 +4,7 @@ import '../styles/Login.css'; // Asegúrate de importar el CSS aquí
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { login } from '../services/auth.service';
+import { showErrorLogin } from '../helpers/swaHelper.js'; // Asegúrate de importar tu helper
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ function LoginForm() {
   const onSubmit = (data) => {
     login(data).then(() => {
       navigate('/home');
+    }).catch(() => {
+      showErrorLogin(); // Llama a la función de alerta de error
     });
   };
 

@@ -471,3 +471,11 @@ export const DuplicarQuestion = async () => {
 
   return result.isConfirmed;
 };
+
+export const showErrorLogin = async () => {
+  await Swal.fire({
+    icon: "error",
+    title: "Error al iniciar sesión",
+    text: "Por favor, verifica tus datos y vuelve a intentarlo."
+  });
+};
