@@ -64,7 +64,7 @@ const TareasAsignadas = () => {
 
   // Filtrar tareas según el término de búsqueda y el estado
   const filteredTareas = tareas.filter(tarea => 
-    tarea.nombreTarea.toLowerCase().includes(searchQuery.toLowerCase()) &&
+    tarea && tarea.nombreTarea && tarea.nombreTarea.toLowerCase().includes(searchQuery.toLowerCase()) &&
     filtroEstado[tarea.estadoTarea.toLowerCase().replace(' ', '')]
   );
 
@@ -74,11 +74,30 @@ const TareasAsignadas = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  return (
-    <div className="container-content">
-      <Navbar />
-      <div className="main-content">
-        <div className="box">
+  const containerStyle = {
+    display: 'flex',
+    marginRight:'250px',
+    marginTop: '64px', // Ajustar para la altura de la navbar
+    justifyContent: 'center',
+    alignItems: 'center',
+};
+
+const BoxStyle = {
+    alignItems: 'center',
+    paddingTop: '64px', // Ajustar para la altura de la navbar
+    width: '800px',
+    padding: '1rem',
+    borderRadius: '8px',
+    textAlign: 'left',
+    boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#fff',
+};
+
+return (
+    <div style={containerStyle}>
+        <Navbar />
+        <div style={BoxStyle}>
+        <div>
           <div className="has-text-centered">
             <h1 className="title is-2">Tareas Asignadas</h1>
           </div>
@@ -129,8 +148,6 @@ const TareasAsignadas = () => {
                 <p><strong>Tipo:</strong> {tarea.tipoTarea}</p>
                 <p><strong>Descripción:</strong> {tarea.descripcionTarea}</p>
                 <p><strong>Estado:</strong> {tarea.estadoTarea}</p>
-                <p><strong>Inicio:</strong> {new Date(tarea.inicio).toLocaleString()}</p>
-                <p><strong>Fin:</strong> {new Date(tarea.fin).toLocaleString()}</p>
                 <p><strong>Supervisor:</strong> {tarea.supervisorNombre} </p> {/* Mostrar nombre y correo del supervisor */}
                 <div>
                   <p><strong>Archivo adjunto:</strong></p>

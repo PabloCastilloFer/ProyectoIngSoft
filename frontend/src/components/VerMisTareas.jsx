@@ -1,11 +1,11 @@
 import 'bulma/css/bulma.min.css';
 import { useState, useEffect } from 'react';
 import { deleteTarea } from '../services/tarea.service.js';
-import { showDeleteTarea, DeleteQuestion, showNoAsignada, showNoEntregada, showNoRevisada, showNoEnRevision } from '../helpers/swaHelper.js';
+import { showDeleteTarea, DeleteQuestion, showNoAsignada, showNoEntregada, showNoRevisada, showNoEnRevision, showNoEntregadaEliminada, showAsignadaEliminada, showRevisionEliminada, showRevisadaEliminada} from '../helpers/swaHelper.js';
 import Navbar from '../components/navbar.jsx';
 import { useNavigate } from 'react-router-dom';
 import { getArchive } from '../services/archive.service.js';
-import { obtenerMisTareas } from '../services/tarea.service.js'; // Importa el servicio
+import { obtenerMisTareas } from '../services/tarea.service.js';
 import '../styles/Tareas.css';
 
 export default function VerTareas() {
@@ -22,7 +22,6 @@ export default function VerTareas() {
             const userEmail = JSON.parse(localStorage.getItem('user')).email;
             const response = await obtenerMisTareas(userEmail);
             setTareas(response);
-            console.log(response);
         } catch (error) {
             console.error('Error al obtener las tareas:', error);
         }
@@ -36,16 +35,26 @@ export default function VerTareas() {
         tarea.nombreTarea.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleDeleted = async (tareaToDelete) => {
+    const handleDeleted = async (tarea) => {
+        if (tarea.estado === 'asignada') {
+            showAsignadaEliminada();
+        } else if (tarea.estado === 'entregada') {
+            showNoEntregadaEliminada();
+        } else if (tarea.estado === 'revisada') {
+            showRevisadaEliminada();
+        } else if (tarea.estado === 'en revision') {
+            showRevisionEliminada();
+        } else {
         const isConfirmed = await DeleteQuestion();
         if (isConfirmed) {
-            const response = await deleteTarea(tareaToDelete);
+            const response = await deleteTarea(tarea.idTarea);
             if (response.status === 200) {
                 await showDeleteTarea();
             }
             window.location.reload();
         }
-    };
+    }
+};
 
     const handleAsignarClick = (tarea) => {
         navigate(`/ticket`, {
@@ -54,9 +63,10 @@ export default function VerTareas() {
     };
 
     const handleEditClick = (tarea) => {
+        
         if (tarea.estado === 'asignada') {
             showNoAsignada();
-        } else if (tarea.estado === 'finalizada') {
+        } else if (tarea.estado === 'entregada') {
             showNoEntregada();
         } else if (tarea.estado === 'revisada') {
             showNoRevisada();
@@ -198,14 +208,14 @@ export default function VerTareas() {
     const containerStyle = {
         display: 'flex',
         marginRight: '250px',
-        marginTop: '64px', // Ajustar para la altura de la navbar
+        marginTop: '64px',
         justifyContent: 'center',
         alignItems: 'center',
     };
 
     const BoxStyle = {
         alignItems: 'center',
-        paddingTop: '64px', // Ajustar para la altura de la navbar
+        paddingTop: '64px',
         width: '800px',
         padding: '1rem',
         borderRadius: '8px',
@@ -216,7 +226,7 @@ export default function VerTareas() {
 
     const BoxStyle2 = {
         alignItems: 'center',
-        paddingTop: '10px', // Ajustar para la altura de la navbar
+        paddingTop: '10px',
         padding: '1rem',
         borderRadius: '10px',
         textAlign: 'left',
@@ -249,7 +259,7 @@ export default function VerTareas() {
                     {filteredTareas.length === 0 ? (
                         <p>No hay tareas existentes con ese nombre.</p>
                     ) : (
-                        filteredTareas.map((tarea, index) => (
+                        filteredTareas.reverse().map((tarea, index) => (
                             <div key={index} style={BoxStyle2}>
                                 <div className="content">
                                     <h2 className="title is-4">{capitalizeFirstLetter(tarea.nombreTarea)}</h2>
@@ -315,7 +325,7 @@ export default function VerTareas() {
                                         </button>
                                         <button
                                             className="button is-danger is-outlined mr-2 is-eliminar"
-                                            onClick={() => handleDeleted(tarea.idTarea)}
+                                            onClick={() => handleDeleted(tarea)}
                                         >
                                             <span className="icon is-small">
                                                 <TrashIcon />

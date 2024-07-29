@@ -27,10 +27,10 @@ export default function FormSupervisor() {
             formData.append("descripcionTarea", data.descripcionTarea);
             formData.append("tipoTarea", data.tipoTarea);
             formData.append("archivo", archivo);
-            console.log(formData)
+
 
             const response = await createTarea(formData);
-            console.log(response)
+
             if (response.status === 201) {
                 await showConfirmFormTarea();
                 setArchivo(null);
@@ -40,7 +40,7 @@ export default function FormSupervisor() {
             } else if (response.status === 500) {
                 await showError(response.data[0].response.data.message);
             }
-            console.log(response);
+
         } catch (error) {
             console.log("Error:", error);
         } finally {
@@ -52,7 +52,7 @@ export default function FormSupervisor() {
         setArchivo(e.target.files[0]);
     };
 
-    const handleVolver = async (tareaToVolver) => {
+    const handleVolver = async () => {
         const isConfirmed = await VolverQuestion();
         if (isConfirmed) {
             navigate(-1);
@@ -81,7 +81,7 @@ export default function FormSupervisor() {
 
     const containerStyle = {
         display: 'flex',
-        marginTop: '64px', // Ajustar para la altura de la navbar
+        marginTop: '64px',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight:'250px', 
@@ -111,10 +111,10 @@ export default function FormSupervisor() {
             <div style={BoxStyle}>
                 <div style={volverButtonStyle}>
                     <button className="button is-light" onClick={handleVolver}>
-                    <span className="icon is-small">
-                                            <ArrowLeftIcon />
-                                        </span>
-                                        <span>Volver</span>
+                        <span className="icon is-small">
+                            <ArrowLeftIcon />
+                        </span>
+                        <span>Volver</span>
                     </button>
                 </div>
                 <div>
@@ -122,7 +122,7 @@ export default function FormSupervisor() {
                     <p className="subtitle is-6">Ingresa los detalles de tu nueva tarea</p>
                     <div className="columns is-centered">
                         <div className="column is-two-thirds">
-                            <form onSubmit={handleSubmit(onSubmit)} autocomplete="off">
+                            <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
                                 <div className="field">
                                     <label className="label" htmlFor="nombreTarea">Nombre de la tarea:</label>
                                     <div className="control">
@@ -131,10 +131,16 @@ export default function FormSupervisor() {
                                             type="text"
                                             placeholder="Ej. Diseñar logotipo"
                                             className={`input ${errors.nombreTarea ? 'is-danger' : ''}`}
-                                            {...register('nombreTarea', { required: true })}
+                                            {...register('nombreTarea', { 
+                                                required: "Este campo es obligatorio",
+                                                pattern: {
+                                                    value: /^[A-Za-z0-9\s]+$/i,
+                                                    message: "Solo se permiten letras, números y espacios"
+                                                }
+                                            })}
                                         />
                                     </div>
-                                    {errors.nombreTarea && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.nombreTarea && <p className="help is-danger">{errors.nombreTarea.message}</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="tipoTarea">Tipo de tarea:</label>
@@ -142,7 +148,7 @@ export default function FormSupervisor() {
                                         <div className={`select ${errors.tipoTarea ? 'is-danger' : ''}`}>
                                             <select
                                                 id="tipoTarea"
-                                                {...register('tipoTarea', { required: true })}
+                                                {...register('tipoTarea', { required: "Este campo es obligatorio" })}
                                             >
                                                 <option value="">Selecciona un tipo</option>
                                                 <option value="simple">Simple</option>
@@ -150,7 +156,7 @@ export default function FormSupervisor() {
                                             </select>
                                         </div>
                                     </div>
-                                    {errors.tipoTarea && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.tipoTarea && <p className="help is-danger">{errors.tipoTarea.message}</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="descripcionTarea">Descripción de la Tarea:</label>
@@ -159,10 +165,16 @@ export default function FormSupervisor() {
                                             id="descripcionTarea"
                                             placeholder="Describe la tarea..."
                                             className={`textarea ${errors.descripcionTarea ? 'is-danger' : ''}`}
-                                            {...register('descripcionTarea', { required: true })}
+                                            {...register('descripcionTarea', {
+                                                required: "Este campo es obligatorio",
+                                                validate: value => {
+                                                    const wordCount = value.split(/\s+/).length;
+                                                    return wordCount <= 500 || "No puede exceder 500 palabras";
+                                                }
+                                            })}
                                         />
                                     </div>
-                                    {errors.descripcionTarea && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.descripcionTarea && <p className="help is-danger">{errors.descripcionTarea.message}</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="archivoAdjunto">Archivo Adjunto:</label>
@@ -193,4 +205,5 @@ export default function FormSupervisor() {
             </div>
         </div>
     );
+    
 }

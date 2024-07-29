@@ -37,10 +37,10 @@ const Navbar = () => {
   const navbarStyle = {
     position: 'fixed',
     right: '0',
-    top: '0', // Ajusta el top a 0
+    top: '0',
     height: '100vh',
     width: '250px',
-    zIndex: 20, // Z-index más alto que el de la top-bar
+    zIndex: 20,
   };
 
   return (
@@ -65,7 +65,7 @@ const Navbar = () => {
           <li data-icon="📤" onClick={() => handleNavigation('/verticket')}>
             <span>Tareas asignadas</span>
             </li>
-          <li data-icon="📋" onClick={handleInformeEmpleadosMenuToggle}>
+          <li data-icon="📇" onClick={handleInformeEmpleadosMenuToggle}>
             <span>Informe Empleados {isInformeEmpleadosMenuOpen ? '▲' : '▼'}</span>
           </li>
           {isInformeEmpleadosMenuOpen && (
@@ -79,22 +79,12 @@ const Navbar = () => {
               <li data-icon=">" onClick={() => handleNavigation('/comentarios')}>
                 <span>Ver Comentarios</span>
               </li>
-              <li data-icon=">" onClick={() => handleNavigation('/comentarios')}>
-                <span>Ver Comentarios</span>
-              </li>
             </ul>
           )}
           <li data-icon="📃" onClick={() => handleNavigation('/tareas-asignadas')}>
             <span>Ver tareas asignadas</span>
           </li>
           <li data-icon="📍" onClick={() => handleNavigation('/tareas-realizadas')}>
-            <span>Tareas Realizadas</span>
-          </li>
-          <li data-icon="🏢" onClick={() => handleNavigation('/facultades')}>
-            <span>Facultades</span>
-          </li>
-          <li data-icon="👤" onClick={handleUsersMenuToggle}>
-            <span>Usuarios {isUsersMenuOpen ? '▲' : '▼'}</span>
             <span>Tareas Realizadas</span>
           </li>
           <li data-icon="🏢" onClick={() => handleNavigation('/facultades')}>

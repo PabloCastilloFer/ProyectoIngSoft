@@ -88,8 +88,8 @@ const router = createBrowserRouter([
     element: <CrearUsuario />,
   },
   {
-    path: '/agregarComentario', // Agregar la nueva ruta
-    element: <AgregarComentario />, // Componente para agregar comentarios
+    path: '/agregarComentario',
+    element: <AgregarComentario />,
   },
   {
     path: '/comentarios',

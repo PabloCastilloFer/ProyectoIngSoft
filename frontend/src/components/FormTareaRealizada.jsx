@@ -12,7 +12,11 @@ import { faComment, faFile, faArrowRight } from '@fortawesome/free-solid-svg-ico
 export default function FormTareaRealizada() {
     const { id: tareaId } = useParams();
     const user = JSON.parse(localStorage.getItem('user'));
-    const rutUsuario = user.rut;
+    const rutUsuario = user?.rut;
+
+    console.log("Tarea ID desde useParams:", tareaId);
+    console.log("Usuario desde localStorage:", user);
+    console.log("RUT del Usuario:", rutUsuario);
 
     const [archivo, setArchivo] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -24,18 +28,30 @@ export default function FormTareaRealizada() {
         const fetchTarea = async () => {
             try {
                 const tareas = await getTareasAsignadas(rutUsuario);
-                const tarea = tareas.find(t => t.idTarea === tareaId);
-                if (tarea) {
-                    setNombreTarea(tarea.nombreTarea);
+                console.log("Tareas obtenidas:", tareas);
+                if (tareas && tareas.length > 0) {
+                    const tarea = tareas.find(t => t && t.idTarea && t.idTarea === tareaId);
+                    if (tarea) {
+                        setNombreTarea(tarea.nombreTarea);
+                    } else {
+                        setNombreTarea('Error al obtener la tarea');
+                        console.error('Tarea no encontrada con idTarea:', tareaId);
+                    }
                 } else {
-                    setNombreTarea('Error al obtener la tarea');
+                    setNombreTarea('No hay tareas asignadas para este usuario');
+                    console.error('No se encontraron tareas asignadas para rutUsuario:', rutUsuario);
                 }
             } catch (error) {
                 console.error('Error al obtener la tarea:', error);
                 setNombreTarea('Error al obtener la tarea');
             }
         };
-        fetchTarea();
+        if (rutUsuario && tareaId) {
+            fetchTarea();
+        } else {
+            console.error('rutUsuario o tareaId no están definidos:', { rutUsuario, tareaId });
+            setNombreTarea('Información de usuario o tarea no disponible');
+        }
     }, [tareaId, rutUsuario]);
 
     const onSubmit = async (data) => {
@@ -51,7 +67,15 @@ export default function FormTareaRealizada() {
                 formData.append("archivoAdjunto", archivo, archivo.name);
             }
 
+            console.log("Datos enviados a createTareaRealizada:", {
+                TareaID: tareaId,
+                comentario: data.comentario,
+                estado: data.estado,
+                archivoAdjunto: archivo
+            });
+
             const response = await createTareaRealizada(formData, rutUsuario);
+            console.log("Respuesta de createTareaRealizada:", response);
             if (response.status === 201) {
                 await showConfirmFormTarea();
                 setArchivo(null);
@@ -60,6 +84,7 @@ export default function FormTareaRealizada() {
                 await showErrorFormTarea(response.data.message);
             }
         } catch (error) {
+            console.error('Error al enviar la respuesta:', error);
             await showErrorFormTarea(error.message || "Error al enviar la respuesta");
         } finally {
             setIsLoading(false);
@@ -70,12 +95,31 @@ export default function FormTareaRealizada() {
         setArchivo(e.target.files[0]);
     };
 
+    const containerStyle = {
+        display: 'flex',
+        marginRight:'250px',
+        marginTop: '64px', // Ajustar para la altura de la navbar
+        justifyContent: 'center',
+        alignItems: 'center',
+    };
+
+    const BoxStyle = {
+        alignItems: 'center',
+        paddingTop: '64px', // Ajustar para la altura de la navbar
+        width: '800px',
+        padding: '1rem',
+        borderRadius: '8px',
+        textAlign: 'left',
+        boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)',
+        backgroundColor: '#fff',
+    };
+
     return (
         <>
             <div className="container">
                 <Navbar />
                 <div className="box">
-                    <h2 className="title"> {nombreTarea}</h2>
+                    <h2 className="title">{nombreTarea}</h2>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="field">
                             <label className="label" htmlFor="comentario">Comentario:</label>

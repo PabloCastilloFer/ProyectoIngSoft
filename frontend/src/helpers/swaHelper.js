@@ -61,6 +61,13 @@ export const showNotFoundTarea = async () => {
     });
 };
 
+export const showAsignadaEliminada = async () => {
+  await Toast.fire({
+      icon: "info",
+      title: "No se puede eliminar una tarea asignada"
+  });
+};
+
 export const showNoAsignada = async () => {
     await Toast.fire({
         icon: "info",
@@ -75,6 +82,20 @@ export const showNoEntregada = async () => {
     });
 };
 
+export const showNoEntregadaEliminada = async () => {
+  await Toast.fire({
+      icon: "info",
+      title: "No se puede eliminar una tarea entregada"
+  });
+};
+
+export const showRevisadaEliminada = async () => {
+  await Toast.fire({
+      icon: "info",
+      title: "No se puede eliminar una tarea revisada"
+  });
+};
+
 export const showNoRevisada = async () => {
     await Toast.fire({
         icon: "info",
@@ -87,6 +108,13 @@ export const showNoEnRevision = async () => {
         icon: "info",
         title: "No se puede editar una tarea en revisión"
     });
+};
+
+export const showRevisionEliminada = async () => {
+  await Toast.fire({
+      icon: "info",
+      title: "No se puede eliminar una tarea en revisión"
+  });
 };
 
 export const showFoundTarea = async () => {

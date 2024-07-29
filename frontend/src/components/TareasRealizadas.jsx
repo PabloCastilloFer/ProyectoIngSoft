@@ -61,10 +61,29 @@ const TareasRealizadas = () => {
     setFiltro(e.target.value);
   };
 
+  const containerStyle = {
+    display: 'flex',
+    marginRight:'250px',
+    marginTop: '64px', // Ajustar para la altura de la navbar
+    justifyContent: 'center',
+    alignItems: 'center',
+};
+
+const BoxStyle = {
+    alignItems: 'center',
+    paddingTop: '64px', // Ajustar para la altura de la navbar
+    width: '800px',
+    padding: '1rem',
+    borderRadius: '8px',
+    textAlign: 'left',
+    boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#fff',
+};
+
   return (
-    <div className="container">
-      <Navbar />
-      <div className="box">
+    <div style={containerStyle}>
+    <Navbar />
+    <div style={BoxStyle}>
         <div className="has-text-centered">
           <h1 className="title is-2">Tareas Realizadas</h1>
         </div>
@@ -102,9 +121,9 @@ const TareasRealizadas = () => {
                 <strong>Archivo adjunto:</strong> {tarea.archivoAdjunto ? (
                   <div className="download-container">
                     <span>{tarea.archivoAdjunto}</span>
-                    <a 
-                      href={tarea.archivoAdjunto} 
-                      className="button is-link is-small ml-2" 
+                    <a
+                      href={tarea.archivoAdjunto}
+                      className="button is-link is-small ml-2"
                       download
                     >
                       DESCARGAR
