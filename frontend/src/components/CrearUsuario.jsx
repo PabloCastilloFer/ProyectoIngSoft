@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { crearUsuario } from '../services/user.service';
-import Navbar from '../components/Navbar.jsx';
+import Navbar from '../components/navbar.jsx';
 import '../styles/Generico.css';
 import {showUsernameError,showEmailError,showPasswordError,showPasswordLengthError,showRutError,showRutDuplicateError,showRoleError,showFacultyError,showAuthError} from '../helpers/swaHelper.js';
 
 const containerStyle = {
   display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginRight: '250px', 
+  marginTop: '64px', // Ajustar para la altura de la navbar
 };
 
 const boxStyle = {
-  margin: 'auto',
-  padding: '20px',
-  width: '100%',
-  maxWidth: '600px',
-  backgroundColor: '#fff',
-  boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+  alignItems: 'center',
+  paddingTop: '64px', 
+  width: '700px',
+  padding: '2rem',
   borderRadius: '8px',
+  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+  backgroundColor: '#fff',
+  textAlign: 'center',
+  position: 'relative', 
 };
 
 const CrearUsuario = () => {
@@ -114,8 +120,8 @@ const CrearUsuario = () => {
     <div style={containerStyle}>
       <Navbar />
       <div style={boxStyle}>
-        <div className="form-container">
-          <h2>Crear Usuario</h2>
+        <div>
+          <h2 className="title">Crear Usuario</h2>
           {error && <p className="error">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">

@@ -63,9 +63,9 @@ const Navbar = () => {
           </li>
           <li data-icon="📤" onClick={() => handleNavigation('/verticket')}>
             <span>Tareas asignadas</span>
-          </li>
-          <li data-icon="📋" onClick={() => handleNavigation('/generarPDF')}>
-            <span>Informe empleados</span>
+            </li>
+          <li data-icon="📇" onClick={handleInformeEmpleadosMenuToggle}>
+            <span>Informe Empleados {isInformeEmpleadosMenuOpen ? '▲' : '▼'}</span>
           </li>
           {isInformeEmpleadosMenuOpen && (
             <ul className="submenu">
@@ -75,17 +75,36 @@ const Navbar = () => {
               <li data-icon=">" onClick={() => handleNavigation('/Agregarcomentario')}>
                 <span>Agregar Comentario</span>
               </li>
+              <li data-icon=">" onClick={() => handleNavigation('/comentarios')}>
+                <span>Ver Comentarios</span>
+              </li>
             </ul>
           )}
           <li data-icon="📃" onClick={() => handleNavigation('/tareas-asignadas')}>
             <span>Ver tareas asignadas</span>
           </li>
           <li data-icon="📍" onClick={() => handleNavigation('/tareas-realizadas')}>
-            <span>Tareas realizadas</span>
+            <span>Tareas Realizadas</span>
           </li>
-      </ul>
+          <li data-icon="🏢" onClick={() => handleNavigation('/facultades')}>
+            <span>Facultades</span>
+          </li>
+          <li data-icon="👤" onClick={handleUsersMenuToggle}>
+            <span>Usuarios {isUsersMenuOpen ? '▲' : '▼'}</span>
+          </li>
+          {isUsersMenuOpen && (
+            <ul className="submenu">
+              <li data-icon=">" onClick={() => handleNavigation('/usuarios')}>
+                <span>Crear Usuario</span>
+              </li>
+              <li data-icon=">" onClick={() => handleNavigation('/usuarios/ver')}>
+                <span>Ver Usuarios</span>
+              </li>
+            </ul>
+          )}
+        </ul>
+      </div>
     </div>
-  </div>
   );
 };
 

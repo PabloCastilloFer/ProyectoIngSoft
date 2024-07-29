@@ -472,6 +472,52 @@ export const DuplicarQuestion = async () => {
   return result.isConfirmed;
 };
 
+// Función para mostrar una alerta de éxito
+export const showSuccess = async (message) => {
+  await Swal.fire({
+    icon: 'success',
+    title: 'Éxito',
+    text: message,
+    showConfirmButton: true,
+    timer: 1500
+  });
+};
+
+// Función para mostrar una alerta de información
+export const showInfo = async (message) => {
+  await Swal.fire({
+    icon: 'info',
+    title: 'Información',
+    text: message,
+    showConfirmButton: true,
+    timer: 1500
+  });
+};
+
+// Función para mostrar una alerta de advertencia
+export const showWarning = async (message) => {
+  await Swal.fire({
+    icon: 'warning',
+    title: 'Advertencia',
+    text: message,
+    showConfirmButton: true,
+    timer: 1500
+  });
+};
+
+// Función para mostrar una alerta de confirmación antes de eliminar
+export const showConfirmDelete = async () => {
+  return await Swal.fire({
+    title: '¿Estás seguro?',
+    text: "¡No podrás revertir esto!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Sí, eliminarlo'
+  });
+};
+
 export const showErrorLogin = async () => {
   await Swal.fire({
     icon: "error",

@@ -20,6 +20,7 @@ import AgregarComentario from './routes/comentarioRoute.jsx';
 import Ticket from './routes/TicketRoutes.jsx';
 import DuplicarTarea from './routes/DuplicarTareaRoute.jsx';
 import MisTareas from './routes/MisTareasRoute.jsx';
+import VerComentarios from './components/VerComentarios.jsx';
 
 const router = createBrowserRouter([
   {
@@ -88,6 +89,10 @@ const router = createBrowserRouter([
   {
     path: '/agregarComentario', // Agregar la nueva ruta
     element: <AgregarComentario />, // Componente para agregar comentarios
+  },
+  {
+    path: '/comentarios',
+    element: <VerComentarios />,
   },
   {
     path: '/tarea/duplicar',
