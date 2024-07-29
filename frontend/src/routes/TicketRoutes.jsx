@@ -1,5 +1,6 @@
 import FormTicket from '../components/FormTicket.jsx'
-export default function FromTicket() {
+
+export default function Ticket() {
 
     return (
     <div>

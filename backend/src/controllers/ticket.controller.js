@@ -3,12 +3,11 @@ import Tarea from '../models/tarea.model.js';
 import Usuario from '../models/user.model.js';
 import sgMail from "@sendgrid/mail";
 import { API_KEY } from "../config/configEnv.js";
-import User from "../models/user.model.js";
 
 // Función para validar si una fecha está dentro de los días laborables y el horario de trabajo
 function isValidDate(date) {
-  const dayOfWeek = date.getUTCDay();
-  const hour = date.getUTCHours();
+  const dayOfWeek = date.getDay();
+  const hour = date.getHours();
 
   // Verificar si el día de la semana es entre lunes (1) y viernes (5)
   if (dayOfWeek < 1 || dayOfWeek > 5) {
@@ -178,6 +177,23 @@ export const updateTicket = async (req, res) => {
 // Eliminar un ticket por ID
 export const deleteTicket = async (req, res) => {
   try {
+    // Paso 1: Buscar el ticket por ID para obtener la ID de la tarea asociada.
+    const ticket = await Ticket.findById(req.params.id);
+    if (!ticket) {
+      return res.status(404).json("Ticket no encontrado");
+    }
+    const tareaId = ticket.TareaID;
+
+    // Paso 2: Buscar la tarea asociada usando 'codigoTarea' en lugar de su ID directo.
+    const tarea = await Tarea.findOne({ idTarea: tareaId }); // Asumiendo que el campo en Tarea se llama 'codigo'.
+    if (!tarea) {
+      return res.status(404).json("Tarea asociada no encontrada");
+    }
+
+    // Paso 3: Actualizar el estado de la tarea asociada a "nueva".
+    await Tarea.findByIdAndUpdate(tarea._id, { $set: { estado: 'nueva' } });
+
+    // Paso 4: Eliminar el ticket.
     await Ticket.findByIdAndDelete(req.params.id);
     res.status(200).json("Ticket eliminado con éxito");
   } catch (error) {

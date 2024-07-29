@@ -1,6 +1,5 @@
 import React from 'react';
 import '../styles/App.css'; // Asegúrate de importar el archivo CSS
-import Nabvar from '../components/navbar.jsx';
 
 function App() {
   return (
@@ -9,7 +8,7 @@ function App() {
         src="/UB.jpg"
         alt="Descripción de la imagen" // Añade un alt para accesibilidad
       />
-
+      <h1 className="Abajo">¡Solo un commit más y terminamos el trabajo!</h1>
     </div>
   );
 }

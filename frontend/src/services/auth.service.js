@@ -16,9 +16,12 @@ export const login = async ({ email, password }) => {
         'Authorization'
       ] = `Bearer ${data.data.accessToken}`;
       cookies.set('jwt-auth', data.data.accessToken, { path: '/' });
+      return data;
+    } else {
+      throw new Error('Login failed');
     }
   } catch (error) {
-    console.log(error);
+    throw error; // Lanzar el error para que pueda ser capturado por el catch en LoginForm
   }
 };
 

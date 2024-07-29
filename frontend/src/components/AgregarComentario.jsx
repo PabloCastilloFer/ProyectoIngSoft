@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { agregarComentario } from '../services/comentario.service';
-import { getUserByRut } from '../services/user.service'; // Nueva función para obtener usuario por RUT
-import Navbar from '../components/Navbar.jsx';
+import { getUserByRut} from '../services/user.service'; // Nueva función para obtener usuario por RUT
+import Navbar from '../components/navbar.jsx';
 import '../styles/Generico.css';
 import { showRutError } from '../helpers/swaHelper.js';
 
@@ -21,14 +21,15 @@ const AgregarComentario = () => {
         setError('');
       } else {
         setEmpleado(null);
-        setError('Empleado no encontrado o no tiene rol de empleado');
+        await showErrorComentario('Empleado no encontrado o no tiene rol de empleado');
       }
     } catch (error) {
       console.log('Error al obtener empleado:', error);
       setEmpleado(null);
-      setError('Error al obtener empleado');
+      await showErrorComentario('Error al obtener empleado');
     }
   };
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -59,16 +60,35 @@ const AgregarComentario = () => {
     }
   };
 
+  const containerStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: '250px', 
+    marginTop: '64px', // Ajustar para la altura de la navbar
+};
+
+const BoxStyle = {
+    alignItems: 'center',
+    paddingTop: '64px', 
+    width: '700px',
+    padding: '2rem',
+    borderRadius: '8px',
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+    backgroundColor: '#fff',
+    textAlign: 'center',
+    position: 'relative', 
+};
+
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={containerStyle}>
       <Navbar />
-      <div style={{ margin: 'auto', padding: '20px', width: '100%', maxWidth: '600px', backgroundColor: '#fff', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)', borderRadius: '8px' }}>
-        <div className="form-container">
-          <h2>Agregar Comentario</h2>
+      <div style={BoxStyle}>
+          <h2 className="title">Agregar Comentario</h2>
           {error && <p className="error">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>RUT Asignado</label>
+              <label>RUT empleado</label>
               <input
                 type="text"
                 value={rutAsignado}
@@ -79,9 +99,10 @@ const AgregarComentario = () => {
             </div>
             {empleado && (
               <div className="form-group">
-                <p><strong>Nombre:</strong> {empleado.username}</p>
-                <p><strong>Email:</strong> {empleado.email}</p>
-              </div>
+              <p><strong>Nombre:</strong> {empleado.username}</p>
+              <p><strong>Email:</strong> {empleado.email}</p>
+              <p><strong>Rol:</strong> {empleado.roles.map(role => role.name).join(', ')}</p>
+            </div>
             )}
             <div className="form-group">
               <label>Comentario</label>
@@ -89,13 +110,13 @@ const AgregarComentario = () => {
                 value={comentario}
                 onChange={(e) => setComentario(e.target.value)}
                 required
+                className="form-control comment-textarea"
               />
             </div>
             <button type="submit" className="btn btn-primary">Agregar Comentario</button>
           </form>
         </div>
       </div>
-    </div>
   );
 };
 

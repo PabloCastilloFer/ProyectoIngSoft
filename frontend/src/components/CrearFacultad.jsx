@@ -1,23 +1,28 @@
 import React, { useState } from 'react';
 import '../styles/Generico.css'; // Asegúrate de tener estilos para los formularios
-import Navbar from '../components/Navbar.jsx';
+import Navbar from '../components/navbar.jsx';
 import { showConfirmFacultyCreated,DeleteFacultyQuestion } from '../helpers/swaHelper.js';
 
 
 const containerStyle = {
   display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginRight: '250px', 
+  marginTop: '64px', // Ajustar para la altura de la navbar
 };
 
 const boxStyle = {
-  margin: 'auto',
-  padding: '20px',
-  width: '100%',
-  maxWidth: '600px',
-  backgroundColor: '#fff',
-  boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+  alignItems: 'center',
+  paddingTop: '64px', 
+  width: '700px',
+  padding: '2rem',
   borderRadius: '8px',
+  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+  backgroundColor: '#fff',
+  textAlign: 'center',
+  position: 'relative', 
 };
-
 const CrearFacultad = () => {
   const [nombre, setNombre] = useState('');
   const [error, setError] = useState(null);
@@ -57,8 +62,8 @@ const CrearFacultad = () => {
     <div style={containerStyle}>
       <Navbar />
       <div style={boxStyle}>
-        <div className="form-container">
-          <h2>Crear Facultad</h2>
+        <div>
+          <h2 className="title">Crear Facultad</h2>
           {error && <p className="error">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -72,7 +77,7 @@ const CrearFacultad = () => {
             </div>
             <button type="submit" className="btn btn-primary">Crear Facultad</button>
           </form>
-          <h3>Facultades Creadas</h3>
+          <h3 className="title" style={{ marginTop: '40px' }}>Facultades Creadas</h3> {/* Agrega un margen superior aquí */}
           <ul className="facultades-list">
             {facultades.map((facultad, index) => (
               <li key={index} className="facultad-item">

@@ -79,12 +79,22 @@ const Navbar = () => {
               <li data-icon=">" onClick={() => handleNavigation('/comentarios')}>
                 <span>Ver Comentarios</span>
               </li>
+              <li data-icon=">" onClick={() => handleNavigation('/comentarios')}>
+                <span>Ver Comentarios</span>
+              </li>
             </ul>
           )}
           <li data-icon="📃" onClick={() => handleNavigation('/tareas-asignadas')}>
             <span>Ver tareas asignadas</span>
           </li>
           <li data-icon="📍" onClick={() => handleNavigation('/tareas-realizadas')}>
+            <span>Tareas Realizadas</span>
+          </li>
+          <li data-icon="🏢" onClick={() => handleNavigation('/facultades')}>
+            <span>Facultades</span>
+          </li>
+          <li data-icon="👤" onClick={handleUsersMenuToggle}>
+            <span>Usuarios {isUsersMenuOpen ? '▲' : '▼'}</span>
             <span>Tareas Realizadas</span>
           </li>
           <li data-icon="🏢" onClick={() => handleNavigation('/facultades')}>

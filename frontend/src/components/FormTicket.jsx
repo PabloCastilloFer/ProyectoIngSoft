@@ -1,55 +1,126 @@
 import 'bulma/css/bulma.min.css';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { showError, showConfirmFormTicket, CreatedTicket, VolverQuestion } from '../helpers/swaHelper.js';
+import React, { useEffect, useState } from 'react';
+import { useLocation , useNavigate} from 'react-router-dom';
+import { showError, showConfirmFormTicket, CreatedTicket, VolverQuestion, showFechaInicioError, showFechaInicioLaboralError, showFechaFinError, showFechaFinLaboralError, showRutAsignadoError } from '../helpers/swaHelper.js';
 import { useForm } from 'react-hook-form'; 
 import { createTicket } from '../services/ticket.service.js';
-import { useAuth } from '../context/AuthContext.jsx';
 import Navbar from './navbar.jsx';
 
-export default function FormTicket() {
-    const navigate = useNavigate(); 
+const isValidDate = (date) => {
+    const dayOfWeek = date.getDay();
+    const hour = date.getHours();
 
-    const jwt = useAuth();
+    if (dayOfWeek < 1 || dayOfWeek > 5) {
+        return false;
+    }
 
-    const userStorage = localStorage.getItem('user');
-    const userDat = JSON.parse(userStorage); 
-    
+    if (hour < 8 || hour > 18) {
+        return false;
+    }
+
+    return true;
+};
+
+const validateForm = (data) => {
+    const { TareaID, Inicio, Fin, RutAsignado } = data;
+
+    if (!TareaID) {
+        showTareaError();
+        return false;
+    }
+
+    const inicio = new Date(Inicio);
+    const fin = new Date(Fin);
+    const now = new Date();
+
+    if (inicio <= now) {
+        showFechaInicioError();
+        return false;
+    }
+
+    if (!isValidDate(inicio)) {
+        showFechaInicioLaboralError();
+        return false;
+    }
+
+    if (fin <= inicio) {
+        showFechaFinError();
+        return false;
+    }
+
+    if (!isValidDate(fin)) {
+        showFechaFinLaboralError();
+        return false;
+    }
+
+    if (!RutAsignado) {
+        showRutAsignadoError();
+        return false;
+    }
+
+    return true;
+};
+
+const FormTicket = () => {
+    const { register, handleSubmit, formState: { errors } } = useForm();
+    const location = useLocation();
+    const { tarea } = location.state || {};
+    const [ticket, setTicket] = useState(tarea || null);
     const [isLoading, setIsLoading] = useState(false);
-    const { register, formState: { errors }, handleSubmit, reset } = useForm();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!ticket) {
+            // Simula una llamada a la API para obtener los datos del ticket si no están en el estado
+            const fetchTicket = async () => {
+                const response = await fetch(`/api/tickets/${tarea.idTarea}`);
+                const data = await response.json();
+                setTicket(data);
+            };
+
+            fetchTicket();
+        }
+    }, [ticket, tarea]);
 
     const onSubmit = async (data) => {
         try {
             const isConfirmed = await CreatedTicket();
+
             if (!isConfirmed) {
                 return;
             }
             setIsLoading(true);
             const formData = new FormData();
-            formData.append("TareaID", data.TareaID);
+            formData.append("TareaID", tarea.idTarea);
             formData.append("RutAsignado", data.RutAsignado);
             formData.append("Inicio", data.Inicio);
             formData.append("Fin", data.Fin);
-            console.log(formData)
+
+            console.log("FormData contenido:", Array.from(formData.entries())); // Agrega esto para verificar el contenido de FormData
+
+            // Convertir formData a un objeto simple para validar
+            const formDataObject = Object.fromEntries(formData.entries());
+            if (!validateForm(formDataObject)) {
+                setIsLoading(false);
+                return;
+            }
 
             const response = await createTicket(formData);
-            console.log(response)
             if (response.status === 201) {
                 await showConfirmFormTicket();
-                reset();
-            } else if (response.status === 400) {
-                await showError(response.data[0].response.data.message);
-            } else if (response.status === 500) {
-                await showError(response.data[0].response.data.message);
+                navigate(-1);
+            } else if (response.status === 400 || response.status === 500) {
+                await showError(response.data.message);
             }
-            console.log(response);
         } catch (error) {
-            console.log("Error:", error);
+            console.error("Error:", error);
+            showError("Ha ocurrido un error al crear el ticket.");
         } finally {
             setIsLoading(false);
         }
     };
-
+    
+    
     const handleVolver = async (tareaToVolver) => {
         const isConfirmed = await VolverQuestion();
         if (isConfirmed) {
@@ -122,17 +193,20 @@ export default function FormTicket() {
                         <div className="column is-two-thirds">
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <div className="field">
+                                    <label className="label">Nombre del Ticket:</label>
+                                    <p className="is-size-5">{ticket.nombreTarea}</p>
+                                </div>
+                                <div className="field">
+                                    <label className="label">Descripción:</label>
+                                    <div className="control">
+                                        <p className="is-size-5">{ticket.descripcionTarea}</p>
+                                    </div>
+                                </div>
+                                <div className="field">
                                     <label className="label" htmlFor="TareaID">ID de la Tarea:</label>
                                     <div className="control">
-                                        <input
-                                            id="TareaID"
-                                            type="text"
-                                            placeholder="Ej. 12345"
-                                            className={`input ${errors.TareaID ? 'is-danger' : ''}`}
-                                            {...register('TareaID', { required: true })}
-                                        />
+                                        <p className="is-size-5">{ticket.idTarea}</p>
                                     </div>
-                                    {errors.tareaID && <p className="help is-danger">Este campo es obligatorio</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="RutAsignado">RUT Asignado:</label>
@@ -140,12 +214,12 @@ export default function FormTicket() {
                                         <input
                                             id="RutAsignado"
                                             type="text"
-                                            placeholder="Ej. 12345678-9"
+                                            placeholder="123456789-0"
                                             className={`input ${errors.RutAsignado ? 'is-danger' : ''}`}
                                             {...register('RutAsignado', { required: true })}
                                         />
                                     </div>
-                                    {errors.rutAsignado && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.RutAsignado && <p className="help is-danger">Este campo es obligatorio</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="Inicio">Fecha de Inicio:</label>
@@ -153,11 +227,11 @@ export default function FormTicket() {
                                         <input
                                             id="Inicio"
                                             type="datetime-local"
-                                            className={`input ${errors.inicio ? 'is-danger' : ''}`}
+                                            className={`input ${errors.Inicio ? 'is-danger' : ''}`}
                                             {...register('Inicio', { required: true })}
                                         />
                                     </div>
-                                    {errors.inicio && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.Inicio && <p className="help is-danger">Este campo es obligatorio</p>}
                                 </div>
                                 <div className="field">
                                     <label className="label" htmlFor="Fin">Fecha de Fin:</label>
@@ -165,11 +239,11 @@ export default function FormTicket() {
                                         <input
                                             id="Fin"
                                             type="datetime-local"
-                                            className={`input ${errors.fin ? 'is-danger' : ''}`}
+                                            className={`input ${errors.Fin ? 'is-danger' : ''}`}
                                             {...register('Fin', { required: true })}
                                         />
                                     </div>
-                                    {errors.fin && <p className="help is-danger">Este campo es obligatorio</p>}
+                                    {errors.Fin && <p className="help is-danger">Este campo es obligatorio</p>}
                                 </div>
                                 <div className="field is-grouped">
                                     <div className="control">
@@ -190,3 +264,5 @@ export default function FormTicket() {
         </div>
     );
 }
+
+export default FormTicket;

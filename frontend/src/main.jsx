@@ -14,13 +14,13 @@ import VerTicket from './routes/verTicket.jsx';
 import TareasRealizadas from './routes/TareasRealizadasRoute.jsx';
 import UpdateTicket from './routes/UpdateTicketRoute.jsx';
 import UpdateTarea  from './routes/UpdateTareaRoute.jsx';
-import FromTicket from './routes/FormTicketRoutes.jsx';
 import CrearFacultad from './routes/CrearFacultad.jsx';
 import CrearUsuario from './routes/CrearUsuario.jsx';
 import AgregarComentario from './routes/comentarioRoute.jsx';
-import FormTicket from './routes/FormTicketRoutes.jsx';
+import Ticket from './routes/TicketRoutes.jsx';
 import DuplicarTarea from './routes/DuplicarTareaRoute.jsx';
 import MisTareas from './routes/MisTareasRoute.jsx';
+import VerComentarios from './components/VerComentarios.jsx';
 import Contactos from './routes/ContactPageRoute.jsx';
 
 const router = createBrowserRouter([
@@ -69,15 +69,15 @@ const router = createBrowserRouter([
   },
   {
     path: '/ticket/modificar',
-    element: <UpdateTicket />,
+    element: <UpdateTicket/>,
   },
   {
     path: '/tarea/modificar',
-    element: <UpdateTarea />,
+    element: <UpdateTarea/>,
   },
   {
     path: '/ticket',
-    element: <FormTicket />,
+    element: <Ticket/>,
   },
   {
     path: '/facultades',
@@ -90,6 +90,10 @@ const router = createBrowserRouter([
   {
     path: '/agregarComentario', // Agregar la nueva ruta
     element: <AgregarComentario />, // Componente para agregar comentarios
+  },
+  {
+    path: '/comentarios',
+    element: <VerComentarios />,
   },
   {
     path: '/tarea/duplicar',

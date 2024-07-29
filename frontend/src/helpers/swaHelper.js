@@ -292,6 +292,48 @@ export const showErrorFormTicket = async () => {
     });
 };
 
+export const showDeleteTicket = async () => {
+  await Toast.fire({
+      icon: "success",
+      title: "Tarea desasignada exitosamente!"
+  });
+}
+
+export const showFechaInicioError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "La fecha de inicio debe ser en el futuro"
+  });
+};
+
+export const showFechaInicioLaboralError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "La fecha de inicio debe ser en días laborables y horario de trabajo"
+  });
+};
+
+export const showFechaFinError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "La fecha de fin debe ser después de la fecha de inicio"
+  });
+};
+
+export const showFechaFinLaboralError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "La fecha de fin debe ser en días laborables y horario de trabajo"
+  });
+};
+
+export const showRutAsignadoError = async () => {
+  await Toast.fire({
+      icon: "error",
+      title: "El RUT asignado es obligatorio"
+  });
+};
+
 export const showUsernameError = async () => {
   await Toast.fire({
       icon: "error",
@@ -430,4 +472,58 @@ export const DuplicarQuestion = async () => {
   }
 
   return result.isConfirmed;
+};
+
+// Función para mostrar una alerta de éxito
+export const showSuccess = async (message) => {
+  await Swal.fire({
+    icon: 'success',
+    title: 'Éxito',
+    text: message,
+    showConfirmButton: true,
+    timer: 1500
+  });
+};
+
+// Función para mostrar una alerta de información
+export const showInfo = async (message) => {
+  await Swal.fire({
+    icon: 'info',
+    title: 'Información',
+    text: message,
+    showConfirmButton: true,
+    timer: 1500
+  });
+};
+
+// Función para mostrar una alerta de advertencia
+export const showWarning = async (message) => {
+  await Swal.fire({
+    icon: 'warning',
+    title: 'Advertencia',
+    text: message,
+    showConfirmButton: true,
+    timer: 1500
+  });
+};
+
+// Función para mostrar una alerta de confirmación antes de eliminar
+export const showConfirmDelete = async () => {
+  return await Swal.fire({
+    title: '¿Estás seguro?',
+    text: "¡No podrás revertir esto!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Sí, eliminarlo'
+  });
+};
+
+export const showErrorLogin = async () => {
+  await Swal.fire({
+    icon: "error",
+    title: "Error al iniciar sesión",
+    text: "Por favor, verifica tus datos y vuelve a intentarlo."
+  });
 };
