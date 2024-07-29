@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { agregarComentario } from '../services/comentario.service';
-import { getUserByRut, getUsersByRole } from '../services/user.service'; // Nueva función para obtener usuario por RUT
+import { getUserByRut} from '../services/user.service'; // Nueva función para obtener usuario por RUT
 import Navbar from '../components/navbar.jsx';
 import '../styles/Generico.css';
 import { showRutError } from '../helpers/swaHelper.js';

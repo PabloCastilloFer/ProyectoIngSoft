@@ -265,6 +265,8 @@
 
 .comment-column {
   flex: 1;
+  max-width: 500px;
+  resize: vertical; /* Permitir cambiar el tamaño verticalmente */
 }
 
 .actions-column {
@@ -306,3 +308,4 @@
   border-radius: 4px;
   resize: vertical; /* Permitir cambiar el tamaño verticalmente */
 }
+

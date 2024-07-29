@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/Generico.css'; // Asegúrate de tener estilos para los formularios
-import Navbar from '../components/Navbar.jsx';
+import Navbar from '../components/navbar.jsx';
 import { showConfirmFacultyCreated,DeleteFacultyQuestion } from '../helpers/swaHelper.js';
 
 
@@ -63,7 +63,7 @@ const CrearFacultad = () => {
       <Navbar />
       <div style={boxStyle}>
         <div>
-          <h2>Crear Facultad</h2>
+          <h2 className="title">Crear Facultad</h2>
           {error && <p className="error">{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -77,7 +77,7 @@ const CrearFacultad = () => {
             </div>
             <button type="submit" className="btn btn-primary">Crear Facultad</button>
           </form>
-          <h3>Facultades Creadas</h3>
+          <h3 className="title" style={{ marginTop: '40px' }}>Facultades Creadas</h3> {/* Agrega un margen superior aquí */}
           <ul className="facultades-list">
             {facultades.map((facultad, index) => (
               <li key={index} className="facultad-item">

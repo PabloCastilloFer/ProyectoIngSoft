@@ -476,5 +476,3 @@ export const showConfirmDelete = async () => {
     confirmButtonText: 'Sí, eliminarlo'
   });
 };
-
-// Función para mostrar una alerta cuando el RUT está vacío
