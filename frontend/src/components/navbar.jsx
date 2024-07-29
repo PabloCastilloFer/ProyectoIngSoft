@@ -40,6 +40,7 @@ const Navbar = () => {
     top: '0',
     height: '100vh',
     width: '250px',
+    zIndex: 20,
   };
 
   return (
