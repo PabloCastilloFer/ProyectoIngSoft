@@ -58,3 +58,13 @@ export const getUsersByRole = async (role) => {
     throw error;
   }
 };
+
+export const getSupervisoresByFacultad = async (facultadName) => {
+  try {
+    const response = await axios.get(`users/supervisores/facultad/${facultadName}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener supervisores:', error);
+    throw error;
+  }
+};

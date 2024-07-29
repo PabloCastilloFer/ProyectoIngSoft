@@ -21,6 +21,7 @@ import AgregarComentario from './routes/comentarioRoute.jsx';
 import FormTicket from './routes/FormTicketRoutes.jsx';
 import DuplicarTarea from './routes/DuplicarTareaRoute.jsx';
 import MisTareas from './routes/MisTareasRoute.jsx';
+import Contactos from './routes/ContactPageRoute.jsx';
 
 const router = createBrowserRouter([
   {
@@ -97,6 +98,10 @@ const router = createBrowserRouter([
   {
     path: '/mis-tareas',
     element: <MisTareas />,
+  },
+  {
+    path: '/contactos',
+    element: <Contactos />,
   }
 
 

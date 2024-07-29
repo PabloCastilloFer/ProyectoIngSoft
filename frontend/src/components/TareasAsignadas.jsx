@@ -131,6 +131,7 @@ const TareasAsignadas = () => {
                 <p><strong>Estado:</strong> {tarea.estadoTarea}</p>
                 <p><strong>Inicio:</strong> {new Date(tarea.inicio).toLocaleString()}</p>
                 <p><strong>Fin:</strong> {new Date(tarea.fin).toLocaleString()}</p>
+                <p><strong>Supervisor:</strong> {tarea.supervisorNombre} </p> {/* Mostrar nombre y correo del supervisor */}
                 <div>
                   <p><strong>Archivo adjunto:</strong></p>
                   {tarea.archivo ? (
