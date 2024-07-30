@@ -23,13 +23,9 @@ export function AuthProvider({ children }) {
     }
     
     if(!isAuthenticated) {
-  
-      navigate('/auth')
+      navigate('/auth');
     }
-    }, [isAuthenticated, navigate]);
-
-
-  
+  }, [isAuthenticated, navigate]);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, user }}>
@@ -37,4 +33,3 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-//
