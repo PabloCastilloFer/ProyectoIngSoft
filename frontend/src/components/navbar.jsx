@@ -74,6 +74,9 @@ const Navbar = () => {
               <li data-icon="📁" onClick={() => handleNavigation('/tarea')}>
                 <span>Crear tarea</span>
               </li>
+              <li data-icon="📄" onClick={() => handleNavigation('/tareas')}>
+                <span>Ver tareas</span>
+              </li>
               <li data-icon="📋" onClick={() => handleNavigation('/mis-tareas')}>
                 <span>Mis tareas creadas</span>
               </li>
@@ -96,18 +99,6 @@ const Navbar = () => {
                   </li>
                 </ul>
               )}
-              <li data-icon="📃" onClick={() => handleNavigation('/tareas-asignadas')}>
-                <span>Ver tareas asignadas</span>
-              </li>
-              <li data-icon="📍" onClick={() => handleNavigation('/tareas-realizadas')}>
-                <span>Tareas Realizadas</span>
-              </li>
-              <li data-icon="🏢" onClick={() => handleNavigation('/facultades')}>
-                <span>Facultades</span>
-              </li>
-              <li data-icon="👤" onClick={handleUsersMenuToggle}>
-                <span>Usuarios {isUsersMenuOpen ? '▲' : '▼'}</span>
-              </li>
               {isUsersMenuOpen && (
                 <ul className="submenu">
                   <li data-icon=">" onClick={() => handleNavigation('/usuarios')}>
@@ -122,17 +113,24 @@ const Navbar = () => {
           )}
           {userRole === 'admin' && (
             <>
-              <li data-icon="📄" onClick={() => handleNavigation('/tareas')}>
-                <span>Ver tareas</span>
+              <li data-icon="🏢" onClick={() => handleNavigation('/facultades')}>
+                <span>Facultades</span>
               </li>
-              <li data-icon="📃" onClick={() => handleNavigation('/tareas-asignadas')}>
+              <li data-icon="👤" onClick={handleUsersMenuToggle}>
+                <span>Usuarios {isUsersMenuOpen ? '▲' : '▼'}</span>
+              </li>
+            </>
+          )}
+          {userRole === 'empleado' && (
+            <>
+            <li data-icon="📃" onClick={() => handleNavigation('/tareas-asignadas')}>
                 <span>Ver tareas asignadas</span>
               </li>
               <li data-icon="📍" onClick={() => handleNavigation('/tareas-realizadas')}>
                 <span>Tareas Realizadas</span>
               </li>
-            </>
-          )}
+          </>
+            )}
         </ul>
       </div>
     </div>
