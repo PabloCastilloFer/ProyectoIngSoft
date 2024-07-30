@@ -3,7 +3,7 @@ import multer from 'multer';
 import { createTarea , getTareas , getTarea , updateTarea, updateNewTarea, deleteTareaById, getArchives, getTareasUsuario} from "../controllers/tarea.controller.js";
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 import { isSupervisor } from "../middlewares/authorization.middleware.js";
-
+import { isEmSu } from "../middlewares/authorization.middleware.js";
 const router = Router();
 router.use(authenticationMiddleware);
 
@@ -38,7 +38,7 @@ router.post('/', isSupervisor,upload.single("archivo"), createTarea);
 router.get('/', isSupervisor, getTareas);
 router.get('/:nombreTarea', isSupervisor, getTarea);
 router.get('/mi-tarea/:email', isSupervisor ,getTareasUsuario);
-router.get('/src/upload/:filename', isSupervisor, getArchives);  //RUTA PARA OBTENER ARCHIVOS
+router.get('/src/upload/:filename', isEmSu, getArchives);  //RUTA PARA OBTENER ARCHIVOS
 router.put('/:idTarea', upload.single("archivo"),isSupervisor, updateTarea);
 router.post('/:idTarea', upload.single("archivo"), isSupervisor, updateNewTarea);
 router.delete('/:idTarea', isSupervisor, deleteTareaById);

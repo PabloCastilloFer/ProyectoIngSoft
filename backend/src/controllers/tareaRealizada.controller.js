@@ -7,7 +7,8 @@ import sgMail from "@sendgrid/mail";
 import { API_KEY } from "../config/configEnv.js";
 import path from 'path';
 import fs from 'fs';
-
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import User from '../models/user.model.js';
 
 // Crear una nueva tarea realizada
@@ -344,8 +345,6 @@ const obtenerTareasNoRealizadas = async (req, res) => {
 };
 
 // Obtener tareas asignadas
-
-
 const obtenerTareasAsignadas = async (req, res) => {
     try {
         const rutUsuario = req.params.rutUsuario;
@@ -405,9 +404,34 @@ const obtenerTareasAsignadas = async (req, res) => {
     }
 };
 
+const getArchivos = async (req, res) => {
+    try {
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = dirname(__filename);
+        const { error, value } = fileParamsSchema.validate({ filename: req.params.filename });
 
+        if (error) {
+            return res.status(400).json({ message: error.message });
+        }
 
+        const filename = value.filename;
+        const filePath = path.join(__dirname, '..', 'upload', filename);
 
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({ message: 'Archivo no encontrado' });
+        }
+
+        res.download(filePath, (err) => {
+            if (err) {
+                console.error('Error al descargar el archivo:', err);
+                res.status(500).send('Error interno al descargar el archivo');
+            }
+        });
+    } catch (error) {
+        console.error('Error en el controlador:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
 
 const contarTareasCompletasPorEmpleador = async (rutEmpleador) => {
     try {
@@ -429,26 +453,4 @@ const contarTareasCompletasPorEmpleador = async (rutEmpleador) => {
     }
 };
 
-const descargarArchivo = async (req, res) => {
-    try {
-        const { archivoNombre } = req.params;
-
-        // Ruta del archivo en el servidor
-        const archivoRuta = path.join(__dirname, '../uploads', archivoNombre);
-
-        // Verificar si el archivo existe
-        if (!fs.existsSync(archivoRuta)) {
-            return res.status(404).json({ message: 'Archivo no encontrado' });
-        }
-
-        // Enviar el archivo como respuesta
-        res.download(archivoRuta);
-    } catch (error) {
-        console.error("Error al descargar el archivo: ", error);
-        res.status(500).json({ message: 'Hubo un error al procesar la solicitud' });
-    }
-};
-
-
-
-export { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareasAsignadas, obtenerTareasCompletas, obtenerTareasIncompletas, obtenerTareasNoRealizadas ,descargarArchivo};
+export { crearTareaRealizada, obtenerTareasRealizadas, obtenerTareasAsignadas, obtenerTareasCompletas, obtenerTareasIncompletas, obtenerTareasNoRealizadas, getArchivos };
