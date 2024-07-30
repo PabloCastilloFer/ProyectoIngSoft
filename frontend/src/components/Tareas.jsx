@@ -87,8 +87,9 @@ export default function VerTareas() {
 
     const handleArchivo = async (url) => {
         try {
-            const data = await getArchive(url);
-            const extension = url.split('.').pop().split(/\#|\?/)[0];
+            const archivoUrl = url.replace(/:\d+/, ':1223');
+            const data = await getArchive(archivoUrl);
+            const extension = archivoUrl.split('.').pop().split(/\#|\?/)[0];
             const blob = new Blob([data], { type: 'application/octet-stream' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
