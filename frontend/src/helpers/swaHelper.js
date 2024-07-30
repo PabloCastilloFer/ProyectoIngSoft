@@ -555,3 +555,43 @@ export const showErrorLogin = async () => {
     text: "Por favor, verifica tus datos y vuelve a intentarlo."
   });
 };
+
+
+export const showErrorComentario = async (message) => {
+  await Swal.fire({
+    icon: "error",
+    title: message,
+    confirmButtonColor: '#387ADF'
+  });
+};
+
+export const showUserNotFoundError = async () => {
+  await Swal.fire({
+    icon: "error",
+    title: "Empleado no encontrado o no tiene rol de empleado",
+    confirmButtonColor: '#387ADF'
+  });
+};
+
+export const showFetchUserError = async () => {
+  await Swal.fire({
+    icon: "error",
+    title: "Error al obtener empleado",
+    confirmButtonColor: '#387ADF'
+  });
+};
+
+export const showGeneralCommentError = async () => {
+  await Swal.fire({
+    icon: "error",
+    title: "Error al agregar comentario",
+    confirmButtonColor: '#387ADF'
+  });
+};
+export const showCommentSuccess = async () => {
+  await Swal.fire({
+    icon: "success",
+    title: "Comentario creado con éxito",
+    confirmButtonColor: '#387ADF'
+  });
+};

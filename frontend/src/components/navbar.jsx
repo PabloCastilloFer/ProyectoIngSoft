@@ -98,7 +98,7 @@ const Navbar = () => {
               <li data-icon=">" onClick={() => handleNavigation('/usuarios')}>
                 <span>Crear Usuario</span>
               </li>
-              <li data-icon=">" onClick={() => handleNavigation('/usuarios/ver')}>
+              <li data-icon=">" onClick={() => handleNavigation('/ver-modificar-eliminar-usuario')}>
                 <span>Ver Usuarios</span>
               </li>
             </ul>

@@ -21,7 +21,8 @@ import Ticket from './routes/TicketRoutes.jsx';
 import DuplicarTarea from './routes/DuplicarTareaRoute.jsx';
 import MisTareas from './routes/MisTareasRoute.jsx';
 import VerComentarios from './components/VerComentarios.jsx';
-
+import Contactos from './routes/ContactPageRoute.jsx';
+import VerModificarEliminarUsuarioRoute from './routes/VerModificarEliminarUsuarioRoute.jsx';
 
 const router = createBrowserRouter([
   {
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
   {
     path: '/usuarios',
     element: <CrearUsuario />,
+  },
+  {
+    path: '/ver-modificar-eliminar-usuario',
+    element: <VerModificarEliminarUsuarioRoute />,
   },
   {
     path: '/agregarComentario',

@@ -17,7 +17,7 @@ export const crearUsuario = async (data) => {
     if (error.response) {
       console.log("Error de respuesta del backend:", error.response);
 
-      // Verifica si el error es debido a un RUT duplicado
+
       if (error.response.data && error.response.data.message === "El rut ingresado posee un usuario") {
         return {
           status: error.response.status,
@@ -47,7 +47,7 @@ export const getUserByRut = async (rut) => {
   }
 };
 
-// Otras funciones existentes
+
 export const getUsersByRole = async (role) => {
   try {
     const response = await axios.get(`/users/rol/${role}`);
@@ -59,3 +59,45 @@ export const getUsersByRole = async (role) => {
   }
 };
 
+export const getSupervisoresByFacultad = async (facultadName) => {
+  try {
+    const response = await axios.get(`users/supervisores/facultad/${facultadName}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener supervisores:', error);
+    throw error;
+  }
+};
+
+export const getUsers = async () => {
+  try {
+    const response = await axios.get('/users');
+    console.log('Usuarios obtenidos:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error al obtener usuarios:', error);
+    throw error;
+  }
+};
+
+export const deleteUser = async (id) => {
+  try {
+    const response = await axios.delete(`/users/${id}`);
+    console.log('deleteUser response:', response);
+    return response;
+  } catch (error) {
+    console.error('deleteUser error:', error);
+    throw error;
+  }
+};
+
+export const updateUser = async (id, data) => {
+  try {
+    const response = await axios.put(`/users/${id}`, data);
+    console.log('updateUser response:', response);
+    return response;
+  } catch (error) {
+    console.error('updateUser error:', error);
+    throw error;
+  }
+};

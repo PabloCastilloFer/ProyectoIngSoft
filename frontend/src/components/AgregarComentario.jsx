@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { agregarComentario } from '../services/comentario.service';
-import { getUserByRut} from '../services/user.service'; // Nueva función para obtener usuario por RUT
+import { getUserByRut } from '../services/user.service'; // Nueva función para obtener usuario por RUT
 import Navbar from '../components/navbar.jsx';
 import '../styles/Generico.css';
-import { showRutError } from '../helpers/swaHelper.js';
+import { showRutError, showCommentSuccess, showUserNotFoundError, showFetchUserError, showGeneralCommentError } from '../helpers/swaHelper.js';
 
 const AgregarComentario = () => {
   const [rutAsignado, setRutAsignado] = useState('');
@@ -21,15 +21,14 @@ const AgregarComentario = () => {
         setError('');
       } else {
         setEmpleado(null);
-        await showErrorComentario('Empleado no encontrado o no tiene rol de empleado');
+        await showUserNotFoundError();
       }
     } catch (error) {
       console.log('Error al obtener empleado:', error);
       setEmpleado(null);
-      await showErrorComentario('Error al obtener empleado');
+      await showFetchUserError();
     }
   };
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -43,20 +42,20 @@ const AgregarComentario = () => {
     }
 
     if (!comentario) {
-      setError('El comentario no puede estar vacío');
+      await message
       return;
     }
 
     try {
       const response = await agregarComentario({ rutAsignado, comentario });
       console.log('Comentario agregado:', response);
-      alert('Comentario agregado con éxito');
+      await showCommentSuccess();
       setRutAsignado('');
       setComentario('');
       setEmpleado(null);
     } catch (error) {
       console.log('Error al agregar comentario:', error);
-      setError('Error al agregar comentario');
+      await showGeneralCommentError();
     }
   };
 
@@ -66,9 +65,9 @@ const AgregarComentario = () => {
     alignItems: 'center',
     marginRight: '250px', 
     marginTop: '64px', // Ajustar para la altura de la navbar
-};
+  };
 
-const BoxStyle = {
+  const BoxStyle = {
     alignItems: 'center',
     paddingTop: '64px', 
     width: '700px',
@@ -78,45 +77,46 @@ const BoxStyle = {
     backgroundColor: '#fff',
     textAlign: 'center',
     position: 'relative', 
-};
+  };
 
   return (
     <div style={containerStyle}>
       <Navbar />
       <div style={BoxStyle}>
-          <h2 className="title">Agregar Comentario</h2>
-          {error && <p className="error">{error}</p>}
-          <form onSubmit={handleSubmit}>
+        <h2 className="title">Agregar Comentario</h2>
+        {error && <p className="error">{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>RUT empleado</label>
+            <input
+              type="text"
+              placeholder="Ejemplo: 12345678-9"
+              value={rutAsignado}
+              onChange={(e) => setRutAsignado(e.target.value)}
+              required
+            />
+            <button type="button" onClick={handleBuscarEmpleado} className="btn btn-secondary">Buscar Empleado</button>
+          </div>
+          {empleado && (
             <div className="form-group">
-              <label>RUT empleado</label>
-              <input
-                type="text"
-                value={rutAsignado}
-                onChange={(e) => setRutAsignado(e.target.value)}
-                required
-              />
-              <button type="button" onClick={handleBuscarEmpleado} className="btn btn-secondary">Buscar Empleado</button>
-            </div>
-            {empleado && (
-              <div className="form-group">
               <p><strong>Nombre:</strong> {empleado.username}</p>
               <p><strong>Email:</strong> {empleado.email}</p>
               <p><strong>Rol:</strong> {empleado.roles.map(role => role.name).join(', ')}</p>
             </div>
-            )}
-            <div className="form-group">
-              <label>Comentario</label>
-              <textarea
-                value={comentario}
-                onChange={(e) => setComentario(e.target.value)}
-                required
-                className="form-control comment-textarea"
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">Agregar Comentario</button>
-          </form>
-        </div>
+          )}
+          <div className="form-group">
+            <label>Comentario</label>
+            <textarea
+              value={comentario}
+              onChange={(e) => setComentario(e.target.value)}
+              required
+              className="form-control comment-textarea"
+            />
+          </div>
+          <button type="submit" className="btn btn-primary">Agregar Comentario</button>
+        </form>
       </div>
+    </div>
   );
 };
 
