@@ -75,21 +75,22 @@ const TareasAsignadas = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  
   const handleArchivo = async (url) => {
     try {
-      const data = await getArchive(url);
-      const extension = url.split('.').pop().split(/\#|\?/)[0];
-      const blob = new Blob([data], { type: 'application/octet-stream' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `archivo.${extension}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+        const data = await getArchive(url);
+        const extension = url.split('.').pop().split(/\#|\?/)[0];
+        const blob = new Blob([data], { type: 'application/octet-stream' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `archivo.${extension}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     } catch (error) {
-      console.error('Error al manejar el archivo:', error.message);
+        console.error('Error al manejar el archivo:', error.message);
     }
-  };
+};
 
   const getFileName = (url) => {
     return url.split('/').pop().split('#')[0].split('?')[0];
